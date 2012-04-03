@@ -21,12 +21,14 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public class DoubleClickCopyCanceller : NativeWindow, IDisposable
     {
         const int WM_GETTEXTLENGTH = 0xE;
@@ -34,39 +36,39 @@ namespace OpenTween
         const int WM_LBUTTONDBLCLK = 0x203;
         bool _doubleClick = false;
 
+
         public DoubleClickCopyCanceller(Control control)
         {
-            this.AssignHandle(control.Handle);
+            this.AssignHandle( control.Handle );
         }
+
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_LBUTTONDBLCLK)
-            {
+            if ( m.Msg == WM_LBUTTONDBLCLK ) {
                 _doubleClick = true;
             }
-            if (_doubleClick)
-            {
-                if (m.Msg == WM_GETTEXTLENGTH)
-                {
+            if ( _doubleClick ) {
+                if ( m.Msg == WM_GETTEXTLENGTH ) {
                     _doubleClick = false;
                     m.Result = IntPtr.Zero;
                     return;
                 }
             }
-            base.WndProc(ref m);
+            base.WndProc( ref m );
         }
+
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            Dispose( true );
+            GC.SuppressFinalize( this );
         }
+
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
+            if ( disposing ) {
                 this.ReleaseHandle();
             }
         }

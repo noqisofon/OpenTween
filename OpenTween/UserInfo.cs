@@ -23,16 +23,19 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
+
 
 namespace OpenTween
 {
+
+
     public class UserInfo
     {
         public UserInfo()
         {
         }
+
 
         public UserInfo(TwitterDataModel.User user)
         {
@@ -41,28 +44,26 @@ namespace OpenTween
             this.ScreenName = user.ScreenName;
             this.Location = user.Location;
             this.Description = user.Description;
-            try
-            {
-                this.ImageUrl = new Uri(user.ProfileImageUrl);
-            }
-            catch (Exception)
-            {
+            try {
+                this.ImageUrl = new Uri (user.ProfileImageUrl);
+            } catch ( Exception ) {
                 this.ImageUrl = null;
             }
             this.Url = user.Url;
             this.Protect = user.Protected;
             this.FriendsCount = user.FriendsCount;
             this.FollowersCount = user.FollowersCount;
-            this.CreatedAt = MyCommon.DateTimeParse(user.CreatedAt);
+            this.CreatedAt = MyCommon.DateTimeParse( user.CreatedAt );
             this.StatusesCount = user.StatusesCount;
             this.Verified = user.Verified;
-            if (user.Status != null)
-            {
+            if ( user.Status != null ) {
                 this.RecentPost = user.Status.Text;
-                this.PostCreatedAt = MyCommon.DateTimeParse(user.Status.CreatedAt);
+                this.PostCreatedAt = MyCommon.DateTimeParse( user.Status.CreatedAt );
                 this.PostSource = user.Status.Source;
             }
         }
+
+
         public Int64 Id = 0;
         public string Name = "";
         public string ScreenName = "";
@@ -74,14 +75,15 @@ namespace OpenTween
         public int FriendsCount = 0;
         public int FollowersCount = 0;
         public int FavoriteCount = 0;
-        public DateTime CreatedAt = new DateTime();
+        public DateTime CreatedAt = new DateTime ();
         public int StatusesCount = 0;
         public bool Verified = false;
         public string RecentPost = "";
-        public DateTime PostCreatedAt = new DateTime();
+        public DateTime PostCreatedAt = new DateTime ();
         public string PostSource = "";        // html形式　"<a href="http://sourceforge.jp/projects/tween/wiki/FrontPage" rel="nofollow">Tween</a>"
         public bool isFollowing = false;
         public bool isFollowed = false;
+
 
         public override string ToString()
         {

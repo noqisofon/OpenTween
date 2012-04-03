@@ -36,23 +36,24 @@ using System.Collections;
 
 namespace OpenTween
 {
+
+
     public class ImageDictionary : IDictionary<string, Image>, IDisposable
     {
-        private readonly object lockObject = new object();
-
+        private readonly object lockObject = new object ();
         private MemoryCache innerDictionary;
         private Stack<KeyValuePair<string, Action<Image>>> waitStack;
-        private CacheItemPolicy cachePolicy = new CacheItemPolicy();
+        private CacheItemPolicy cachePolicy = new CacheItemPolicy ();
         private long removedCount = 0;
         private Semaphore netSemaphore;
 
+
         public ImageDictionary(int cacheMemoryLimit)
         {
-            lock (this.lockObject)
-            {
+            lock ( this.lockObject ) {
                 //5Mb,80%
                 //キャッシュチェック間隔はデフォルト値（2分毎）
-                this.innerDictionary = new MemoryCache("imageCache",
+                this.innerDictionary = new MemoryCache ("imageCache",
                                                        new NameValueCollection
                                                        {
                                                            {"CacheMemoryLimitMegabytes", cacheMemoryLimit.ToString()},

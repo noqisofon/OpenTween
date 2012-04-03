@@ -36,11 +36,13 @@ using System.IO;
 using System.Resources;
 
 
-namespace OpenTween {
+namespace OpenTween
+{
 
 
-    public partial class AppendSettingDialog : Form {
-        private static AppendSettingDialog _instance = new AppendSettingDialog();
+    public partial class AppendSettingDialog : Form
+    {
+        private static AppendSettingDialog _instance = new AppendSettingDialog ();
         private Twitter tw;
         private HttpConnection.ProxyType _MyProxyType;
         private bool _ValidationError = false;
@@ -58,10 +60,11 @@ namespace OpenTween {
         public bool TabMouseLock;
         public bool IsRemoveSameEvent;
         public bool IsNotifyUseGrowl;
-        public TwitterDataModel.Configuration TwitterConfiguration = new TwitterDataModel.Configuration();
+        public TwitterDataModel.Configuration TwitterConfiguration = new TwitterDataModel.Configuration ();
         private string _pin;
 
-        public class IntervalChangedEventArgs : EventArgs {
+        public class IntervalChangedEventArgs : EventArgs
+        {
             public bool UserStream;
             public bool Timeline;
             public bool Reply;
@@ -72,13 +75,14 @@ namespace OpenTween {
         }
 
 
-        public delegate void IntervalChangedEventHandler (object sender,IntervalChangedEventArgs e);
+        public delegate void IntervalChangedEventHandler(object sender,IntervalChangedEventArgs e);
 
 
         public event IntervalChangedEventHandler IntervalChanged;
 
 
-        private void TreeViewSetting_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
+        private void TreeViewSetting_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
             if ( this.TreeViewSetting.SelectedNode == null )
                 return;
             Panel pnl = (Panel)this.TreeViewSetting.SelectedNode.Tag;
@@ -89,7 +93,8 @@ namespace OpenTween {
         }
 
 
-        private void TreeViewSetting_AfterSelect(object sender, TreeViewEventArgs e) {
+        private void TreeViewSetting_AfterSelect(object sender, TreeViewEventArgs e)
+        {
             if ( e.Node == null )
                 return;
             Panel pnl = (Panel)e.Node.Tag;
@@ -108,16 +113,17 @@ namespace OpenTween {
         }
 
 
-        private void Save_Click(object sender, EventArgs e) {
+        private void Save_Click(object sender, EventArgs e)
+        {
             if ( MyCommon.IsNetworkAvailable() &&
-                ( ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Bitly || ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Jmp ) ) {
+                (ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Bitly || ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Jmp) ) {
                 // bit.ly 短縮機能実装のプライバシー問題の暫定対応
                 // bit.ly 使用時はログインIDとAPIキーの指定を必須とする
                 // 参照: http://sourceforge.jp/projects/opentween/lists/archive/dev/2012-January/000020.html
                 if ( string.IsNullOrEmpty( TextBitlyId.Text ) || string.IsNullOrEmpty( TextBitlyPw.Text ) ) {
                     MessageBox.Show( "bit.ly のログイン名とAPIキーの指定は必須項目です。", Application.ProductName );
                     _ValidationError = true;
-                    TreeViewSetting.SelectedNode = TreeViewSetting.Nodes["ConnectionNode"].Nodes["ShortUrlNode"]; // 動作タブを選択
+                    TreeViewSetting.SelectedNode = TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ShortUrlNode"]; // 動作タブを選択
                     TreeViewSetting.Select();
                     TextBitlyId.Focus();
                     return;
@@ -126,7 +132,7 @@ namespace OpenTween {
                 if ( !BitlyValidation( TextBitlyId.Text, TextBitlyPw.Text ) ) {
                     MessageBox.Show( Properties.Resources.SettingSave_ClickText1 );
                     _ValidationError = true;
-                    TreeViewSetting.SelectedNode = TreeViewSetting.Nodes["ConnectionNode"].Nodes["ShortUrlNode"]; // 動作タブを選択
+                    TreeViewSetting.SelectedNode = TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ShortUrlNode"]; // 動作タブを選択
                     TreeViewSetting.Select();
                     TextBitlyId.Focus();
                     return;
@@ -143,7 +149,7 @@ namespace OpenTween {
             }
             if ( this.AuthUserCombo.SelectedIndex > -1 ) {
                 foreach ( UserAccount u in this.UserAccounts ) {
-                    if ( u.Username.ToLower() == ( (UserAccount)this.AuthUserCombo.SelectedItem ).Username.ToLower() ) {
+                    if ( u.Username.ToLower() == ((UserAccount)this.AuthUserCombo.SelectedItem).Username.ToLower() ) {
                         tw.Initialize( u.Token, u.TokenSecret, u.Username, u.UserId );
                         if ( u.UserId == 0 ) {
                             tw.VerifyCredentials();
@@ -184,7 +190,7 @@ namespace OpenTween {
                 string ret = tw.PostFollowCommand(ApplicationSettings.FeedbackTwitterName);
             }
 #endif
-            IntervalChangedEventArgs arg = new IntervalChangedEventArgs();
+            IntervalChangedEventArgs arg = new IntervalChangedEventArgs ();
             bool isIntervalChanged = false;
 
             try {
@@ -233,21 +239,21 @@ namespace OpenTween {
 
                 Readed = StartupReaded.Checked;
                 switch ( IconSize.SelectedIndex ) {
-                    case 0:
-                        IconSz = MyCommon.IconSizes.IconNone;
-                        break;
-                    case 1:
-                        IconSz = MyCommon.IconSizes.Icon16;
-                        break;
-                    case 2:
-                        IconSz = MyCommon.IconSizes.Icon24;
-                        break;
-                    case 3:
-                        IconSz = MyCommon.IconSizes.Icon48;
-                        break;
-                    case 4:
-                        IconSz = MyCommon.IconSizes.Icon48_2;
-                        break;
+                case 0:
+                    IconSz = MyCommon.IconSizes.IconNone;
+                    break;
+                case 1:
+                    IconSz = MyCommon.IconSizes.Icon16;
+                    break;
+                case 2:
+                    IconSz = MyCommon.IconSizes.Icon24;
+                    break;
+                case 3:
+                    IconSz = MyCommon.IconSizes.Icon48;
+                    break;
+                case 4:
+                    IconSz = MyCommon.IconSizes.Icon48_2;
+                    break;
                 }
                 Status = StatusText.Text;
                 PlaySound = PlaySnd.Checked;
@@ -276,30 +282,30 @@ namespace OpenTween {
                 ColorDetailLink = lblDetailLink.ForeColor;
                 FontInputFont = lblInputFont.Font;
                 switch ( cmbNameBalloon.SelectedIndex ) {
-                    case 0:
-                        NameBalloon = MyCommon.NameBalloonEnum.None;
-                        break;
-                    case 1:
-                        NameBalloon = MyCommon.NameBalloonEnum.UserID;
-                        break;
-                    case 2:
-                        NameBalloon = MyCommon.NameBalloonEnum.NickName;
-                        break;
+                case 0:
+                    NameBalloon = MyCommon.NameBalloonEnum.None;
+                    break;
+                case 1:
+                    NameBalloon = MyCommon.NameBalloonEnum.UserID;
+                    break;
+                case 2:
+                    NameBalloon = MyCommon.NameBalloonEnum.NickName;
+                    break;
                 }
 
                 switch ( ComboBoxPostKeySelect.SelectedIndex ) {
-                    case 2:
-                        PostShiftEnter = true;
-                        PostCtrlEnter = false;
-                        break;
-                    case 1:
-                        PostCtrlEnter = true;
-                        PostShiftEnter = false;
-                        break;
-                    case 0:
-                        PostCtrlEnter = false;
-                        PostShiftEnter = false;
-                        break;
+                case 2:
+                    PostShiftEnter = true;
+                    PostCtrlEnter = false;
+                    break;
+                case 1:
+                    PostCtrlEnter = true;
+                    PostShiftEnter = false;
+                    break;
+                case 0:
+                    PostCtrlEnter = false;
+                    PostShiftEnter = false;
+                    break;
                 }
                 CountApi = int.Parse( TextCountApi.Text );
                 CountApiReply = int.Parse( TextCountApiReply.Text );
@@ -310,30 +316,30 @@ namespace OpenTween {
                 CloseToExit = CheckCloseToExit.Checked;
                 MinimizeToTray = CheckMinimizeToTray.Checked;
                 switch ( ComboDispTitle.SelectedIndex ) {
-                    case 0:  //None
-                        DispLatestPost = MyCommon.DispTitleEnum.None;
-                        break;
-                    case 1:  //Ver
-                        DispLatestPost = MyCommon.DispTitleEnum.Ver;
-                        break;
-                    case 2:  //Post
-                        DispLatestPost = MyCommon.DispTitleEnum.Post;
-                        break;
-                    case 3:  //RepCount
-                        DispLatestPost = MyCommon.DispTitleEnum.UnreadRepCount;
-                        break;
-                    case 4:  //AllCount
-                        DispLatestPost = MyCommon.DispTitleEnum.UnreadAllCount;
-                        break;
-                    case 5:  //Rep+All
-                        DispLatestPost = MyCommon.DispTitleEnum.UnreadAllRepCount;
-                        break;
-                    case 6:  //Unread/All
-                        DispLatestPost = MyCommon.DispTitleEnum.UnreadCountAllCount;
-                        break;
-                    case 7: //Count of Status/Follow/Follower
-                        DispLatestPost = MyCommon.DispTitleEnum.OwnStatus;
-                        break;
+                case 0:  //None
+                    DispLatestPost = MyCommon.DispTitleEnum.None;
+                    break;
+                case 1:  //Ver
+                    DispLatestPost = MyCommon.DispTitleEnum.Ver;
+                    break;
+                case 2:  //Post
+                    DispLatestPost = MyCommon.DispTitleEnum.Post;
+                    break;
+                case 3:  //RepCount
+                    DispLatestPost = MyCommon.DispTitleEnum.UnreadRepCount;
+                    break;
+                case 4:  //AllCount
+                    DispLatestPost = MyCommon.DispTitleEnum.UnreadAllCount;
+                    break;
+                case 5:  //Rep+All
+                    DispLatestPost = MyCommon.DispTitleEnum.UnreadAllRepCount;
+                    break;
+                case 6:  //Unread/All
+                    DispLatestPost = MyCommon.DispTitleEnum.UnreadCountAllCount;
+                    break;
+                case 7: //Count of Status/Follow/Follower
+                    DispLatestPost = MyCommon.DispTitleEnum.OwnStatus;
+                    break;
                 }
                 SortOrderLock = CheckSortOrderLock.Checked;
                 TinyUrlResolve = CheckTinyURL.Checked;
@@ -362,12 +368,12 @@ namespace OpenTween {
                 OutputzKey = TextBoxOutputzKey.Text.Trim();
 
                 switch ( ComboBoxOutputzUrlmode.SelectedIndex ) {
-                    case 0:
-                        OutputzUrlmode = MyCommon.OutputzUrlmode.twittercom;
-                        break;
-                    case 1:
-                        OutputzUrlmode = MyCommon.OutputzUrlmode.twittercomWithUsername;
-                        break;
+                case 0:
+                    OutputzUrlmode = MyCommon.OutputzUrlmode.twittercom;
+                    break;
+                case 1:
+                    OutputzUrlmode = MyCommon.OutputzUrlmode.twittercomWithUsername;
+                    break;
                 }
 
                 Nicoms = CheckNicoms.Checked;
@@ -380,7 +386,7 @@ namespace OpenTween {
                 GetEventNotifyFlag( ref _MyEventNotifyFlag, ref _isMyEventNotifyFlag );
                 ForceEventNotify = CheckForceEventNotify.Checked;
                 FavEventUnread = CheckFavEventUnread.Checked;
-                TranslateLanguage = ( new Bing() ).GetLanguageEnumFromIndex( ComboBoxTranslateLanguage.SelectedIndex );
+                TranslateLanguage = (new Bing ()).GetLanguageEnumFromIndex( ComboBoxTranslateLanguage.SelectedIndex );
                 EventSoundFile = (string)ComboBoxEventNotifySound.SelectedItem;
                 AutoShortUrlFirst = (MyCommon.UrlConverter)ComboBoxAutoShortUrlFirst.SelectedIndex;
                 TabIconDisp = chkTabIconDisp.Checked;
@@ -398,32 +404,32 @@ namespace OpenTween {
                 TwitterApiUrl = TwitterAPIText.Text.Trim();
                 TwitterSearchApiUrl = TwitterSearchAPIText.Text.Trim();
                 switch ( ReplyIconStateCombo.SelectedIndex ) {
-                    case 0:
-                        ReplyIconState = MyCommon.REPLY_ICONSTATE.None;
-                        break;
-                    case 1:
-                        ReplyIconState = MyCommon.REPLY_ICONSTATE.StaticIcon;
-                        break;
-                    case 2:
-                        ReplyIconState = MyCommon.REPLY_ICONSTATE.BlinkIcon;
-                        break;
+                case 0:
+                    ReplyIconState = MyCommon.REPLY_ICONSTATE.None;
+                    break;
+                case 1:
+                    ReplyIconState = MyCommon.REPLY_ICONSTATE.StaticIcon;
+                    break;
+                case 2:
+                    ReplyIconState = MyCommon.REPLY_ICONSTATE.BlinkIcon;
+                    break;
                 }
                 switch ( LanguageCombo.SelectedIndex ) {
-                    case 0:
-                        Language = "OS";
-                        break;
-                    case 1:
-                        Language = "ja";
-                        break;
-                    case 2:
-                        Language = "en";
-                        break;
-                    case 3:
-                        Language = "zh-CN";
-                        break;
-                    default:
-                        Language = "en";
-                        break;
+                case 0:
+                    Language = "OS";
+                    break;
+                case 1:
+                    Language = "ja";
+                    break;
+                case 2:
+                    Language = "en";
+                    break;
+                case 3:
+                    Language = "zh-CN";
+                    break;
+                default:
+                    Language = "en";
+                    break;
                 }
                 HotkeyEnabled = this.HotkeyCheck.Checked;
                 HotkeyMod = Keys.None;
@@ -465,7 +471,8 @@ namespace OpenTween {
         }
 
 
-        private void Setting_FormClosing(object sender, FormClosingEventArgs e) {
+        private void Setting_FormClosing(object sender, FormClosingEventArgs e)
+        {
             if ( MyCommon._endingFlag )
                 return;
 
@@ -511,14 +518,15 @@ namespace OpenTween {
         }
 
 
-        private void Setting_Load(object sender, EventArgs e) {
+        private void Setting_Load(object sender, EventArgs e)
+        {
 #if UA
             this.FollowCheckBox.Text = string.Format(this.FollowCheckBox.Text, ApplicationSettings.FeedbackTwitterName);
             this.GroupBox2.Visible = true;
 #else
             this.GroupBox2.Visible = false;
 #endif
-            tw = ( (TweenMain)this.Owner ).TwitterInstance;
+            tw = ((TweenMain)this.Owner).TwitterInstance;
             string uname = tw.Username;
             string pw = tw.Password;
             string tk = tw.AccessToken;
@@ -570,21 +578,21 @@ namespace OpenTween {
 
             StartupReaded.Checked = Readed;
             switch ( IconSz ) {
-                case MyCommon.IconSizes.IconNone:
-                    IconSize.SelectedIndex = 0;
-                    break;
-                case MyCommon.IconSizes.Icon16:
-                    IconSize.SelectedIndex = 1;
-                    break;
-                case MyCommon.IconSizes.Icon24:
-                    IconSize.SelectedIndex = 2;
-                    break;
-                case MyCommon.IconSizes.Icon48:
-                    IconSize.SelectedIndex = 3;
-                    break;
-                case MyCommon.IconSizes.Icon48_2:
-                    IconSize.SelectedIndex = 4;
-                    break;
+            case MyCommon.IconSizes.IconNone:
+                IconSize.SelectedIndex = 0;
+                break;
+            case MyCommon.IconSizes.Icon16:
+                IconSize.SelectedIndex = 1;
+                break;
+            case MyCommon.IconSizes.Icon24:
+                IconSize.SelectedIndex = 2;
+                break;
+            case MyCommon.IconSizes.Icon48:
+                IconSize.SelectedIndex = 3;
+                break;
+            case MyCommon.IconSizes.Icon48_2:
+                IconSize.SelectedIndex = 4;
+                break;
             }
             StatusText.Text = Status;
             UReadMng.Checked = UnreadManage;
@@ -619,15 +627,15 @@ namespace OpenTween {
             lblDetailLink.ForeColor = ColorDetailLink;
 
             switch ( NameBalloon ) {
-                case MyCommon.NameBalloonEnum.None:
-                    cmbNameBalloon.SelectedIndex = 0;
-                    break;
-                case MyCommon.NameBalloonEnum.UserID:
-                    cmbNameBalloon.SelectedIndex = 1;
-                    break;
-                case MyCommon.NameBalloonEnum.NickName:
-                    cmbNameBalloon.SelectedIndex = 2;
-                    break;
+            case MyCommon.NameBalloonEnum.None:
+                cmbNameBalloon.SelectedIndex = 0;
+                break;
+            case MyCommon.NameBalloonEnum.UserID:
+                cmbNameBalloon.SelectedIndex = 1;
+                break;
+            case MyCommon.NameBalloonEnum.NickName:
+                cmbNameBalloon.SelectedIndex = 2;
+                break;
             }
 
             if ( PostCtrlEnter ) {
@@ -647,44 +655,44 @@ namespace OpenTween {
             CheckCloseToExit.Checked = CloseToExit;
             CheckMinimizeToTray.Checked = MinimizeToTray;
             switch ( DispLatestPost ) {
-                case MyCommon.DispTitleEnum.None:
-                    ComboDispTitle.SelectedIndex = 0;
-                    break;
-                case MyCommon.DispTitleEnum.Ver:
-                    ComboDispTitle.SelectedIndex = 1;
-                    break;
-                case MyCommon.DispTitleEnum.Post:
-                    ComboDispTitle.SelectedIndex = 2;
-                    break;
-                case MyCommon.DispTitleEnum.UnreadRepCount:
-                    ComboDispTitle.SelectedIndex = 3;
-                    break;
-                case MyCommon.DispTitleEnum.UnreadAllCount:
-                    ComboDispTitle.SelectedIndex = 4;
-                    break;
-                case MyCommon.DispTitleEnum.UnreadAllRepCount:
-                    ComboDispTitle.SelectedIndex = 5;
-                    break;
-                case MyCommon.DispTitleEnum.UnreadCountAllCount:
-                    ComboDispTitle.SelectedIndex = 6;
-                    break;
-                case MyCommon.DispTitleEnum.OwnStatus:
-                    ComboDispTitle.SelectedIndex = 7;
-                    break;
+            case MyCommon.DispTitleEnum.None:
+                ComboDispTitle.SelectedIndex = 0;
+                break;
+            case MyCommon.DispTitleEnum.Ver:
+                ComboDispTitle.SelectedIndex = 1;
+                break;
+            case MyCommon.DispTitleEnum.Post:
+                ComboDispTitle.SelectedIndex = 2;
+                break;
+            case MyCommon.DispTitleEnum.UnreadRepCount:
+                ComboDispTitle.SelectedIndex = 3;
+                break;
+            case MyCommon.DispTitleEnum.UnreadAllCount:
+                ComboDispTitle.SelectedIndex = 4;
+                break;
+            case MyCommon.DispTitleEnum.UnreadAllRepCount:
+                ComboDispTitle.SelectedIndex = 5;
+                break;
+            case MyCommon.DispTitleEnum.UnreadCountAllCount:
+                ComboDispTitle.SelectedIndex = 6;
+                break;
+            case MyCommon.DispTitleEnum.OwnStatus:
+                ComboDispTitle.SelectedIndex = 7;
+                break;
             }
             CheckSortOrderLock.Checked = SortOrderLock;
             CheckTinyURL.Checked = TinyUrlResolve;
             CheckForceResolve.Checked = ShortUrlForceResolve;
             switch ( _MyProxyType ) {
-                case HttpConnection.ProxyType.None:
-                    RadioProxyNone.Checked = true;
-                    break;
-                case HttpConnection.ProxyType.IE:
-                    RadioProxyIE.Checked = true;
-                    break;
-                default:
-                    RadioProxySpecified.Checked = true;
-                    break;
+            case HttpConnection.ProxyType.None:
+                RadioProxyNone.Checked = true;
+                break;
+            case HttpConnection.ProxyType.IE:
+                RadioProxyIE.Checked = true;
+                break;
+            default:
+                RadioProxySpecified.Checked = true;
+                break;
             }
             bool chk = RadioProxySpecified.Checked;
             LabelProxyAddress.Enabled = chk;
@@ -713,12 +721,12 @@ namespace OpenTween {
             TextBoxOutputzKey.Text = OutputzKey;
 
             switch ( OutputzUrlmode ) {
-                case MyCommon.OutputzUrlmode.twittercom:
-                    ComboBoxOutputzUrlmode.SelectedIndex = 0;
-                    break;
-                case MyCommon.OutputzUrlmode.twittercomWithUsername:
-                    ComboBoxOutputzUrlmode.SelectedIndex = 1;
-                    break;
+            case MyCommon.OutputzUrlmode.twittercom:
+                ComboBoxOutputzUrlmode.SelectedIndex = 0;
+                break;
+            case MyCommon.OutputzUrlmode.twittercomWithUsername:
+                ComboBoxOutputzUrlmode.SelectedIndex = 1;
+                break;
             }
 
             CheckNicoms.Checked = Nicoms;
@@ -731,7 +739,7 @@ namespace OpenTween {
             ApplyEventNotifyFlag( EventNotifyEnabled, EventNotifyFlag, IsMyEventNotifyFlag );
             CheckForceEventNotify.Checked = ForceEventNotify;
             CheckFavEventUnread.Checked = FavEventUnread;
-            ComboBoxTranslateLanguage.SelectedIndex = ( new Bing() ).GetIndexFromLanguageEnum( TranslateLanguage );
+            ComboBoxTranslateLanguage.SelectedIndex = (new Bing ()).GetIndexFromLanguageEnum( TranslateLanguage );
             SoundFileListup();
             ComboBoxAutoShortUrlFirst.SelectedIndex = (int)AutoShortUrlFirst;
             chkTabIconDisp.Checked = TabIconDisp;
@@ -751,38 +759,38 @@ namespace OpenTween {
             TwitterAPIText.Text = TwitterApiUrl;
             TwitterSearchAPIText.Text = TwitterSearchApiUrl;
             switch ( ReplyIconState ) {
-                case MyCommon.REPLY_ICONSTATE.None:
-                    ReplyIconStateCombo.SelectedIndex = 0;
-                    break;
-                case MyCommon.REPLY_ICONSTATE.StaticIcon:
-                    ReplyIconStateCombo.SelectedIndex = 1;
-                    break;
-                case MyCommon.REPLY_ICONSTATE.BlinkIcon:
-                    ReplyIconStateCombo.SelectedIndex = 2;
-                    break;
+            case MyCommon.REPLY_ICONSTATE.None:
+                ReplyIconStateCombo.SelectedIndex = 0;
+                break;
+            case MyCommon.REPLY_ICONSTATE.StaticIcon:
+                ReplyIconStateCombo.SelectedIndex = 1;
+                break;
+            case MyCommon.REPLY_ICONSTATE.BlinkIcon:
+                ReplyIconStateCombo.SelectedIndex = 2;
+                break;
             }
             switch ( Language ) {
-                case "OS":
-                    LanguageCombo.SelectedIndex = 0;
-                    break;
-                case "ja":
-                    LanguageCombo.SelectedIndex = 1;
-                    break;
-                case "en":
-                    LanguageCombo.SelectedIndex = 2;
-                    break;
-                case "zh-CN":
-                    LanguageCombo.SelectedIndex = 3;
-                    break;
-                default:
-                    LanguageCombo.SelectedIndex = 0;
-                    break;
+            case "OS":
+                LanguageCombo.SelectedIndex = 0;
+                break;
+            case "ja":
+                LanguageCombo.SelectedIndex = 1;
+                break;
+            case "en":
+                LanguageCombo.SelectedIndex = 2;
+                break;
+            case "zh-CN":
+                LanguageCombo.SelectedIndex = 3;
+                break;
+            default:
+                LanguageCombo.SelectedIndex = 0;
+                break;
             }
             HotkeyCheck.Checked = HotkeyEnabled;
-            HotkeyAlt.Checked = ( ( HotkeyMod & Keys.Alt ) == Keys.Alt );
-            HotkeyCtrl.Checked = ( ( HotkeyMod & Keys.Control ) == Keys.Control );
-            HotkeyShift.Checked = ( ( HotkeyMod & Keys.Shift ) == Keys.Shift );
-            HotkeyWin.Checked = ( ( HotkeyMod & Keys.LWin ) == Keys.LWin );
+            HotkeyAlt.Checked = ((HotkeyMod & Keys.Alt) == Keys.Alt);
+            HotkeyCtrl.Checked = ((HotkeyMod & Keys.Control) == Keys.Control);
+            HotkeyShift.Checked = ((HotkeyMod & Keys.Shift) == Keys.Shift);
+            HotkeyWin.Checked = ((HotkeyMod & Keys.LWin) == Keys.LWin);
             HotkeyCode.Text = HotkeyValue.ToString();
             HotkeyText.Text = HotkeyKey.ToString();
             HotkeyText.Tag = HotkeyKey;
@@ -834,24 +842,24 @@ namespace OpenTween {
                 IsNotifyUseGrowlCheckBox.Enabled = false;
             }
 
-            this.TreeViewSetting.Nodes["BasedNode"].Tag = BasedPanel;
-            this.TreeViewSetting.Nodes["BasedNode"].Nodes["PeriodNode"].Tag = GetPeriodPanel;
-            this.TreeViewSetting.Nodes["BasedNode"].Nodes["StartUpNode"].Tag = StartupPanel;
-            this.TreeViewSetting.Nodes["BasedNode"].Nodes["GetCountNode"].Tag = GetCountPanel;
+            this.TreeViewSetting.Nodes ["BasedNode"].Tag = BasedPanel;
+            this.TreeViewSetting.Nodes ["BasedNode"].Nodes ["PeriodNode"].Tag = GetPeriodPanel;
+            this.TreeViewSetting.Nodes ["BasedNode"].Nodes ["StartUpNode"].Tag = StartupPanel;
+            this.TreeViewSetting.Nodes ["BasedNode"].Nodes ["GetCountNode"].Tag = GetCountPanel;
             //this.TreeViewSetting.Nodes["BasedNode"].Nodes["UserStreamNode"].Tag = UserStreamPanel;
-            this.TreeViewSetting.Nodes["ActionNode"].Tag = ActionPanel;
-            this.TreeViewSetting.Nodes["ActionNode"].Nodes["TweetActNode"].Tag = TweetActPanel;
-            this.TreeViewSetting.Nodes["PreviewNode"].Tag = PreviewPanel;
-            this.TreeViewSetting.Nodes["PreviewNode"].Nodes["TweetPrvNode"].Tag = TweetPrvPanel;
-            this.TreeViewSetting.Nodes["PreviewNode"].Nodes["NotifyNode"].Tag = NotifyPanel;
-            this.TreeViewSetting.Nodes["FontNode"].Tag = FontPanel;
-            this.TreeViewSetting.Nodes["FontNode"].Nodes["FontNode2"].Tag = FontPanel2;
-            this.TreeViewSetting.Nodes["ConnectionNode"].Tag = ConnectionPanel;
-            this.TreeViewSetting.Nodes["ConnectionNode"].Nodes["ProxyNode"].Tag = ProxyPanel;
-            this.TreeViewSetting.Nodes["ConnectionNode"].Nodes["CooperateNode"].Tag = CooperatePanel;
-            this.TreeViewSetting.Nodes["ConnectionNode"].Nodes["ShortUrlNode"].Tag = ShortUrlPanel;
+            this.TreeViewSetting.Nodes ["ActionNode"].Tag = ActionPanel;
+            this.TreeViewSetting.Nodes ["ActionNode"].Nodes ["TweetActNode"].Tag = TweetActPanel;
+            this.TreeViewSetting.Nodes ["PreviewNode"].Tag = PreviewPanel;
+            this.TreeViewSetting.Nodes ["PreviewNode"].Nodes ["TweetPrvNode"].Tag = TweetPrvPanel;
+            this.TreeViewSetting.Nodes ["PreviewNode"].Nodes ["NotifyNode"].Tag = NotifyPanel;
+            this.TreeViewSetting.Nodes ["FontNode"].Tag = FontPanel;
+            this.TreeViewSetting.Nodes ["FontNode"].Nodes ["FontNode2"].Tag = FontPanel2;
+            this.TreeViewSetting.Nodes ["ConnectionNode"].Tag = ConnectionPanel;
+            this.TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ProxyNode"].Tag = ProxyPanel;
+            this.TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["CooperateNode"].Tag = CooperatePanel;
+            this.TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ShortUrlNode"].Tag = ShortUrlPanel;
 
-            this.TreeViewSetting.SelectedNode = this.TreeViewSetting.Nodes[0];
+            this.TreeViewSetting.SelectedNode = this.TreeViewSetting.Nodes [0];
             this.TreeViewSetting.ExpandAll();
 
             //TreeViewSetting.SelectedNode = TreeViewSetting.TopNode;
@@ -859,7 +867,8 @@ namespace OpenTween {
         }
 
 
-        private void UserstreamPeriod_Validating(object sender, CancelEventArgs e) {
+        private void UserstreamPeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( UserstreamPeriod.Text );
@@ -878,7 +887,8 @@ namespace OpenTween {
         }
 
 
-        private void TimelinePeriod_Validating(object sender, CancelEventArgs e) {
+        private void TimelinePeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( TimelinePeriod.Text );
@@ -888,7 +898,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 15 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText2 );
                 e.Cancel = true;
                 return;
@@ -897,7 +907,8 @@ namespace OpenTween {
         }
 
 
-        private void ReplyPeriod_Validating(object sender, CancelEventArgs e) {
+        private void ReplyPeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( ReplyPeriod.Text );
@@ -907,7 +918,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 15 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText2 );
                 e.Cancel = true;
                 return;
@@ -916,7 +927,8 @@ namespace OpenTween {
         }
 
 
-        private void DMPeriod_Validating(object sender, CancelEventArgs e) {
+        private void DMPeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( DMPeriod.Text );
@@ -926,7 +938,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 15 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
                 return;
@@ -935,7 +947,8 @@ namespace OpenTween {
         }
 
 
-        private void PubSearchPeriod_Validating(object sender, CancelEventArgs e) {
+        private void PubSearchPeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( PubSearchPeriod.Text );
@@ -945,14 +958,15 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 30 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 30 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.PubSearchPeriod_ValidatingText2 );
                 e.Cancel = true;
             }
         }
 
 
-        private void ListsPeriod_Validating(object sender, CancelEventArgs e) {
+        private void ListsPeriod_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( ListsPeriod.Text );
@@ -962,7 +976,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 15 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
                 return;
@@ -971,7 +985,8 @@ namespace OpenTween {
         }
 
 
-        private void UserTimeline_Validating(object sender, CancelEventArgs e) {
+        private void UserTimeline_Validating(object sender, CancelEventArgs e)
+        {
             int prd;
             try {
                 prd = int.Parse( UserTimelinePeriod.Text );
@@ -981,7 +996,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( prd != 0 && ( prd < 15 || prd > 6000 ) ) {
+            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
                 return;
@@ -990,7 +1005,8 @@ namespace OpenTween {
         }
 
 
-        private void UReadMng_CheckedChanged(object sender, EventArgs e) {
+        private void UReadMng_CheckedChanged(object sender, EventArgs e)
+        {
             if ( UReadMng.Checked == true ) {
                 StartupReaded.Enabled = true;
             } else {
@@ -999,7 +1015,8 @@ namespace OpenTween {
         }
 
 
-        private void btnFontAndColor_Click(object sender, EventArgs e) { // Handles btnUnread.Click, btnDetail.Click, btnListFont.Click, btnInputFont.Click
+        private void btnFontAndColor_Click(object sender, EventArgs e)
+        { // Handles btnUnread.Click, btnDetail.Click, btnListFont.Click, btnInputFont.Click
             Button Btn = (Button)sender;
             DialogResult rtn;
 
@@ -1015,22 +1032,22 @@ namespace OpenTween {
             FontDialog1.ShowColor = true;
 
             switch ( Btn.Name ) {
-                case "btnUnread":
-                    FontDialog1.Color = lblUnread.ForeColor;
-                    FontDialog1.Font = lblUnread.Font;
-                    break;
-                case "btnDetail":
-                    FontDialog1.Color = lblDetail.ForeColor;
-                    FontDialog1.Font = lblDetail.Font;
-                    break;
-                case "btnListFont":
-                    FontDialog1.Color = lblListFont.ForeColor;
-                    FontDialog1.Font = lblListFont.Font;
-                    break;
-                case "btnInputFont":
-                    FontDialog1.Color = lblInputFont.ForeColor;
-                    FontDialog1.Font = lblInputFont.Font;
-                    break;
+            case "btnUnread":
+                FontDialog1.Color = lblUnread.ForeColor;
+                FontDialog1.Font = lblUnread.Font;
+                break;
+            case "btnDetail":
+                FontDialog1.Color = lblDetail.ForeColor;
+                FontDialog1.Font = lblDetail.Font;
+                break;
+            case "btnListFont":
+                FontDialog1.Color = lblListFont.ForeColor;
+                FontDialog1.Font = lblListFont.Font;
+                break;
+            case "btnInputFont":
+                FontDialog1.Color = lblInputFont.ForeColor;
+                FontDialog1.Font = lblInputFont.Font;
+                break;
             }
 
             try {
@@ -1044,28 +1061,29 @@ namespace OpenTween {
                 return;
 
             switch ( Btn.Name ) {
-                case "btnUnread":
-                    lblUnread.ForeColor = FontDialog1.Color;
-                    lblUnread.Font = FontDialog1.Font;
-                    break;
-                case "btnDetail":
-                    lblDetail.ForeColor = FontDialog1.Color;
-                    lblDetail.Font = FontDialog1.Font;
-                    break;
-                case "btnListFont":
-                    lblListFont.ForeColor = FontDialog1.Color;
-                    lblListFont.Font = FontDialog1.Font;
-                    break;
-                case "btnInputFont":
-                    lblInputFont.ForeColor = FontDialog1.Color;
-                    lblInputFont.Font = FontDialog1.Font;
-                    break;
+            case "btnUnread":
+                lblUnread.ForeColor = FontDialog1.Color;
+                lblUnread.Font = FontDialog1.Font;
+                break;
+            case "btnDetail":
+                lblDetail.ForeColor = FontDialog1.Color;
+                lblDetail.Font = FontDialog1.Font;
+                break;
+            case "btnListFont":
+                lblListFont.ForeColor = FontDialog1.Color;
+                lblListFont.Font = FontDialog1.Font;
+                break;
+            case "btnInputFont":
+                lblInputFont.ForeColor = FontDialog1.Color;
+                lblInputFont.Font = FontDialog1.Font;
+                break;
             }
 
         }
 
 
-        private void btnColor_Click(object sender, EventArgs e) { //Handles btnSelf.Click, btnAtSelf.Click, btnTarget.Click, btnAtTarget.Click, btnAtFromTarget.Click, btnFav.Click, btnOWL.Click, btnInputBackcolor.Click, btnAtTo.Click, btnListBack.Click, btnDetailBack.Click, btnDetailLink.Click, btnRetweet.Click
+        private void btnColor_Click(object sender, EventArgs e)
+        { //Handles btnSelf.Click, btnAtSelf.Click, btnTarget.Click, btnAtTarget.Click, btnAtFromTarget.Click, btnFav.Click, btnOWL.Click, btnInputBackcolor.Click, btnAtTo.Click, btnListBack.Click, btnDetailBack.Click, btnDetailLink.Click, btnRetweet.Click
             Button Btn = (Button)sender;
             DialogResult rtn;
 
@@ -1075,45 +1093,45 @@ namespace OpenTween {
             ColorDialog1.SolidColorOnly = false;
 
             switch ( Btn.Name ) {
-                case "btnSelf":
-                    ColorDialog1.Color = lblSelf.BackColor;
-                    break;
-                case "btnAtSelf":
-                    ColorDialog1.Color = lblAtSelf.BackColor;
-                    break;
-                case "btnTarget":
-                    ColorDialog1.Color = lblTarget.BackColor;
-                    break;
-                case "btnAtTarget":
-                    ColorDialog1.Color = lblAtTarget.BackColor;
-                    break;
-                case "btnAtFromTarget":
-                    ColorDialog1.Color = lblAtFromTarget.BackColor;
-                    break;
-                case "btnFav":
-                    ColorDialog1.Color = lblFav.ForeColor;
-                    break;
-                case "btnOWL":
-                    ColorDialog1.Color = lblOWL.ForeColor;
-                    break;
-                case "btnRetweet":
-                    ColorDialog1.Color = lblRetweet.ForeColor;
-                    break;
-                case "btnInputBackcolor":
-                    ColorDialog1.Color = lblInputBackcolor.BackColor;
-                    break;
-                case "btnAtTo":
-                    ColorDialog1.Color = lblAtTo.BackColor;
-                    break;
-                case "btnListBack":
-                    ColorDialog1.Color = lblListBackcolor.BackColor;
-                    break;
-                case "btnDetailBack":
-                    ColorDialog1.Color = lblDetailBackcolor.BackColor;
-                    break;
-                case "btnDetailLink":
-                    ColorDialog1.Color = lblDetailLink.ForeColor;
-                    break;
+            case "btnSelf":
+                ColorDialog1.Color = lblSelf.BackColor;
+                break;
+            case "btnAtSelf":
+                ColorDialog1.Color = lblAtSelf.BackColor;
+                break;
+            case "btnTarget":
+                ColorDialog1.Color = lblTarget.BackColor;
+                break;
+            case "btnAtTarget":
+                ColorDialog1.Color = lblAtTarget.BackColor;
+                break;
+            case "btnAtFromTarget":
+                ColorDialog1.Color = lblAtFromTarget.BackColor;
+                break;
+            case "btnFav":
+                ColorDialog1.Color = lblFav.ForeColor;
+                break;
+            case "btnOWL":
+                ColorDialog1.Color = lblOWL.ForeColor;
+                break;
+            case "btnRetweet":
+                ColorDialog1.Color = lblRetweet.ForeColor;
+                break;
+            case "btnInputBackcolor":
+                ColorDialog1.Color = lblInputBackcolor.BackColor;
+                break;
+            case "btnAtTo":
+                ColorDialog1.Color = lblAtTo.BackColor;
+                break;
+            case "btnListBack":
+                ColorDialog1.Color = lblListBackcolor.BackColor;
+                break;
+            case "btnDetailBack":
+                ColorDialog1.Color = lblDetailBackcolor.BackColor;
+                break;
+            case "btnDetailLink":
+                ColorDialog1.Color = lblDetailLink.ForeColor;
+                break;
             }
 
             rtn = ColorDialog1.ShowDialog();
@@ -1122,45 +1140,45 @@ namespace OpenTween {
                 return;
 
             switch ( Btn.Name ) {
-                case "btnSelf":
-                    lblSelf.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnAtSelf":
-                    lblAtSelf.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnTarget":
-                    lblTarget.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnAtTarget":
-                    lblAtTarget.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnAtFromTarget":
-                    lblAtFromTarget.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnFav":
-                    lblFav.ForeColor = ColorDialog1.Color;
-                    break;
-                case "btnOWL":
-                    lblOWL.ForeColor = ColorDialog1.Color;
-                    break;
-                case "btnRetweet":
-                    lblRetweet.ForeColor = ColorDialog1.Color;
-                    break;
-                case "btnInputBackcolor":
-                    lblInputBackcolor.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnAtTo":
-                    lblAtTo.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnListBack":
-                    lblListBackcolor.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnDetailBack":
-                    lblDetailBackcolor.BackColor = ColorDialog1.Color;
-                    break;
-                case "btnDetailLink":
-                    lblDetailLink.ForeColor = ColorDialog1.Color;
-                    break;
+            case "btnSelf":
+                lblSelf.BackColor = ColorDialog1.Color;
+                break;
+            case "btnAtSelf":
+                lblAtSelf.BackColor = ColorDialog1.Color;
+                break;
+            case "btnTarget":
+                lblTarget.BackColor = ColorDialog1.Color;
+                break;
+            case "btnAtTarget":
+                lblAtTarget.BackColor = ColorDialog1.Color;
+                break;
+            case "btnAtFromTarget":
+                lblAtFromTarget.BackColor = ColorDialog1.Color;
+                break;
+            case "btnFav":
+                lblFav.ForeColor = ColorDialog1.Color;
+                break;
+            case "btnOWL":
+                lblOWL.ForeColor = ColorDialog1.Color;
+                break;
+            case "btnRetweet":
+                lblRetweet.ForeColor = ColorDialog1.Color;
+                break;
+            case "btnInputBackcolor":
+                lblInputBackcolor.BackColor = ColorDialog1.Color;
+                break;
+            case "btnAtTo":
+                lblAtTo.BackColor = ColorDialog1.Color;
+                break;
+            case "btnListBack":
+                lblListBackcolor.BackColor = ColorDialog1.Color;
+                break;
+            case "btnDetailBack":
+                lblDetailBackcolor.BackColor = ColorDialog1.Color;
+                break;
+            case "btnDetailLink":
+                lblDetailLink.ForeColor = ColorDialog1.Color;
+                break;
             }
         }
 
@@ -1329,7 +1347,8 @@ namespace OpenTween {
         public bool ShortUrlForceResolve { get; set; }
 
 
-        private void CheckUseRecommendStatus_CheckedChanged(object sender, EventArgs e) {
+        private void CheckUseRecommendStatus_CheckedChanged(object sender, EventArgs e)
+        {
             if ( CheckUseRecommendStatus.Checked == true ) {
                 StatusText.Enabled = false;
             } else {
@@ -1465,8 +1484,9 @@ namespace OpenTween {
         public string Language { get; set; }
 
 
-        private void Button3_Click(object sender, EventArgs e) {
-            using ( OpenFileDialog filedlg = new OpenFileDialog() ) {
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog filedlg = new OpenFileDialog()) {
                 filedlg.Filter = Properties.Resources.Button3_ClickText1;
                 filedlg.FilterIndex = 1;
                 filedlg.Title = Properties.Resources.Button3_ClickText2;
@@ -1479,7 +1499,8 @@ namespace OpenTween {
         }
 
 
-        private void RadioProxySpecified_CheckedChanged(object sender, EventArgs e) {
+        private void RadioProxySpecified_CheckedChanged(object sender, EventArgs e)
+        {
             bool chk = RadioProxySpecified.Checked;
             LabelProxyAddress.Enabled = chk;
             TextProxyAddress.Enabled = chk;
@@ -1492,7 +1513,8 @@ namespace OpenTween {
         }
 
 
-        private void TextProxyPort_Validating(object sender, CancelEventArgs e) {
+        private void TextProxyPort_Validating(object sender, CancelEventArgs e)
+        {
             int port;
             if ( string.IsNullOrWhiteSpace( TextProxyPort.Text ) )
                 TextProxyPort.Text = "0";
@@ -1509,7 +1531,8 @@ namespace OpenTween {
         }
 
 
-        private void CheckOutputz_CheckedChanged(object sender, EventArgs e) {
+        private void CheckOutputz_CheckedChanged(object sender, EventArgs e)
+        {
             if ( CheckOutputz.Checked == true ) {
                 Label59.Enabled = true;
                 Label60.Enabled = true;
@@ -1524,7 +1547,8 @@ namespace OpenTween {
         }
 
 
-        private void TextBoxOutputzKey_Validating(object sender, CancelEventArgs e) {
+        private void TextBoxOutputzKey_Validating(object sender, CancelEventArgs e)
+        {
             if ( CheckOutputz.Checked ) {
                 TextBoxOutputzKey.Text = TextBoxOutputzKey.Text.Trim();
                 if ( TextBoxOutputzKey.Text.Length == 0 ) {
@@ -1536,7 +1560,8 @@ namespace OpenTween {
         }
 
 
-        private bool CreateDateTimeFormatSample() {
+        private bool CreateDateTimeFormatSample()
+        {
             try {
                 LabelDateTimeFormatApplied.Text = DateTime.Now.ToString( CmbDateTimeFormat.Text );
             } catch ( FormatException ) {
@@ -1547,17 +1572,20 @@ namespace OpenTween {
         }
 
 
-        private void CmbDateTimeFormat_TextUpdate(object sender, EventArgs e) {
+        private void CmbDateTimeFormat_TextUpdate(object sender, EventArgs e)
+        {
             CreateDateTimeFormatSample();
         }
 
 
-        private void CmbDateTimeFormat_SelectedIndexChanged(object sender, EventArgs e) {
+        private void CmbDateTimeFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
             CreateDateTimeFormatSample();
         }
 
 
-        private void CmbDateTimeFormat_Validating(object sender, CancelEventArgs e) {
+        private void CmbDateTimeFormat_Validating(object sender, CancelEventArgs e)
+        {
             if ( !CreateDateTimeFormatSample() ) {
                 MessageBox.Show( Properties.Resources.CmbDateTimeFormat_Validating );
                 e.Cancel = true;
@@ -1565,7 +1593,8 @@ namespace OpenTween {
         }
 
 
-        private void ConnectionTimeOut_Validating(object sender, CancelEventArgs e) {
+        private void ConnectionTimeOut_Validating(object sender, CancelEventArgs e)
+        {
             int tm;
             try {
                 tm = int.Parse( ConnectionTimeOut.Text );
@@ -1582,12 +1611,14 @@ namespace OpenTween {
         }
 
 
-        private void LabelDateTimeFormatApplied_VisibleChanged(object sender, EventArgs e) {
+        private void LabelDateTimeFormatApplied_VisibleChanged(object sender, EventArgs e)
+        {
             CreateDateTimeFormatSample();
         }
 
 
-        private void TextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void TextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( TextCountApi.Text );
@@ -1605,7 +1636,8 @@ namespace OpenTween {
         }
 
 
-        private void TextCountApiReply_Validating(object sender, CancelEventArgs e) {
+        private void TextCountApiReply_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( TextCountApiReply.Text );
@@ -1661,7 +1693,7 @@ namespace OpenTween {
             }
             set {
                 _MyTranslateLanguage = value;
-                ComboBoxTranslateLanguage.SelectedIndex = ( new Bing() ).GetIndexFromLanguageEnum( value );
+                ComboBoxTranslateLanguage.SelectedIndex = (new Bing ()).GetIndexFromLanguageEnum( value );
             }
         }
 
@@ -1675,7 +1707,8 @@ namespace OpenTween {
         public string UserAppointUrl { get; set; }
 
 
-        private void ComboBoxAutoShortUrlFirst_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ComboBoxAutoShortUrlFirst_SelectedIndexChanged(object sender, EventArgs e)
+        {
             if ( ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Bitly ||
                ComboBoxAutoShortUrlFirst.SelectedIndex == (int)MyCommon.UrlConverter.Jmp ) {
                 Label76.Enabled = true;
@@ -1691,9 +1724,10 @@ namespace OpenTween {
         }
 
 
-        private void ButtonBackToDefaultFontColor_Click(object sender, EventArgs e) { //Handles ButtonBackToDefaultFontColor.Click, ButtonBackToDefaultFontColor2.Click
+        private void ButtonBackToDefaultFontColor_Click(object sender, EventArgs e)
+        { //Handles ButtonBackToDefaultFontColor.Click, ButtonBackToDefaultFontColor2.Click
             lblUnread.ForeColor = SystemColors.ControlText;
-            lblUnread.Font = new Font( SystemFonts.DefaultFont, FontStyle.Bold | FontStyle.Underline );
+            lblUnread.Font = new Font (SystemFonts.DefaultFont, FontStyle.Bold | FontStyle.Underline);
 
             lblListFont.ForeColor = System.Drawing.SystemColors.ControlText;
             lblListFont.Font = System.Drawing.SystemFonts.DefaultFont;
@@ -1732,7 +1766,8 @@ namespace OpenTween {
         }
 
 
-        private bool StartAuth() {
+        private bool StartAuth()
+        {
             //現在の設定内容で通信
             HttpConnection.ProxyType ptype;
             if ( RadioProxyNone.Checked ) {
@@ -1757,7 +1792,7 @@ namespace OpenTween {
             string pinPageUrl = "";
             string rslt = tw.StartAuthentication( ref pinPageUrl );
             if ( string.IsNullOrEmpty( rslt ) ) {
-                using ( AuthBrowser ab = new AuthBrowser() ) {
+                using (AuthBrowser ab = new AuthBrowser()) {
                     ab.Auth = true;
                     ab.UrlString = pinPageUrl;
                     if ( ab.ShowDialog( this ) == DialogResult.OK ) {
@@ -1774,7 +1809,8 @@ namespace OpenTween {
         }
 
 
-        private bool PinAuth() {
+        private bool PinAuth()
+        {
             string pin = this._pin;   //PIN Code
 
             string rslt = tw.Authenticate( pin );
@@ -1783,14 +1819,14 @@ namespace OpenTween {
                 //this.AuthStateLabel.Text = Properties.Resources.AuthorizeButton_Click3;
                 //this.AuthUserLabel.Text = tw.Username;
                 int idx = -1;
-                UserAccount user = new UserAccount();
+                UserAccount user = new UserAccount ();
                 user.Username = tw.Username;
                 user.UserId = tw.UserId;
                 user.Token = tw.AccessToken;
                 user.TokenSecret = tw.AccessTokenSecret;
 
                 foreach ( object u in this.AuthUserCombo.Items ) {
-                    if ( ( (UserAccount)u ).Username.ToLower() == tw.Username.ToLower() ) {
+                    if ( ((UserAccount)u).Username.ToLower() == tw.Username.ToLower() ) {
                         idx = this.AuthUserCombo.Items.IndexOf( u );
                         break;
                     }
@@ -1820,7 +1856,8 @@ namespace OpenTween {
         }
 
 
-        private void StartAuthButton_Click(object sender, EventArgs e) {
+        private void StartAuthButton_Click(object sender, EventArgs e)
+        {
             //this.Save.Enabled = false;
             if ( StartAuth() ) {
                 if ( PinAuth() ) {
@@ -1831,7 +1868,8 @@ namespace OpenTween {
         }
 
 
-        private void AuthClearButton_Click(object sender, EventArgs e) {
+        private void AuthClearButton_Click(object sender, EventArgs e)
+        {
             //tw.ClearAuthInfo();
             //this.AuthStateLabel.Text = Properties.Resources.AuthorizeButton_Click4;
             //this.AuthUserLabel.Text = "";
@@ -1848,7 +1886,8 @@ namespace OpenTween {
         }
 
 
-        private void DisplayApiMaxCount() {
+        private void DisplayApiMaxCount()
+        {
             if ( MyCommon.TwitterApiInfo.MaxCount > -1 ) {
                 LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, MyCommon.TwitterApiInfo.UsingCount, MyCommon.TwitterApiInfo.MaxCount );
             } else {
@@ -1857,7 +1896,8 @@ namespace OpenTween {
         }
 
 
-        private void CalcApiUsing() {
+        private void CalcApiUsing()
+        {
             int UsingApi = 0;
             int tmp;
             int ListsTabNum = 0;
@@ -1896,14 +1936,14 @@ namespace OpenTween {
             // DM計算 0は手動更新 送受信両方
             if ( int.TryParse( DMPeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    UsingApi += ( 3600 / tmp ) * 2;
+                    UsingApi += (3600 / tmp) * 2;
                 }
             }
 
             // Listsタブ計算 0は手動更新
             if ( int.TryParse( ListsPeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    ApiLists = ( 3600 / tmp ) * ListsTabNum;
+                    ApiLists = (3600 / tmp) * ListsTabNum;
                     UsingApi += ApiLists;
                 }
             }
@@ -1911,7 +1951,7 @@ namespace OpenTween {
             // UserTimelineタブ計算 0は手動更新
             if ( int.TryParse( UserTimelinePeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    ApiUserTimeline = ( 3600 / tmp ) * UserTimelineTabNum;
+                    ApiUserTimeline = (3600 / tmp) * UserTimelineTabNum;
                     UsingApi += ApiUserTimeline;
                 }
             }
@@ -1920,11 +1960,11 @@ namespace OpenTween {
                 if ( MyCommon.TwitterApiInfo.MaxCount == -1 ) {
                     if ( Twitter.AccountState == MyCommon.ACCOUNT_STATE.Valid ) {
                         MyCommon.TwitterApiInfo.UsingCount = UsingApi;
-                        Thread proc = new Thread( new System.Threading.ThreadStart( () => {
+                        Thread proc = new Thread (new System.Threading.ThreadStart (() => {
                             tw.GetInfoApi( null ); //取得エラー時はinfoCountは初期状態（値：-1）
                             if ( this.IsHandleCreated && !this.IsDisposed )
-                                Invoke( new MethodInvoker( DisplayApiMaxCount ) );
-                        } ) );
+                                Invoke( new MethodInvoker (DisplayApiMaxCount) );
+                        }));
                         proc.Start();
                     } else {
                         LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, UsingApi, "???" );
@@ -1938,17 +1978,19 @@ namespace OpenTween {
             LabelPostAndGet.Visible = CheckPostAndGet.Checked && !tw.UserStreamEnabled;
             LabelUserStreamActive.Visible = tw.UserStreamEnabled;
 
-            LabelApiUsingUserStreamEnabled.Text = string.Format( Properties.Resources.SettingAPIUse2, ( ApiLists + ApiUserTimeline ).ToString() );
+            LabelApiUsingUserStreamEnabled.Text = string.Format( Properties.Resources.SettingAPIUse2, (ApiLists + ApiUserTimeline).ToString() );
             LabelApiUsingUserStreamEnabled.Visible = tw.UserStreamEnabled;
         }
 
 
-        private void CheckPostAndGet_CheckedChanged(object sender, EventArgs e) {
+        private void CheckPostAndGet_CheckedChanged(object sender, EventArgs e)
+        {
             CalcApiUsing();
         }
 
 
-        private void Setting_Shown(object sender, EventArgs e) {
+        private void Setting_Shown(object sender, EventArgs e)
+        {
             do {
                 Thread.Sleep( 10 );
                 if ( this.Disposing || this.IsDisposed )
@@ -1959,7 +2001,8 @@ namespace OpenTween {
         }
 
 
-        private void ButtonApiCalc_Click(object sender, EventArgs e) {
+        private void ButtonApiCalc_Click(object sender, EventArgs e)
+        {
             CalcApiUsing();
         }
 
@@ -1969,14 +2012,15 @@ namespace OpenTween {
         }
 
 
-        private bool BitlyValidation(string id, string apikey) {
+        private bool BitlyValidation(string id, string apikey)
+        {
             if ( string.IsNullOrEmpty( id ) || string.IsNullOrEmpty( apikey ) ) {
                 return false;
             }
 
             string req = "http://api.bit.ly/v3/validate";
             string content = "";
-            Dictionary<string, string> param = new Dictionary<string, string>();
+            Dictionary<string, string> param = new Dictionary<string, string> ();
 
             param.Add( "login", ApplicationSettings.BitlyLoginId );
             param.Add( "apiKey", ApplicationSettings.BitlyApiKey );
@@ -1984,7 +2028,7 @@ namespace OpenTween {
             param.Add( "x_apiKey", apikey );
             param.Add( "format", "txt" );
 
-            if ( !( new HttpVarious() ).PostData( req, param, out content ) ) {
+            if ( !(new HttpVarious ()).PostData( req, param, out content ) ) {
                 return true;             // 通信エラーの場合はとりあえずチェックを通ったことにする
             } else if ( content.Trim() == "1" ) {
                 return true;             // 検証成功
@@ -1996,7 +2040,8 @@ namespace OpenTween {
         }
 
 
-        private void Cancel_Click(object sender, EventArgs e) {
+        private void Cancel_Click(object sender, EventArgs e)
+        {
             _ValidationError = false;
         }
 
@@ -2007,7 +2052,8 @@ namespace OpenTween {
         public Keys HotkeyMod;
 
 
-        private void HotkeyText_KeyDown(object sender, KeyEventArgs e) {
+        private void HotkeyText_KeyDown(object sender, KeyEventArgs e)
+        {
             //KeyValueで判定する。
             //表示文字とのテーブルを用意すること
             HotkeyText.Text = e.KeyCode.ToString();
@@ -2018,7 +2064,8 @@ namespace OpenTween {
         }
 
 
-        private void HotkeyCheck_CheckedChanged(object sender, EventArgs e) {
+        private void HotkeyCheck_CheckedChanged(object sender, EventArgs e)
+        {
             HotkeyCtrl.Enabled = HotkeyCheck.Checked;
             HotkeyAlt.Enabled = HotkeyCheck.Checked;
             HotkeyShift.Enabled = HotkeyCheck.Checked;
@@ -2031,7 +2078,8 @@ namespace OpenTween {
         public bool BlinkNewMentions;
 
 
-        private void GetMoreTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void GetMoreTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( GetMoreTextCountApi.Text );
@@ -2041,7 +2089,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 200 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2049,7 +2097,8 @@ namespace OpenTween {
         }
 
 
-        private void UseChangeGetCount_CheckedChanged(object sender, EventArgs e) {
+        private void UseChangeGetCount_CheckedChanged(object sender, EventArgs e)
+        {
             GetMoreTextCountApi.Enabled = UseChangeGetCount.Checked;
             FirstTextCountApi.Enabled = UseChangeGetCount.Checked;
             Label28.Enabled = UseChangeGetCount.Checked;
@@ -2065,7 +2114,8 @@ namespace OpenTween {
         }
 
 
-        private void FirstTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void FirstTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( FirstTextCountApi.Text );
@@ -2075,7 +2125,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 200 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2083,7 +2133,8 @@ namespace OpenTween {
         }
 
 
-        private void SearchTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void SearchTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( SearchTextCountApi.Text );
@@ -2093,7 +2144,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 100 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 100) ) {
                 MessageBox.Show( Properties.Resources.TextSearchCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2101,7 +2152,8 @@ namespace OpenTween {
         }
 
 
-        private void FavoritesTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void FavoritesTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( FavoritesTextCountApi.Text );
@@ -2111,7 +2163,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 200 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2119,7 +2171,8 @@ namespace OpenTween {
         }
 
 
-        private void UserTimelineTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void UserTimelineTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( UserTimelineTextCountApi.Text );
@@ -2129,7 +2182,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 200 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2137,7 +2190,8 @@ namespace OpenTween {
         }
 
 
-        private void ListTextCountApi_Validating(object sender, CancelEventArgs e) {
+        private void ListTextCountApi_Validating(object sender, CancelEventArgs e)
+        {
             int cnt;
             try {
                 cnt = int.Parse( ListTextCountApi.Text );
@@ -2147,7 +2201,7 @@ namespace OpenTween {
                 return;
             }
 
-            if ( cnt != 0 && ( cnt < 20 || cnt > 200 ) ) {
+            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
                 return;
@@ -2165,65 +2219,68 @@ namespace OpenTween {
         //    ApplyEventNotifyFlag(EventNotifyEnabled, EventNotifyFlag, IsMyEventNotifyFlag);
         //}
 
-        private class EventCheckboxTblElement {
+        private class EventCheckboxTblElement
+        {
             public CheckBox CheckBox;
             public MyCommon.EVENTTYPE Type;
         }
 
-        private EventCheckboxTblElement[] GetEventCheckboxTable() {
+        private EventCheckboxTblElement[] GetEventCheckboxTable()
+        {
             EventCheckboxTblElement[] _eventCheckboxTable = new EventCheckboxTblElement[8];
 
-            _eventCheckboxTable[0] = new EventCheckboxTblElement();
-            _eventCheckboxTable[0].CheckBox = CheckFavoritesEvent;
-            _eventCheckboxTable[0].Type = MyCommon.EVENTTYPE.Favorite;
+            _eventCheckboxTable [0] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [0].CheckBox = CheckFavoritesEvent;
+            _eventCheckboxTable [0].Type = MyCommon.EVENTTYPE.Favorite;
 
-            _eventCheckboxTable[1] = new EventCheckboxTblElement();
-            _eventCheckboxTable[1].CheckBox = CheckUnfavoritesEvent;
-            _eventCheckboxTable[1].Type = MyCommon.EVENTTYPE.Unfavorite;
+            _eventCheckboxTable [1] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [1].CheckBox = CheckUnfavoritesEvent;
+            _eventCheckboxTable [1].Type = MyCommon.EVENTTYPE.Unfavorite;
 
-            _eventCheckboxTable[2] = new EventCheckboxTblElement();
-            _eventCheckboxTable[2].CheckBox = CheckFollowEvent;
-            _eventCheckboxTable[2].Type = MyCommon.EVENTTYPE.Follow;
+            _eventCheckboxTable [2] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [2].CheckBox = CheckFollowEvent;
+            _eventCheckboxTable [2].Type = MyCommon.EVENTTYPE.Follow;
 
-            _eventCheckboxTable[3] = new EventCheckboxTblElement();
-            _eventCheckboxTable[3].CheckBox = CheckListMemberAddedEvent;
-            _eventCheckboxTable[3].Type = MyCommon.EVENTTYPE.ListMemberAdded;
+            _eventCheckboxTable [3] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [3].CheckBox = CheckListMemberAddedEvent;
+            _eventCheckboxTable [3].Type = MyCommon.EVENTTYPE.ListMemberAdded;
 
-            _eventCheckboxTable[4] = new EventCheckboxTblElement();
-            _eventCheckboxTable[4].CheckBox = CheckListMemberRemovedEvent;
-            _eventCheckboxTable[4].Type = MyCommon.EVENTTYPE.ListMemberRemoved;
+            _eventCheckboxTable [4] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [4].CheckBox = CheckListMemberRemovedEvent;
+            _eventCheckboxTable [4].Type = MyCommon.EVENTTYPE.ListMemberRemoved;
 
-            _eventCheckboxTable[5] = new EventCheckboxTblElement();
-            _eventCheckboxTable[5].CheckBox = CheckBlockEvent;
-            _eventCheckboxTable[5].Type = MyCommon.EVENTTYPE.Block;
+            _eventCheckboxTable [5] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [5].CheckBox = CheckBlockEvent;
+            _eventCheckboxTable [5].Type = MyCommon.EVENTTYPE.Block;
 
-            _eventCheckboxTable[6] = new EventCheckboxTblElement();
-            _eventCheckboxTable[6].CheckBox = CheckUserUpdateEvent;
-            _eventCheckboxTable[6].Type = MyCommon.EVENTTYPE.UserUpdate;
+            _eventCheckboxTable [6] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [6].CheckBox = CheckUserUpdateEvent;
+            _eventCheckboxTable [6].Type = MyCommon.EVENTTYPE.UserUpdate;
 
-            _eventCheckboxTable[7] = new EventCheckboxTblElement();
-            _eventCheckboxTable[7].CheckBox = CheckListCreatedEvent;
-            _eventCheckboxTable[7].Type = MyCommon.EVENTTYPE.ListCreated;
+            _eventCheckboxTable [7] = new EventCheckboxTblElement ();
+            _eventCheckboxTable [7].CheckBox = CheckListCreatedEvent;
+            _eventCheckboxTable [7].Type = MyCommon.EVENTTYPE.ListCreated;
 
             return _eventCheckboxTable;
         }
 
 
-        private void GetEventNotifyFlag(ref MyCommon.EVENTTYPE eventnotifyflag, ref MyCommon.EVENTTYPE isMyeventnotifyflag) {
+        private void GetEventNotifyFlag(ref MyCommon.EVENTTYPE eventnotifyflag, ref MyCommon.EVENTTYPE isMyeventnotifyflag)
+        {
             MyCommon.EVENTTYPE evt = MyCommon.EVENTTYPE.None;
             MyCommon.EVENTTYPE myevt = MyCommon.EVENTTYPE.None;
 
             foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
                 switch ( tbl.CheckBox.CheckState ) {
-                    case CheckState.Checked:
-                        evt = evt | tbl.Type;
-                        myevt = myevt | tbl.Type;
-                        break;
-                    case CheckState.Indeterminate:
-                        evt = evt | tbl.Type;
-                        break;
-                    case CheckState.Unchecked:
-                        break;
+                case CheckState.Checked:
+                    evt = evt | tbl.Type;
+                    myevt = myevt | tbl.Type;
+                    break;
+                case CheckState.Indeterminate:
+                    evt = evt | tbl.Type;
+                    break;
+                case CheckState.Unchecked:
+                    break;
                 }
             }
             eventnotifyflag = evt;
@@ -2231,15 +2288,16 @@ namespace OpenTween {
         }
 
 
-        private void ApplyEventNotifyFlag(bool rootEnabled, MyCommon.EVENTTYPE eventnotifyflag, MyCommon.EVENTTYPE isMyeventnotifyflag) {
+        private void ApplyEventNotifyFlag(bool rootEnabled, MyCommon.EVENTTYPE eventnotifyflag, MyCommon.EVENTTYPE isMyeventnotifyflag)
+        {
             MyCommon.EVENTTYPE evt = eventnotifyflag;
             MyCommon.EVENTTYPE myevt = isMyeventnotifyflag;
 
             CheckEventNotify.Checked = rootEnabled;
 
             foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
-                if ( ( evt & tbl.Type ) != 0 ) {
-                    if ( ( myevt & tbl.Type ) != 0 ) {
+                if ( (evt & tbl.Type) != 0 ) {
+                    if ( (myevt & tbl.Type) != 0 ) {
                         tbl.CheckBox.CheckState = CheckState.Checked;
                     } else {
                         tbl.CheckBox.CheckState = CheckState.Indeterminate;
@@ -2253,7 +2311,8 @@ namespace OpenTween {
         }
 
 
-        private void CheckEventNotify_CheckedChanged(object sender, EventArgs e) {
+        private void CheckEventNotify_CheckedChanged(object sender, EventArgs e)
+        {
             foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
                 tbl.CheckBox.Enabled = CheckEventNotify.Checked;
             }
@@ -2274,14 +2333,15 @@ namespace OpenTween {
         //    _MyTranslateLanguage = (new Google()).GetLanguageEnumFromIndex(ComboBoxTranslateLanguage.SelectedIndex);
         //}
 
-        private void SoundFileListup() {
+        private void SoundFileListup()
+        {
             if ( EventSoundFile == null )
                 EventSoundFile = "";
             ComboBoxEventNotifySound.Items.Clear();
             ComboBoxEventNotifySound.Items.Add( "" );
-            DirectoryInfo oDir = new DirectoryInfo( Application.StartupPath + Path.DirectorySeparatorChar );
+            DirectoryInfo oDir = new DirectoryInfo (Application.StartupPath + Path.DirectorySeparatorChar);
             if ( Directory.Exists( Path.Combine( Application.StartupPath, "Sounds" ) ) ) {
-                oDir = oDir.GetDirectories( "Sounds" )[0];
+                oDir = oDir.GetDirectories( "Sounds" ) [0];
             }
             foreach ( FileInfo oFile in oDir.GetFiles("*.wav") ) {
                 ComboBoxEventNotifySound.Items.Add( oFile.Name );
@@ -2304,19 +2364,22 @@ namespace OpenTween {
         //    _MyEventSoundFile = (string)ComboBoxEventNotifySound.SelectedItem;
         //}
 
-        private void UserAppointUrlText_Validating(object sender, CancelEventArgs e) {
+        private void UserAppointUrlText_Validating(object sender, CancelEventArgs e)
+        {
             if ( !UserAppointUrlText.Text.StartsWith( "http" ) && !string.IsNullOrEmpty( UserAppointUrlText.Text ) ) {
                 MessageBox.Show( "Text Error:正しいURLではありません" );
             }
         }
 
 
-        private void IsPreviewFoursquareCheckBox_CheckedChanged(object sender, EventArgs e) {
+        private void IsPreviewFoursquareCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
             FoursquareGroupBox.Enabled = IsPreviewFoursquareCheckBox.Checked;
         }
 
 
-        private void OpenUrl(string url) {
+        private void OpenUrl(string url)
+        {
             string myPath = url;
             string path = this.BrowserPathText.Text;
             try {
@@ -2342,17 +2405,20 @@ namespace OpenTween {
         }
 
 
-        private void CreateAccountButton_Click(object sender, EventArgs e) {
+        private void CreateAccountButton_Click(object sender, EventArgs e)
+        {
             this.OpenUrl( "https://twitter.com/signup" );
         }
 
 
-        private void CheckAutoConvertUrl_CheckedChanged(object sender, EventArgs e) {
+        private void CheckAutoConvertUrl_CheckedChanged(object sender, EventArgs e)
+        {
             ShortenTcoCheck.Enabled = CheckAutoConvertUrl.Checked;
         }
 
 
-        public AppendSettingDialog() {
+        public AppendSettingDialog()
+        {
             InitializeComponent();
 
             this.Icon = Properties.Resources.MIcon;

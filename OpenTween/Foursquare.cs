@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,77 +31,70 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Runtime.Serialization;
 
+
 namespace OpenTween
 {
+
+
     public class Foursquare : HttpConnection
     {
-        private static Foursquare _instance = new Foursquare();
-        public static Foursquare GetInstance
-        {
-            get
-            {
+        private static Foursquare _instance = new Foursquare ();
+
+
+        public static Foursquare GetInstance {
+            get {
                 return _instance;
             }
         }
+
 
         private Dictionary<string, string> _authKey = new Dictionary<string, string>
         {
             {"client_id", ApplicationSettings.FoursquareClientId},
             {"client_secret", ApplicationSettings.FoursquareClientSecret},
         };
+        private Dictionary<string, Google.GlobalLocation> CheckInUrlsVenueCollection = new Dictionary<string, Google.GlobalLocation> ();
 
-        private Dictionary<string, Google.GlobalLocation> CheckInUrlsVenueCollection = new Dictionary<string, Google.GlobalLocation>();
 
         private string GetVenueId(string url)
         {
             var content = "";
-            try
-            {
-                var res = GetContent("GET", new Uri(url), null, ref content);
-                if (res != HttpStatusCode.OK) return "";
-            }
-            catch (Exception)
-            {
+            try {
+                var res = GetContent( "GET", new Uri (url), null, ref content );
+                if ( res != HttpStatusCode.OK )
+                    return "";
+            } catch ( Exception ) {
                 return "";
             }
-            var mc = Regex.Match(content, "/venue/(?<venueId>[0-9]+)", RegexOptions.IgnoreCase);
-            if (mc.Success)
-            {
-                var vId = mc.Result("${venueId}");
+            var mc = Regex.Match( content, "/venue/(?<venueId>[0-9]+)", RegexOptions.IgnoreCase );
+            if ( mc.Success ) {
+                var vId = mc.Result( "${venueId}" );
                 return vId;
-            }
-            else
-            {
+            } else {
                 return "";
             }
         }
 
+
         private FourSquareDataModel.Venue GetVenueInfo(string venueId)
         {
             var content = "";
-            try
-            {
-                var res = GetContent("GET",
-                                     new Uri("https://api.foursquare.com/v2/venues/" + venueId),
+            try {
+                var res = GetContent( "GET",
+                                     new Uri ("https://api.foursquare.com/v2/venues/" + venueId),
                                      _authKey,
-                                     ref content);
+                                     ref content );
 
-                if (res == HttpStatusCode.OK)
-                {
+                if ( res == HttpStatusCode.OK ) {
                     FourSquareDataModel.FourSquareData curData = null;
-                    try
-                    {
-                        curData = MyCommon.CreateDataFromJson<FourSquareDataModel.FourSquareData>(content);
-                    }
-                    catch (Exception)
-                    {
+                    try {
+                        curData = MyCommon.CreateDataFromJson<FourSquareDataModel.FourSquareData>( content );
+                    } catch ( Exception ) {
                         return null;
                     }
 
                     return curData.Response.Venue;
-                }
-                else
-                {
+                } else {
                     //FourSquareDataModel.FourSquareData curData = null;
                     //try
                     //{
@@ -115,53 +107,58 @@ namespace OpenTween
                     //MessageBox.Show(res.ToString() + Environment.NewLine + curData.Meta.ErrorType + Environment.NewLine + curData.Meta.ErrorDetail);
                     return null;
                 }
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 return null;
             }
         }
 
+
         public string GetMapsUri(string url, ref string refText)
         {
-            if (!AppendSettingDialog.Instance.IsPreviewFoursquare) return null;
+            if ( !AppendSettingDialog.Instance.IsPreviewFoursquare )
+                return null;
 
-            var urlId = Regex.Replace(url, @"https?://(4sq|foursquare)\.com/", "");
+            var urlId = Regex.Replace( url, @"https?://(4sq|foursquare)\.com/", "" );
 
-            if (CheckInUrlsVenueCollection.ContainsKey(urlId))
-            {
-                refText = CheckInUrlsVenueCollection[urlId].LocateInfo;
-                return new Google().CreateGoogleStaticMapsUri(CheckInUrlsVenueCollection[urlId]);
+            if ( CheckInUrlsVenueCollection.ContainsKey( urlId ) ) {
+                refText = CheckInUrlsVenueCollection [urlId].LocateInfo;
+                return new Google ().CreateGoogleStaticMapsUri( CheckInUrlsVenueCollection [urlId] );
             }
 
             FourSquareDataModel.Venue curVenue = null;
-            var venueId = GetVenueId(url);
-            if (string.IsNullOrEmpty(venueId)) return null;
+            var venueId = GetVenueId( url );
+            if ( string.IsNullOrEmpty( venueId ) )
+                return null;
 
-            curVenue = GetVenueInfo(venueId);
-            if (curVenue == null) return null;
+            curVenue = GetVenueInfo( venueId );
+            if ( curVenue == null )
+                return null;
 
-            var curLocation = new Google.GlobalLocation {Latitude = curVenue.Location.Latitude, Longitude = curVenue.Location.Longitude, LocateInfo = CreateVenueInfoText(curVenue)};
+            var curLocation = new Google.GlobalLocation {Latitude = curVenue.Location.Latitude, Longitude = curVenue.Location.Longitude, LocateInfo = CreateVenueInfoText( curVenue )};
             //例外発生の場合があるため
-            if (!CheckInUrlsVenueCollection.ContainsKey(urlId)) CheckInUrlsVenueCollection.Add(urlId, curLocation);
+            if ( !CheckInUrlsVenueCollection.ContainsKey( urlId ) )
+                CheckInUrlsVenueCollection.Add( urlId, curLocation );
             refText = curLocation.LocateInfo;
-            return new Google().CreateGoogleStaticMapsUri(curLocation);
+            return new Google ().CreateGoogleStaticMapsUri( curLocation );
         }
+
 
         private string CreateVenueInfoText(FourSquareDataModel.Venue info)
         {
             return info.Name + Environment.NewLine + info.Stats.UsersCount.ToString() + "/" + info.Stats.CheckinsCount.ToString() + Environment.NewLine + info.Location.Address + Environment.NewLine + info.Location.City + info.Location.State + Environment.NewLine + info.Location.Latitude.ToString() + Environment.NewLine + info.Location.Longitude.ToString();
         }
+
+
         public HttpStatusCode GetContent(string method,
                     Uri requestUri,
                     Dictionary<string, string> param,
                     ref string content)
         {
-            var webReq  = CreateRequest(method,
+            var webReq = CreateRequest( method,
                                         requestUri,
                                         param,
-                                        false);
-            var code = GetResponse(webReq, out content, null, false);
+                                        false );
+            var code = GetResponse( webReq, out content, null, false );
             return code;
         }
 
@@ -172,70 +169,104 @@ namespace OpenTween
             [DataContract]
             public class FourSquareData
             {
-                [DataMember(Name = "meta", IsRequired = false)] public Meta Meta;
-                [DataMember(Name = "response", IsRequired = false)] public Response Response;
+                [DataMember(Name = "meta", IsRequired = false)]
+                public Meta Meta;
+                [DataMember(Name = "response", IsRequired = false)]
+                public Response Response;
             }
+
 
             [DataContract]
             public class Response
             {
-                [DataMember(Name = "venue", IsRequired = false)] public Venue Venue;
+                [DataMember(Name = "venue", IsRequired = false)]
+                public Venue Venue;
             }
+
 
             [DataContract]
             public class Venue
             {
-                [DataMember(Name = "id")] public string Id;
-                [DataMember(Name = "name")] public string Name;
-                [DataMember(Name = "location")] public Location Location;
-                [DataMember(Name = "verified")] public bool Verified;
-                [DataMember(Name = "stats")] public Stats Stats;
-                [DataMember(Name = "mayor")] public Mayor Mayor;
-                [DataMember(Name = "shortUrl")] public string ShortUrl;
-                [DataMember(Name = "timeZone")] public string TimeZone;
+                [DataMember(Name = "id")]
+                public string Id;
+                [DataMember(Name = "name")]
+                public string Name;
+                [DataMember(Name = "location")]
+                public Location Location;
+                [DataMember(Name = "verified")]
+                public bool Verified;
+                [DataMember(Name = "stats")]
+                public Stats Stats;
+                [DataMember(Name = "mayor")]
+                public Mayor Mayor;
+                [DataMember(Name = "shortUrl")]
+                public string ShortUrl;
+                [DataMember(Name = "timeZone")]
+                public string TimeZone;
             }
+
 
             [DataContract]
             public class Location
             {
-                [DataMember(Name = "address")] public string Address;
-                [DataMember(Name = "city")] public string City;
-                [DataMember(Name = "state")] public string State;
-                [DataMember(Name = "lat")] public double Latitude;
-                [DataMember(Name = "lng")] public double Longitude;
+                [DataMember(Name = "address")]
+                public string Address;
+                [DataMember(Name = "city")]
+                public string City;
+                [DataMember(Name = "state")]
+                public string State;
+                [DataMember(Name = "lat")]
+                public double Latitude;
+                [DataMember(Name = "lng")]
+                public double Longitude;
             }
+
 
             [DataContract]
             public class Stats
             {
-                [DataMember(Name = "checkinsCount")] public int CheckinsCount;
-                [DataMember(Name = "usersCount")] public int UsersCount;
+                [DataMember(Name = "checkinsCount")]
+                public int CheckinsCount;
+                [DataMember(Name = "usersCount")]
+                public int UsersCount;
             }
 
 
             [DataContract]
             public class Mayor
             {
-                [DataMember(Name = "count")] public int Count;
-                [DataMember(Name = "user", IsRequired = false)] public FoursquareUser User;
+                [DataMember(Name = "count")]
+                public int Count;
+                [DataMember(Name = "user", IsRequired = false)]
+                public FoursquareUser User;
             }
+
 
             [DataContract]
             public class FoursquareUser
             {
-                [DataMember(Name = "id")] public int Id;
-                [DataMember(Name = "firstName")] public string FirstName;
-                [DataMember(Name = "photo")] public string Photo;
-                [DataMember(Name = "gender")] public string Gender;
-                [DataMember(Name = "homeCity")] public string HomeCity;
+                [DataMember(Name = "id")]
+                public int Id;
+                [DataMember(Name = "firstName")]
+                public string FirstName;
+                [DataMember(Name = "photo")]
+                public string Photo;
+                [DataMember(Name = "gender")]
+                public string Gender;
+                [DataMember(Name = "homeCity")]
+                public string HomeCity;
             }
+
 
             [DataContract]
             public class Meta
             {
-                [DataMember(Name = "code")] public int Code;
-                [DataMember(Name = "errorType", IsRequired = false)] public string ErrorType;
-                [DataMember(Name = "errorDetail", IsRequired = false)] public string ErrorDetail;
+                [DataMember(Name = "code")]
+                public int Code;
+                [DataMember(Name = "errorType", IsRequired = false)]
+                public string ErrorType;
+                [DataMember(Name = "errorDetail", IsRequired = false)]
+                public string ErrorDetail;
             }
         }
     #endregion

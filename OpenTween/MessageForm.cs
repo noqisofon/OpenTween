@@ -19,7 +19,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,11 +28,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public partial class MessageForm : Form
     {
-        public System.Windows.Forms.DialogResult ShowDialog(string message) {
+        public System.Windows.Forms.DialogResult ShowDialog(string message)
+        {
             this.Label1.Text = message;
 
             // ラベルコントロールをセンタリング

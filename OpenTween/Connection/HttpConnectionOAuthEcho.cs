@@ -23,56 +23,61 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using HttpConnectionOAuth = OpenTween.HttpConnectionOAuth;
 using Uri = System.Uri;
 using HttpWebRequest = System.Net.HttpWebRequest;
-using System.Collections.Generic; // for Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>
+using System.Collections.Generic;
+
+// for Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>
 using HttpConnection = OpenTween.HttpConnection;
 using StringBuilder = System.Text.StringBuilder;
 
+
 namespace OpenTween
 {
-	public class HttpConnectionOAuthEcho : HttpConnectionOAuth
-	{
-		private Uri _realm;
 
-		private Uri _serviceProvider;
 
-		public Uri Realm
-		{
-			set { this._realm = value; }
-		}
+    public class HttpConnectionOAuthEcho : HttpConnectionOAuth
+    {
+        private Uri _realm;
+        private Uri _serviceProvider;
 
-		public Uri ServiceProvider
-		{
-			set { this._serviceProvider = value; }
-		}
 
-		protected override void AppendOAuthInfo( HttpWebRequest webRequest, Dictionary< string, string > query, string token, string tokenSecret )
-		{
-			// OAuth共通情報取得
-			Dictionary< string, string > parameter = this.GetOAuthParameter( token );
-			// OAuth共通情報にquery情報を追加
-			if ( query != null )
-				foreach ( KeyValuePair< string, string > item in query )
-					parameter.Add( item.Key, item.Value );
-			// 署名の作成・追加(GETメソッド固定。ServiceProvider呼び出し用の署名作成)
-			parameter.Add( "oauth_signature", this.CreateSignature( tokenSecret, HttpConnection.GetMethod, this._serviceProvider, parameter ) );
-			// HTTPリクエストのヘッダに追加
-			StringBuilder sb = new StringBuilder( "OAuth " );
-			sb.AppendFormat( "realm=\"{0}://{1}{2}\",", this._realm.Scheme, this._realm.Host, this._realm.AbsolutePath);
-			foreach ( KeyValuePair< string, string > item in parameter )
-				if ( item.Key.StartsWith( "oauth_" ) )
-					sb.AppendFormat( "{0}=\"{1}\",", item.Key, this.UrlEncode( item.Value ) );
-			webRequest.Headers.Add( "X-Verify-Credentials-Authorization", sb.ToString() );
-			webRequest.Headers.Add( "X-Auth-Service-Provider", string.Format("{0}://{1}{2}", this._serviceProvider.Scheme, this._serviceProvider.Host, this._serviceProvider.AbsolutePath));
-		}
+        public Uri Realm {
+            set { this._realm = value; }
+        }
 
-		public HttpConnectionOAuthEcho( Uri realm, Uri serviceProvider )
-		{
-			this._realm = realm;
-			this._serviceProvider = serviceProvider;
-		}
-	}
+
+        public Uri ServiceProvider {
+            set { this._serviceProvider = value; }
+        }
+
+
+        protected override void AppendOAuthInfo(HttpWebRequest webRequest, Dictionary< string, string > query, string token, string tokenSecret)
+        {
+            // OAuth共通情報取得
+            Dictionary< string, string > parameter = this.GetOAuthParameter( token );
+            // OAuth共通情報にquery情報を追加
+            if ( query != null )
+                foreach ( KeyValuePair< string, string > item in query )
+                    parameter.Add( item.Key, item.Value );
+            // 署名の作成・追加(GETメソッド固定。ServiceProvider呼び出し用の署名作成)
+            parameter.Add( "oauth_signature", this.CreateSignature( tokenSecret, HttpConnection.GetMethod, this._serviceProvider, parameter ) );
+            // HTTPリクエストのヘッダに追加
+            StringBuilder sb = new StringBuilder ("OAuth ");
+            sb.AppendFormat( "realm=\"{0}://{1}{2}\",", this._realm.Scheme, this._realm.Host, this._realm.AbsolutePath );
+            foreach ( KeyValuePair< string, string > item in parameter )
+                if ( item.Key.StartsWith( "oauth_" ) )
+                    sb.AppendFormat( "{0}=\"{1}\",", item.Key, this.UrlEncode( item.Value ) );
+            webRequest.Headers.Add( "X-Verify-Credentials-Authorization", sb.ToString() );
+            webRequest.Headers.Add( "X-Auth-Service-Provider", string.Format( "{0}://{1}{2}", this._serviceProvider.Scheme, this._serviceProvider.Host, this._serviceProvider.AbsolutePath ) );
+        }
+
+
+        public HttpConnectionOAuthEcho(Uri realm, Uri serviceProvider)
+        {
+            this._realm = realm;
+            this._serviceProvider = serviceProvider;
+        }
+    }
 }

@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,47 +33,56 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
+
 namespace OpenTween
 {
+
+
     public partial class AuthBrowser : Form
     {
         public string UrlString { get; set; }
+
+
         public string PinString { get; set; }
+
+
         public bool Auth { get; set; }
+
 
         private InternetSecurityManager SecurityManager;
 
+
         private void AuthWebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (this.AuthWebBrowser.Url.OriginalString == "https://api.twitter.com/oauth/authorize")
-            {
-                Regex rg = new Regex("<code>(\\d+)</code>");
-                Match m = rg.Match(this.AuthWebBrowser.DocumentText);
-                if (m.Success)
-                {
-                    PinString = m.Result("${1}");
-                    PinText.Text = m.Result("${1}");
+            if ( this.AuthWebBrowser.Url.OriginalString == "https://api.twitter.com/oauth/authorize" ) {
+                Regex rg = new Regex ("<code>(\\d+)</code>");
+                Match m = rg.Match( this.AuthWebBrowser.DocumentText );
+                if ( m.Success ) {
+                    PinString = m.Result( "${1}" );
+                    PinText.Text = m.Result( "${1}" );
                     PinText.Focus();
                 }
             }
         }
 
+
         private void AuthBrowser_Load(object sender, EventArgs e)
         {
-            this.SecurityManager = new InternetSecurityManager(this.AuthWebBrowser);
+            this.SecurityManager = new InternetSecurityManager (this.AuthWebBrowser);
 
-            this.AuthWebBrowser.Navigate(new Uri(UrlString));
-            if (!Auth)
-            {
+            this.AuthWebBrowser.Navigate( new Uri (UrlString) );
+            if ( !Auth ) {
                 this.Label1.Visible = false;
                 this.PinText.Visible = false;
             }
         }
 
+
         private void AuthWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             this.AddressLabel.Text = e.Url.OriginalString;
         }
+
 
         private void NextButton_Click(object sender, EventArgs e)
         {
@@ -82,11 +90,13 @@ namespace OpenTween
             this.DialogResult = DialogResult.OK;
         }
 
+
         private void Cancel_Click(object sender, EventArgs e)
         {
             PinString = "";
             this.DialogResult = DialogResult.Cancel;
         }
+
 
         public AuthBrowser()
         {

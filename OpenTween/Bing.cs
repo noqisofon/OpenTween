@@ -23,18 +23,20 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace OpenTween
 {
+
+
     public class Bing
     {
 #region "言語テーブル定義"
-        private static readonly List<string> LanguageTable = new List<string>() {
+        private static readonly List<string> LanguageTable = new List<string> () {
         "af",
         "sq",
         "ar-sa",
@@ -166,28 +168,30 @@ namespace OpenTween
 
         private const string TranslateUri = "http://api.microsofttranslator.com/v2/Http.svc/Translate?appId=" + ApplicationSettings.BingAppId;
 
+
         public bool Translate(string _from, string _to, string _text, out string buf)
         {
-            HttpVarious http = new HttpVarious();
-            string apiurl = TranslateUri + "&text=" + System.Web.HttpUtility.UrlEncode(_text) + "&to=" + _to;
+            HttpVarious http = new HttpVarious ();
+            string apiurl = TranslateUri + "&text=" + System.Web.HttpUtility.UrlEncode( _text ) + "&to=" + _to;
             string content = "";
-            if (http.GetData(apiurl, null, out content))
-            {
-                buf = string.Copy(content);
+            if ( http.GetData( apiurl, null, out content ) ) {
+                buf = string.Copy( content );
                 return true;
             }
             buf = null;
             return false;
         }
 
+
         public string GetLanguageEnumFromIndex(int index)
         {
-            return LanguageTable[index];
+            return LanguageTable [index];
         }
+
 
         public int GetIndexFromLanguageEnum(string lang)
         {
-            return LanguageTable.IndexOf(lang);
+            return LanguageTable.IndexOf( lang );
         }
 #endregion
     }

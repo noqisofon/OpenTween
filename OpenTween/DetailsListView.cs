@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,15 +33,20 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
+
 namespace OpenTween.OpenTweenCustomControl
 {
+
+
     public sealed class DetailsListView : ListView
     {
         private Rectangle changeBounds;
-        private EventHandlerList _handlers = new EventHandlerList();
+        private EventHandlerList _handlers = new EventHandlerList ();
+
 
         public event EventHandler VScrolled;
         public event EventHandler HScrolled;
+
 
         public DetailsListView()
         {
@@ -98,112 +102,112 @@ namespace OpenTween.OpenTweenCustomControl
 
         public void ChangeItemBackColor(int index, Color backColor)
         {
-            ChangeSubItemBackColor(index, 0, backColor);
+            ChangeSubItemBackColor( index, 0, backColor );
         }
+
 
         public void ChangeItemForeColor(int index, Color foreColor)
         {
-            ChangeSubItemForeColor(index, 0, foreColor);
+            ChangeSubItemForeColor( index, 0, foreColor );
         }
+
 
         public void ChangeItemFont(int index, Font fnt)
         {
-            ChangeSubItemFont(index, 0, fnt);
+            ChangeSubItemFont( index, 0, fnt );
         }
+
 
         public void ChangeItemFontAndColor(int index, Color foreColor, Font fnt)
         {
-            ChangeSubItemStyles(index, 0, BackColor, foreColor, fnt);
+            ChangeSubItemStyles( index, 0, BackColor, foreColor, fnt );
         }
+
 
         public void ChangeItemStyles(int index, Color backColor, Color foreColor, Font fnt)
         {
-            ChangeSubItemStyles(index, 0, backColor, foreColor, fnt);
+            ChangeSubItemStyles( index, 0, backColor, foreColor, fnt );
         }
+
 
         public void ChangeSubItemBackColor(int itemIndex, int subitemIndex, Color backColor)
         {
-            this.Items[itemIndex].SubItems[subitemIndex].BackColor = backColor;
-            SetUpdateBounds(itemIndex, subitemIndex);
+            this.Items [itemIndex].SubItems [subitemIndex].BackColor = backColor;
+            SetUpdateBounds( itemIndex, subitemIndex );
             this.Update();
             this.changeBounds = Rectangle.Empty;
         }
+
 
         public void ChangeSubItemForeColor(int itemIndex, int subitemIndex, Color foreColor)
         {
-            this.Items[itemIndex].SubItems[subitemIndex].ForeColor = foreColor;
-            SetUpdateBounds(itemIndex, subitemIndex);
+            this.Items [itemIndex].SubItems [subitemIndex].ForeColor = foreColor;
+            SetUpdateBounds( itemIndex, subitemIndex );
             this.Update();
             this.changeBounds = Rectangle.Empty;
         }
+
 
         public void ChangeSubItemFont(int itemIndex, int subitemIndex, Font fnt)
         {
-            this.Items[itemIndex].SubItems[subitemIndex].Font = fnt;
-            SetUpdateBounds(itemIndex, subitemIndex);
+            this.Items [itemIndex].SubItems [subitemIndex].Font = fnt;
+            SetUpdateBounds( itemIndex, subitemIndex );
             this.Update();
             this.changeBounds = Rectangle.Empty;
         }
+
 
         public void ChangeSubItemFontAndColor(int itemIndex, int subitemIndex, Color foreColor, Font fnt)
         {
-            this.Items[itemIndex].SubItems[subitemIndex].ForeColor = foreColor;
-            this.Items[itemIndex].SubItems[subitemIndex].Font = fnt;
-            SetUpdateBounds(itemIndex, subitemIndex);
+            this.Items [itemIndex].SubItems [subitemIndex].ForeColor = foreColor;
+            this.Items [itemIndex].SubItems [subitemIndex].Font = fnt;
+            SetUpdateBounds( itemIndex, subitemIndex );
             this.Update();
             this.changeBounds = Rectangle.Empty;
         }
+
 
         public void ChangeSubItemStyles(int itemIndex, int subitemIndex, Color backColor, Color foreColor, Font fnt)
         {
-            this.Items[itemIndex].SubItems[subitemIndex].BackColor = backColor;
-            this.Items[itemIndex].SubItems[subitemIndex].ForeColor = foreColor;
-            this.Items[itemIndex].SubItems[subitemIndex].Font = fnt;
-            SetUpdateBounds(itemIndex, subitemIndex);
+            this.Items [itemIndex].SubItems [subitemIndex].BackColor = backColor;
+            this.Items [itemIndex].SubItems [subitemIndex].ForeColor = foreColor;
+            this.Items [itemIndex].SubItems [subitemIndex].Font = fnt;
+            SetUpdateBounds( itemIndex, subitemIndex );
             this.Update();
             this.changeBounds = Rectangle.Empty;
         }
 
+
         private void SetUpdateBounds(int itemIndex, int subItemIndex)
         {
-            try
-            {
-                if (itemIndex > this.Items.Count)
-                {
-                    throw new ArgumentOutOfRangeException("itemIndex");
+            try {
+                if ( itemIndex > this.Items.Count ) {
+                    throw new ArgumentOutOfRangeException ("itemIndex");
                 }
-                if (subItemIndex > this.Columns.Count)
-                {
-                    throw new ArgumentOutOfRangeException("subItemIndex");
+                if ( subItemIndex > this.Columns.Count ) {
+                    throw new ArgumentOutOfRangeException ("subItemIndex");
                 }
-                ListViewItem item = this.Items[itemIndex];
-                if (item.UseItemStyleForSubItems)
-                {
+                ListViewItem item = this.Items [itemIndex];
+                if ( item.UseItemStyleForSubItems ) {
                     this.changeBounds = item.Bounds;
+                } else {
+                    this.changeBounds = this.GetSubItemBounds( itemIndex, subItemIndex );
                 }
-                else
-                {
-                    this.changeBounds = this.GetSubItemBounds(itemIndex, subItemIndex);
-                }
-            }
-            catch (ArgumentException)
-            {
+            } catch ( ArgumentException ) {
                 //タイミングによりBoundsプロパティが取れない？
                 this.changeBounds = Rectangle.Empty;
             }
         }
 
+
         private Rectangle GetSubItemBounds(int itemIndex, int subitemIndex)
         {
-            ListViewItem item = this.Items[itemIndex];
-            if (subitemIndex == 0 && this.Columns.Count > 0)
-            {
+            ListViewItem item = this.Items [itemIndex];
+            if ( subitemIndex == 0 && this.Columns.Count > 0 ) {
                 Rectangle col0 = item.Bounds;
-                return new Rectangle(col0.Left, col0.Top, item.SubItems[1].Bounds.X + 1, col0.Height);
-            }
-            else
-            {
-                return item.SubItems[subitemIndex].Bounds;
+                return new Rectangle (col0.Left, col0.Top, item.SubItems [1].Bounds.X + 1, col0.Height);
+            } else {
+                return item.SubItems [subitemIndex].Bounds;
             }
         }
 
@@ -219,6 +223,7 @@ namespace OpenTween.OpenTweenCustomControl
             public int nTrackPos;
         }
 
+
         private enum ScrollBarDirection
         {
             SB_HORZ = 0,
@@ -226,6 +231,7 @@ namespace OpenTween.OpenTweenCustomControl
             SB_CTL = 2,
             SB_BOTH = 3,
         }
+
 
         private enum ScrollInfoMask
         {
@@ -240,10 +246,12 @@ namespace OpenTween.OpenTweenCustomControl
         [DllImport("user32.dll")]
         private static extern int GetScrollInfo(IntPtr hWnd, ScrollBarDirection fnBar, ref SCROLLINFO lpsi);
 
+
         private SCROLLINFO si = new SCROLLINFO {
-            cbSize = Marshal.SizeOf(new SCROLLINFO()),
+            cbSize = Marshal.SizeOf( new SCROLLINFO () ),
             fMask = (int)ScrollInfoMask.SIF_POS
         };
+
 
         [DebuggerStepThrough()]
         protected override void WndProc(ref Message m)
@@ -262,63 +270,57 @@ namespace OpenTween.OpenTweenCustomControl
             int hPos = -1;
             int vPos = -1;
 
-            switch (m.Msg)
-            {
-                case WM_ERASEBKGND:
-                    if (this.changeBounds != Rectangle.Empty)
-                        m.Msg = 0;
-                    break;
-                case WM_PAINT:
-                    if (this.changeBounds != Rectangle.Empty)
-                    {
-                        Win32Api.ValidateRect(this.Handle, IntPtr.Zero);
-                        this.Invalidate(this.changeBounds);
-                        this.changeBounds = Rectangle.Empty;
-                    }
-                    break;
-                case WM_HSCROLL:
-                    if (HScrolled != null)
-                        HScrolled(this, EventArgs.Empty);
-                    break;
-                case WM_VSCROLL:
-                    if (VScrolled != null)
-                        VScrolled(this, EventArgs.Empty);
-                    break;
-                case WM_MOUSEWHEEL:
-                case WM_MOUSEHWHEEL:
-                case WM_KEYDOWN:
-                    if (GetScrollInfo(this.Handle, ScrollBarDirection.SB_VERT, ref si) != 0)
-                        vPos = si.nPos;
-                    if (GetScrollInfo(this.Handle, ScrollBarDirection.SB_HORZ, ref si) != 0)
-                        hPos = si.nPos;
-                    break;
-                case LVM_SETITEMCOUNT:
-                    m.LParam = new IntPtr(LVSICF_NOSCROLL | LVSICF_NOINVALIDATEALL);
-                    break;
+            switch ( m.Msg ) {
+            case WM_ERASEBKGND:
+                if ( this.changeBounds != Rectangle.Empty )
+                    m.Msg = 0;
+                break;
+            case WM_PAINT:
+                if ( this.changeBounds != Rectangle.Empty ) {
+                    Win32Api.ValidateRect( this.Handle, IntPtr.Zero );
+                    this.Invalidate( this.changeBounds );
+                    this.changeBounds = Rectangle.Empty;
+                }
+                break;
+            case WM_HSCROLL:
+                if ( HScrolled != null )
+                    HScrolled( this, EventArgs.Empty );
+                break;
+            case WM_VSCROLL:
+                if ( VScrolled != null )
+                    VScrolled( this, EventArgs.Empty );
+                break;
+            case WM_MOUSEWHEEL:
+            case WM_MOUSEHWHEEL:
+            case WM_KEYDOWN:
+                if ( GetScrollInfo( this.Handle, ScrollBarDirection.SB_VERT, ref si ) != 0 )
+                    vPos = si.nPos;
+                if ( GetScrollInfo( this.Handle, ScrollBarDirection.SB_HORZ, ref si ) != 0 )
+                    hPos = si.nPos;
+                break;
+            case LVM_SETITEMCOUNT:
+                m.LParam = new IntPtr (LVSICF_NOSCROLL | LVSICF_NOINVALIDATEALL);
+                break;
             }
 
-            try
-            {
-                base.WndProc(ref m);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
+            try {
+                base.WndProc( ref m );
+            } catch ( ArgumentOutOfRangeException ) {
                 //Substringでlengthが0以下。アイコンサイズが影響？
-            }
-            catch (AccessViolationException)
-            {
+            } catch ( AccessViolationException ) {
                 //WndProcのさらに先で発生する。
             }
-            if (this.IsDisposed) return;
+            if ( this.IsDisposed )
+                return;
 
-            if (vPos != -1)
-                if (GetScrollInfo(this.Handle, ScrollBarDirection.SB_VERT, ref si) != 0 && vPos != si.nPos)
-                    if (VScrolled != null)
-                        VScrolled(this, EventArgs.Empty);
-            if (hPos != -1)
-                if (GetScrollInfo(this.Handle, ScrollBarDirection.SB_HORZ, ref si) != 0 && hPos != si.nPos)
-                    if (HScrolled != null)
-                        HScrolled(this, EventArgs.Empty);
+            if ( vPos != -1 )
+            if ( GetScrollInfo( this.Handle, ScrollBarDirection.SB_VERT, ref si ) != 0 && vPos != si.nPos )
+            if ( VScrolled != null )
+                VScrolled( this, EventArgs.Empty );
+            if ( hPos != -1 )
+            if ( GetScrollInfo( this.Handle, ScrollBarDirection.SB_HORZ, ref si ) != 0 && hPos != si.nPos )
+            if ( HScrolled != null )
+                HScrolled( this, EventArgs.Empty );
         }
-   }
+    }
 }

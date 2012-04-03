@@ -23,66 +23,72 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public class ImageListViewItem : ListViewItem
     {
         //public Image Image { get; set; }
         public event EventHandler ImageDownloaded;
+
+
         private ImageDictionary imageDict = null;
         private string imageUrl;
+
 
         public ImageListViewItem(string[] items, string imageKey)
             : base(items, imageKey)
         {
         }
 
+
         public ImageListViewItem(string[] items, ImageDictionary imageDictionary, string imageKey)
             : base(items, imageKey)
         {
             this.imageDict = imageDictionary;
             this.imageUrl = imageKey;
-            var dummy = this.GetImage(false);
+            var dummy = this.GetImage( false );
         }
+
 
         private Image GetImage(bool force)
         {
-            return this.imageDict[this.imageUrl, force, getImg =>
-                                                        {
-                                                            if (getImg == null) return;
-                                                            //this.Image = getImg
-                                                            if (this.ListView != null &&
+            return this.imageDict [this.imageUrl, force, getImg =>
+            {
+                if ( getImg == null )
+                    return;
+                //this.Image = getImg
+                if ( this.ListView != null &&
                                                                 this.ListView.Created &&
-                                                                !this.ListView.IsDisposed)
-                                                            {
-                                                                this.ListView.Invoke(new MethodInvoker(() =>
-                                                                                     {
-                                                                                         if (this.Index < this.ListView.VirtualListSize)
-                                                                                         {
-                                                                                             this.ListView.RedrawItems(this.Index, this.Index, true);
-                                                                                             if (ImageDownloaded != null)
-                                                                                             {
-                                                                                                 ImageDownloaded(this, EventArgs.Empty);
-                                                                                             }
-                                                                                         }
-                                                                                     }));
-                                                            }
-                                                        }];
+                                                                !this.ListView.IsDisposed ) {
+                    this.ListView.Invoke( new MethodInvoker (() =>
+                    {
+                        if ( this.Index < this.ListView.VirtualListSize ) {
+                            this.ListView.RedrawItems( this.Index, this.Index, true );
+                            if ( ImageDownloaded != null ) {
+                                ImageDownloaded( this, EventArgs.Empty );
+                            }
+                        }
+                    }) );
+                }
+            }];
         }
 
-        public Image Image
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(this.imageUrl)) return null;
-                return this.imageDict[this.imageUrl];
+
+        public Image Image {
+            get {
+                if ( string.IsNullOrEmpty( this.imageUrl ) )
+                    return null;
+                return this.imageDict [this.imageUrl];
             }
         }
+
 
         public void RegetImage()
         {
@@ -91,7 +97,7 @@ namespace OpenTween
             //    this.Image.Dispose()
             //    this.Image = null
             //}
-            var dummy = GetImage(true);
+            var dummy = GetImage( true );
         }
 
         //~ImageListViewItem()

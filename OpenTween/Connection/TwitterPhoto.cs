@@ -35,104 +35,104 @@ using NotSupportedException = System.NotSupportedException;
 
 namespace OpenTween
 {
-	public class TwitterPhoto : IMultimediaShareService
-	{
-		private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
+ public class TwitterPhoto : IMultimediaShareService
+ {
+     private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
 
-		private const long MaxfilesizeDefault = 3145728;
+     private const long MaxfilesizeDefault = 3145728;
 
-		// help/configurationにより取得されコンストラクタへ渡される
-		private long _MaxFileSize = 3145728;
+     // help/configurationにより取得されコンストラクタへ渡される
+     private long _MaxFileSize = 3145728;
 
-		private Twitter tw;
+     private Twitter tw;
 
-		public bool CheckValidExtension( string ext )
-		{
-			if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
-				return true;
+     public bool CheckValidExtension( string ext )
+     {
+         if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
+             return true;
 
-			return false;
-		}
+         return false;
+     }
 
-		public bool CheckValidFilesize( string ext, long fileSize )
-		{
-			if ( this.CheckValidExtension( ext ) )
-				return fileSize <= this._MaxFileSize;
+     public bool CheckValidFilesize( string ext, long fileSize )
+     {
+         if ( this.CheckValidExtension( ext ) )
+             return fileSize <= this._MaxFileSize;
 
-			return false;
-		}
+         return false;
+     }
 
-		public bool Configuration( string key, object value )
-		{
-			if ( key == "MaxUploadFilesize" )
-			{
-				long val;
-				try
-				{
-					val = Convert.ToInt64( value );
-					if ( val > 0 )
-						this._MaxFileSize = val;
-					else
-					this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
-				}
-				catch ( Exception )
-				{
-					this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
-					return false; // error
-				}
-				return true; // 正常に設定終了
-			}
-			return true; // 設定項目がない場合はとりあえずエラー扱いにしない
-		}
+     public bool Configuration( string key, object value )
+     {
+         if ( key == "MaxUploadFilesize" )
+         {
+             long val;
+             try
+             {
+                 val = Convert.ToInt64( value );
+                 if ( val > 0 )
+                     this._MaxFileSize = val;
+                 else
+                 this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
+             }
+             catch ( Exception )
+             {
+                 this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
+                 return false; // error
+             }
+             return true; // 正常に設定終了
+         }
+         return true; // 設定項目がない場合はとりあえずエラー扱いにしない
+     }
 
-		public string GetFileOpenDialogFilter()
-		{
-			return "Image Files(*.gif;*.jpg;*.jpeg;*.png)|*.gif;*.jpg;*.jpeg;*.png";
-		}
+     public string GetFileOpenDialogFilter()
+     {
+         return "Image Files(*.gif;*.jpg;*.jpeg;*.png)|*.gif;*.jpg;*.jpeg;*.png";
+     }
 
-		public UploadFileType GetFileType( string ext )
-		{
-			if ( this.CheckValidExtension( ext ) )
-				return UploadFileType.Picture;
+     public UploadFileType GetFileType( string ext )
+     {
+         if ( this.CheckValidExtension( ext ) )
+             return UploadFileType.Picture;
 
-			return UploadFileType.Invalid;
-		}
+         return UploadFileType.Invalid;
+     }
 
-		public bool IsSupportedFileType( UploadFileType type )
-		{
-			return type.Equals( UploadFileType.Picture );
-		}
+     public bool IsSupportedFileType( UploadFileType type )
+     {
+         return type.Equals( UploadFileType.Picture );
+     }
 
-		public string Upload( ref string filePath, ref string message, long reply_to )
-		{
-			if ( string.IsNullOrEmpty( filePath ) )
-				return "Err:File isn't specified.";
+     public string Upload( ref string filePath, ref string message, long reply_to )
+     {
+         if ( string.IsNullOrEmpty( filePath ) )
+             return "Err:File isn't specified.";
 
-			if ( string.IsNullOrEmpty( message ) )
-				message =  "";
+         if ( string.IsNullOrEmpty( message ) )
+             message =  "";
 
-			FileInfo mediaFile;
-			try
-			{
-				mediaFile = new FileInfo( filePath );
-			}
-			catch ( NotSupportedException ex )
-			{
-				return "Err:" + ex.Message;
-			}
+         FileInfo mediaFile;
+         try
+         {
+             mediaFile = new FileInfo( filePath );
+         }
+         catch ( NotSupportedException ex )
+         {
+             return "Err:" + ex.Message;
+         }
 
-			if ( !mediaFile.Exists )
-				return "Err:File isn't exists.";
+         if ( !mediaFile.Exists )
+             return "Err:File isn't exists.";
 
-			if ( MyCommon.IsAnimatedGif( filePath ) )
-				return "Err:Don't support animatedGIF.";
+         if ( MyCommon.IsAnimatedGif( filePath ) )
+             return "Err:Don't support animatedGIF.";
 
-			return tw.PostStatusWithMedia( message, reply_to, mediaFile );
-		}
+         return tw.PostStatusWithMedia( message, reply_to, mediaFile );
+     }
 
-		public TwitterPhoto( Twitter twitter )
-		{
-			this.tw = twitter;
-		}
-	}
+     public TwitterPhoto( Twitter twitter )
+     {
+         this.tw = twitter;
+     }
+ }
 }

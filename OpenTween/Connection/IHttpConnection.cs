@@ -23,14 +23,16 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
+
 namespace OpenTween
 {
+
+
     public interface IHttpConnection
     {
         HttpStatusCode GetContent(string method,
@@ -39,12 +41,14 @@ namespace OpenTween
                 ref Stream content,
                 string userAgent);
 
+
         HttpStatusCode GetContent(string method,
                 Uri requestUri,
                 Dictionary<string, string> param,
                 ref string content,
                 Dictionary<string, string> headerInfo,
                 CallbackDelegate callback);
+
 
         HttpStatusCode GetContent(string method,
                 Uri requestUri,
@@ -54,11 +58,16 @@ namespace OpenTween
                 Dictionary<string, string> headerInfo,
                 CallbackDelegate callback);
 
+
         void RequestAbort();
+
 
         HttpStatusCode Authenticate(Uri url, string username, string password, ref string content);
 
+
         string AuthUsername { get; }
+
+
         long AuthUserId { get; set; }
     }
 
@@ -69,5 +78,5 @@ namespace OpenTween
     /// <param name="code">APIメソッドの返したHTTPステータスコード</param>
     /// <param name="content">APIメソッドの処理結果</param>
     /// <remarks>contentはNothingになることがあるのでチェックを必ず行うこと</remarks>
-    public delegate void CallbackDelegate(object sender, ref HttpStatusCode code, ref string content);
+    public delegate void CallbackDelegate(object sender,ref HttpStatusCode code,ref string content);
 }

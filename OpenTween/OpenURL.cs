@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,30 +32,33 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public partial class OpenURL : Form
     {
         private string _selUrl;
+
 
         public OpenURL()
         {
             InitializeComponent();
         }
 
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
-            if (UrlList.SelectedItems.Count == 0)
-            {
+            if ( UrlList.SelectedItems.Count == 0 ) {
                 this.DialogResult = DialogResult.Cancel;
-            }
-            else
-            {
+            } else {
                 _selUrl = UrlList.SelectedItem.ToString();
                 this.DialogResult = DialogResult.OK;
             }
             this.Close();
         }
+
 
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -64,70 +66,73 @@ namespace OpenTween
             this.Close();
         }
 
+
         public void ClearUrl()
         {
             UrlList.Items.Clear();
         }
 
+
         public void AddUrl(OpenUrlItem openUrlItem)
         {
-            UrlList.Items.Add(openUrlItem);
+            UrlList.Items.Add( openUrlItem );
         }
 
-        public string SelectedUrl
-        {
-            get
-            {
-                if (UrlList.SelectedItems.Count == 1)
+
+        public string SelectedUrl {
+            get {
+                if ( UrlList.SelectedItems.Count == 1 )
                     return _selUrl;
                 else
                     return "";
             }
         }
 
+
         private void OpenURL_Shown(object sender, EventArgs e)
         {
             UrlList.Focus();
-            if (UrlList.Items.Count > 0)
+            if ( UrlList.Items.Count > 0 )
                 UrlList.SelectedIndex = 0;
         }
 
+
         private void UrlList_DoubleClick(object sender, EventArgs e)
         {
-            if (UrlList.SelectedItem == null)
+            if ( UrlList.SelectedItem == null )
                 return;
 
-            if (UrlList.IndexFromPoint(UrlList.PointToClient(Control.MousePosition)) == ListBox.NoMatches)
+            if ( UrlList.IndexFromPoint( UrlList.PointToClient( Control.MousePosition ) ) == ListBox.NoMatches )
                 return;
 
-            if (UrlList.Items[UrlList.IndexFromPoint(UrlList.PointToClient(Control.MousePosition))] == null)
+            if ( UrlList.Items [UrlList.IndexFromPoint( UrlList.PointToClient( Control.MousePosition ) )] == null )
                 return;
-            OK_Button_Click(sender, e);
+            OK_Button_Click( sender, e );
         }
+
 
         private void UrlList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.J && UrlList.SelectedIndex < UrlList.Items.Count - 1)
-            {
+            if ( e.KeyCode == Keys.J && UrlList.SelectedIndex < UrlList.Items.Count - 1 ) {
                 e.SuppressKeyPress = true;
                 UrlList.SelectedIndex += 1;
             }
-            if (e.KeyCode == Keys.K && UrlList.SelectedIndex > 0)
-            {
+            if ( e.KeyCode == Keys.K && UrlList.SelectedIndex > 0 ) {
                 e.SuppressKeyPress = true;
                 UrlList.SelectedIndex -= 1;
             }
-            if (e.Control && e.KeyCode == Keys.Oem4)
-            {
+            if ( e.Control && e.KeyCode == Keys.Oem4 ) {
                 e.SuppressKeyPress = true;
-                Cancel_Button_Click(null, null);
+                Cancel_Button_Click( null, null );
             }
         }
     }
 
+
     public class OpenUrlItem
     {
         private string _linkText;
+
 
         public OpenUrlItem(string linkText, string url, string href)
         {
@@ -136,25 +141,28 @@ namespace OpenTween
             this.Href = href;
         }
 
-        public string Text
-        {
-            get
-            {
-                if (this._linkText.StartsWith("@") || this._linkText.StartsWith("＠") || this._linkText.StartsWith("#") || this._linkText.StartsWith("＃"))
+
+        public string Text {
+            get {
+                if ( this._linkText.StartsWith( "@" ) || this._linkText.StartsWith( "＠" ) || this._linkText.StartsWith( "#" ) || this._linkText.StartsWith( "＃" ) )
                     return this._linkText;
-                if (this._linkText.TrimEnd('/') == this.Url.TrimEnd('/'))
+                if ( this._linkText.TrimEnd( '/' ) == this.Url.TrimEnd( '/' ) )
                     return this.Url;
                 else
                     return this._linkText + "  >>>  " + this.Url;
             }
         }
 
+
         public override string ToString()
         {
             return this.Href;
         }
 
+
         public string Url { get; private set; }
+
+
         public string Href { get; private set; }
     }
 }

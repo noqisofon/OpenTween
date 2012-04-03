@@ -23,15 +23,17 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween.OpenTweenCustomControl
 {
+
+
     public class ToolStripLabelHistory : ToolStripStatusLabel
     {
         public enum LogLevel
@@ -46,12 +48,20 @@ namespace OpenTween.OpenTweenCustomControl
             Highest = 256,
         }
 
+
         public class LogEntry
         {
             public LogLevel LogLevel { get; private set; }
+
+
             public DateTime Timestamp { get; private set; }
+
+
             public string Summary { get; private set; }
+
+
             public string Detail { get; private set; }
+
 
             public LogEntry(LogLevel logLevel, DateTime timestamp, string summary, string detail)
             {
@@ -61,50 +71,48 @@ namespace OpenTween.OpenTweenCustomControl
                 Detail = detail;
             }
 
+
             public LogEntry(DateTime timestamp, string summary) : this(LogLevel.Debug, timestamp, summary, summary)
             {
             }
 
+
             public override string ToString()
             {
-                return Timestamp.ToString("T") + ": " + Summary;
+                return Timestamp.ToString( "T" ) + ": " + Summary;
             }
         }
 
         LinkedList<LogEntry> _logs;
-
         const int MAXCNT = 20;
 
-        public override string Text
-        {
+
+        public override string Text {
             get { return base.Text; }
-            set
-            {
-                _logs.AddLast(new LogEntry(DateTime.Now, value));
-                while (_logs.Count > MAXCNT)
-                {
+            set {
+                _logs.AddLast( new LogEntry (DateTime.Now, value) );
+                while ( _logs.Count > MAXCNT ) {
                     _logs.RemoveFirst();
                 }
                 base.Text = value;
             }
         }
 
-        public string TextHistory
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (LogEntry e in _logs)
-                {
-                    sb.AppendLine(e.ToString());
+
+        public string TextHistory {
+            get {
+                StringBuilder sb = new StringBuilder ();
+                foreach ( LogEntry e in _logs ) {
+                    sb.AppendLine( e.ToString() );
                 }
                 return sb.ToString();
             }
         }
 
+
         public ToolStripLabelHistory()
         {
-            _logs = new LinkedList<LogEntry>();
+            _logs = new LinkedList<LogEntry> ();
         }
     }
 }

@@ -23,50 +23,53 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace OpenTween
 {
+
+
     public class Outputz
     {
         private static string myOuturl;
         private static string myApikey;
-
         private static bool state;
 
-        public static string OutUrl
-        {
+
+        public static string OutUrl {
             get { return myOuturl; }
             set { myOuturl = value; }
         }
 
-        public static string Key
-        {
+
+        public static string Key {
             get { return myApikey; }
             set { myApikey = value; }
         }
 
-        public static bool Enabled
-        {
+
+        public static bool Enabled {
             get { return state; }
             set { state = value; }
         }
 
+
         public bool Post(int length)
         {
-            if (state == false) return true;
+            if ( state == false )
+                return true;
 
             string output = "http://outputz.com/api/post";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("key", myApikey);
-            param.Add("uri", myOuturl);
-            param.Add("size", length.ToString());
+            Dictionary<string, string> param = new Dictionary<string, string> ();
+            param.Add( "key", myApikey );
+            param.Add( "uri", myOuturl );
+            param.Add( "size", length.ToString() );
 
-            return (new HttpVarious()).PostData(output, param);
+            return (new HttpVarious ()).PostData( output, param );
         }
     }
 }

@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,8 +33,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 
+
 namespace OpenTween
 {
+
+
     public partial class TweenAboutBox : Form
     {
         public TweenAboutBox()
@@ -43,34 +45,38 @@ namespace OpenTween
             InitializeComponent();
         }
 
+
         private void TweenAboutBox_Load(object sender, EventArgs e)
         {
             // フォームのタイトルを設定します。
-            this.Text = MyCommon.ReplaceAppName(this.Text);
+            this.Text = MyCommon.ReplaceAppName( this.Text );
 
             // バージョン情報ボックスに表示されたテキストをすべて初期化します。
             // TODO: [プロジェクト] メニューの下にある [プロジェクト プロパティ] ダイアログの [アプリケーション] ペインで、アプリケーションのアセンブリ情報を 
             //    カスタマイズします。
             this.LabelProductName.Text = Application.ProductName;
-            this.LabelVersion.Text = String.Format(Properties.Resources.TweenAboutBox_LoadText2, MyCommon.GetReadableVersion());
+            this.LabelVersion.Text = String.Format( Properties.Resources.TweenAboutBox_LoadText2, MyCommon.GetReadableVersion() );
             this.LabelCopyright.Text = GetApplicationAttribute<AssemblyCopyrightAttribute>().Copyright;
             this.LabelCompanyName.Text = Application.CompanyName;
             this.TextBoxDescription.Text = GetApplicationAttribute<AssemblyDescriptionAttribute>().Description;
             this.ChangeLog.Text = Properties.Resources.ChangeLog;
-            this.TextBoxDescription.Text = string.Format(Properties.Resources.Description, ApplicationSettings.FeedbackTwitterName, ApplicationSettings.FeedbackEmailAddress);
+            this.TextBoxDescription.Text = string.Format( Properties.Resources.Description, ApplicationSettings.FeedbackTwitterName, ApplicationSettings.FeedbackEmailAddress );
         }
+
 
         protected T GetApplicationAttribute<T>() where T : Attribute
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
 
-            return (T) Attribute.GetCustomAttribute(currentAssembly, typeof(T));
+            return (T)Attribute.GetCustomAttribute( currentAssembly, typeof(T) );
         }
+
 
         private void OKButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
 
         private void TweenAboutBox_Shown(object sender, EventArgs e)
         {

@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +30,15 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
+
 namespace OpenTween
 {
+
+
     public class ToolStripAPIGauge : ToolStripControlHost
     {
         private Size originalSize;
+
 
         public ToolStripAPIGauge() : base(new Control())
         {
@@ -45,97 +48,98 @@ namespace OpenTween
             this.Control.SizeChanged += Control_SizeChanged;
         }
 
+
         private int _gaugeHeight;
 
-        public int GaugeHeight
-        {
-            set
-            {
+
+        public int GaugeHeight {
+            set {
                 this._gaugeHeight = value;
-                if (this.Control != null && !this.Control.IsDisposed) this.Control.Refresh();
+                if ( this.Control != null && !this.Control.IsDisposed )
+                    this.Control.Refresh();
             }
             get { return _gaugeHeight; }
         }
 
+
         private int _maxCount = 350;
 
-        public int MaxCount
-        {
-            set
-            {
+
+        public int MaxCount {
+            set {
                 this._maxCount = value;
-                if (this.Control != null && !this.Control.IsDisposed)
-                {
-                    this.SetText(this._remainCount, this._maxCount);
+                if ( this.Control != null && !this.Control.IsDisposed ) {
+                    this.SetText( this._remainCount, this._maxCount );
                     this.Control.Refresh();
                 }
             }
             get { return _maxCount; }
         }
 
+
         private int _remainCount;
 
-        public int RemainCount
-        {
-            set
-            {
+
+        public int RemainCount {
+            set {
                 this._remainCount = value;
-                if (this.Control != null && !this.Control.IsDisposed)
-                {
-                    this.SetText(this._remainCount, this._maxCount);
+                if ( this.Control != null && !this.Control.IsDisposed ) {
+                    this.SetText( this._remainCount, this._maxCount );
                     this.Control.Refresh();
                 }
             }
             get { return _remainCount; }
         }
 
+
         private DateTime _resetTime;
 
-        public DateTime ResetTime
-        {
-            set
-            {
+
+        public DateTime ResetTime {
+            set {
                 this._resetTime = value;
-                if (this.Control != null && !this.Control.IsDisposed)
-                {
-                    this.SetText(this._remainCount, this._maxCount);
+                if ( this.Control != null && !this.Control.IsDisposed ) {
+                    this.SetText( this._remainCount, this._maxCount );
                     this.Control.Refresh();
                 }
             }
             get { return _resetTime; }
         }
 
+
         private void Draw(object sender, PaintEventArgs e)
         {
             double minute = (this.ResetTime - DateTime.Now).TotalMinutes;
-            Rectangle apiGaugeBounds = new Rectangle(0,
+            Rectangle apiGaugeBounds = new Rectangle (0,
                                                      (this.Control.Height - (this._gaugeHeight * 2)) / 2,
                                                      this.Control.Width * this.RemainCount / this._maxCount,
                                                      this._gaugeHeight);
-            Rectangle timeGaugeBounds = new Rectangle(0,
+            Rectangle timeGaugeBounds = new Rectangle (0,
                                                       apiGaugeBounds.Top + this._gaugeHeight,
                                                       (int)(this.Control.Width * minute / 60),
                                                       this._gaugeHeight);
-            e.Graphics.FillRectangle(Brushes.LightBlue, apiGaugeBounds);
-            e.Graphics.FillRectangle(Brushes.LightPink, timeGaugeBounds);
-            e.Graphics.DrawString(this.Control.Text, this.Control.Font, SystemBrushes.ControlText, 0, (float)(timeGaugeBounds.Top - (this.Control.Font.Height / 2)));
+            e.Graphics.FillRectangle( Brushes.LightBlue, apiGaugeBounds );
+            e.Graphics.FillRectangle( Brushes.LightPink, timeGaugeBounds );
+            e.Graphics.DrawString( this.Control.Text, this.Control.Font, SystemBrushes.ControlText, 0, (float)(timeGaugeBounds.Top - (this.Control.Font.Height / 2)) );
         }
+
 
         private void Control_TextChanged(object sender, EventArgs e)
         {
             this.Control.SizeChanged -= this.Control_SizeChanged;
-            using (Graphics g = this.Control.CreateGraphics())
-            {
-                this.Control.Size = new Size((int)(Math.Max(g.MeasureString(this.Control.Text, this.Control.Font).Width, this.originalSize.Width)),
+            using (Graphics g = this.Control.CreateGraphics()) {
+                this.Control.Size = new Size ((int)(Math.Max( g.MeasureString( this.Control.Text, this.Control.Font ).Width, this.originalSize.Width )),
                                              this.Control.Size.Height);
             }
             this.Control.SizeChanged += this.Control_SizeChanged;
         }
 
+
         private void Control_SizeChanged(object sender, EventArgs e)
         {
             this.originalSize = this.Control.Size;
         }
+
 
         private void SetText(int remain, int max)
         {
@@ -144,39 +148,29 @@ namespace OpenTween
                 "API rest {0}/{1}" + Environment.NewLine +
                 "(reset after {2} minutes)";
 
-            if (this._remainCount > -1 && this._maxCount > -1)
-            {
+            if ( this._remainCount > -1 && this._maxCount > -1 ) {
                 // 正常
-                this.Control.Text = String.Format(textFormat, this._remainCount, this._maxCount);
-            }
-            else if (this.RemainCount > -1)
-            {
+                this.Control.Text = String.Format( textFormat, this._remainCount, this._maxCount );
+            } else if ( this.RemainCount > -1 ) {
                 // uppercount不正
-                this.Control.Text = String.Format(textFormat, this._remainCount, "???");
-            }
-            else if (this._maxCount < -1)
-            {
+                this.Control.Text = String.Format( textFormat, this._remainCount, "???" );
+            } else if ( this._maxCount < -1 ) {
                 // remaincount不正
-                this.Control.Text = String.Format(textFormat, "???", this._maxCount);
-            }
-            else
-            {
+                this.Control.Text = String.Format( textFormat, "???", this._maxCount );
+            } else {
                 // 両方とも不正
-                this.Control.Text = String.Format(textFormat, "???", "???");
+                this.Control.Text = String.Format( textFormat, "???", "???" );
             }
 
-            double minute = Math.Ceiling((this.ResetTime - DateTime.Now).TotalMinutes);
+            double minute = Math.Ceiling( (this.ResetTime - DateTime.Now).TotalMinutes );
             string minuteText;
-            if (minute >= 0)
-            {
+            if ( minute >= 0 ) {
                 minuteText = minute.ToString();
-            }
-            else
-            {
+            } else {
                 minuteText = "???";
             }
 
-            this.ToolTipText = String.Format(toolTipTextFormat, this._remainCount, this._maxCount, minuteText);
+            this.ToolTipText = String.Format( toolTipTextFormat, this._remainCount, this._maxCount, minuteText );
         }
     }
 }

@@ -72,6 +72,32 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = OpenTween\OpenTween.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.WithinMethodCallParentheses = True
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.BeforeIndexerDeclarationBracket = False
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.WithinIfParentheses = True
+		$2.WithinWhileParentheses = True
+		$2.WithinForParentheses = True
+		$2.WithinForEachParentheses = True
+		$2.WithinCatchParentheses = True
+		$2.WithinSwitchParentheses = True
+		$2.WithinLockParentheses = True
+		$2.BlankLinesAfterUsings = 2
+		$2.BlankLinesBeforeFirstDeclaration = 2
+		$2.BlankLinesBetweenTypes = 2
+		$2.BlankLinesBetweenMembers = 2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

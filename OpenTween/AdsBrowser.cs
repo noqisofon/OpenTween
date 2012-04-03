@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,19 +32,23 @@ using System.IO;
 using System.Drawing;
 using System.Timers;
 
+
 namespace OpenTween.OpenTweenCustomControl
 {
+
+
     public class AdsBrowser : WebBrowser
     {
         private string adsPath;
         private System.Timers.Timer refreshTimer;
 
+
         public AdsBrowser() : base()
         {
-            adsPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            File.WriteAllText(adsPath, Properties.Resources.ads);
+            adsPath = Path.Combine( Path.GetTempPath(), Path.GetRandomFileName() );
+            File.WriteAllText( adsPath, Properties.Resources.ads );
 
-            this.Size = new Size(728 + 5, 90);
+            this.Size = new Size (728 + 5, 90);
             this.ScrollBarsEnabled = false;
             this.AllowWebBrowserDrop = false;
             this.IsWebBrowserContextMenuEnabled = false;
@@ -54,10 +57,10 @@ namespace OpenTween.OpenTweenCustomControl
             this.WebBrowserShortcutsEnabled = false;
             this.Dock = DockStyle.Fill;
             this.Visible = false;
-            this.Navigate(adsPath);
+            this.Navigate( adsPath );
             this.Visible = true;
 
-            this.refreshTimer = new System.Timers.Timer(45 * 1000);
+            this.refreshTimer = new System.Timers.Timer (45 * 1000);
             this.refreshTimer.AutoReset = true;
             this.refreshTimer.SynchronizingObject = this;
             this.refreshTimer.Enabled = true;
@@ -66,11 +69,13 @@ namespace OpenTween.OpenTweenCustomControl
             this.refreshTimer.Elapsed += this.refreshTimer_Elapsed;
         }
 
+
         private void AdsBrowser_Disposed(object sender, EventArgs e)
         {
             this.refreshTimer.Dispose();
-            File.Delete(adsPath);
+            File.Delete( adsPath );
         }
+
 
         private void refreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {

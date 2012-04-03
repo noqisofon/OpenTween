@@ -23,25 +23,24 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween.OpenTweenCustomControl
 {
+
+
     public class PictureBoxEx : PictureBox
     {
         protected override void OnPaint(PaintEventArgs pe)
         {
-            try
-            {
-                base.OnPaint(pe);
-            }
-            catch (OutOfMemoryException)
-            {
+            try {
+                base.OnPaint( pe );
+            } catch ( OutOfMemoryException ) {
             }
         }
     }

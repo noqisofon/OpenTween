@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,8 +32,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public partial class AtIdSupplement : Form
     {
         public string inputText = "";
@@ -44,39 +46,39 @@ namespace OpenTween
 
         private string _StartsWith = "";
 
+
         public void AddItem(string id)
         {
-            if (!this.TextId.AutoCompleteCustomSource.Contains(id))
-            {
-                this.TextId.AutoCompleteCustomSource.Add(id);
+            if ( !this.TextId.AutoCompleteCustomSource.Contains( id ) ) {
+                this.TextId.AutoCompleteCustomSource.Add( id );
             }
         }
+
 
         public void AddRangeItem(string[] ids)
         {
-            foreach (var id in ids)
-            {
-                this.AddItem(id);
+            foreach ( var id in ids ) {
+                this.AddItem( id );
             }
         }
 
+
         public List<string> GetItemList()
         {
-            var ids = new List<string>();
-            for (int i = 0; i < this.TextId.AutoCompleteCustomSource.Count; ++i)
-            {
-                ids.Add(this.TextId.AutoCompleteCustomSource[i]);
+            var ids = new List<string> ();
+            for ( int i = 0; i < this.TextId.AutoCompleteCustomSource.Count; ++i ) {
+                ids.Add( this.TextId.AutoCompleteCustomSource [i] );
             }
             return ids;
         }
 
-        public int ItemCount
-        {
-            get
-            {
+
+        public int ItemCount {
+            get {
                 return this.TextId.AutoCompleteCustomSource.Count;
             }
         }
+
 
         private void ButtonOK_Click(object sender, EventArgs e) /*Handles ButtonOK.Click*/
         {
@@ -84,107 +86,99 @@ namespace OpenTween
             isBack = false;
         }
 
+
         private void ButtonCancel_Click(object sender, EventArgs e) /*Handles ButtonCancel.Click*/
         {
             inputText = "";
             isBack = false;
         }
 
+
         private void TextId_KeyDown(object sender, KeyEventArgs e) /*Handles TextId.KeyDown*/
         {
-            if (e.KeyCode == Keys.Back && string.IsNullOrEmpty(this.TextId.Text))
-            {
+            if ( e.KeyCode == Keys.Back && string.IsNullOrEmpty( this.TextId.Text ) ) {
                 inputText = "";
                 isBack = true;
                 this.Close();
-            }
-            else if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Tab)
-            {
+            } else if ( e.KeyCode == Keys.Space || e.KeyCode == Keys.Tab ) {
                 inputText = this.TextId.Text + " ";
                 isBack = false;
                 this.Close();
-            }
-            else if (e.Control && e.KeyCode == Keys.Delete)
-            {
-                if (!string.IsNullOrEmpty(this.TextId.Text))
-                {
-                    var idx = this.TextId.AutoCompleteCustomSource.IndexOf(this.TextId.Text);
-                    if (idx > -1)
-                    {
+            } else if ( e.Control && e.KeyCode == Keys.Delete ) {
+                if ( !string.IsNullOrEmpty( this.TextId.Text ) ) {
+                    var idx = this.TextId.AutoCompleteCustomSource.IndexOf( this.TextId.Text );
+                    if ( idx > -1 ) {
                         this.TextId.Text = "";
-                        this.TextId.AutoCompleteCustomSource.RemoveAt(idx);
+                        this.TextId.AutoCompleteCustomSource.RemoveAt( idx );
                     }
                 }
             }
         }
 
+
         private void AtIdSupplement_Load(object sender, EventArgs e) /*Handles this.Load*/
         {
-            if (startChar == "#")
-            {
-                this.ClientSize = new Size(this.TextId.Width, this.TextId.Height); //プロパティで切り替えできるように
+            if ( startChar == "#" ) {
+                this.ClientSize = new Size (this.TextId.Width, this.TextId.Height); //プロパティで切り替えできるように
                 this.TextId.ImeMode = ImeMode.Inherit;
             }
         }
 
+
         private void AtIdSupplement_Shown(object sender, EventArgs e) /*Handles this.Shown*/
         {
             TextId.Text = startChar;
-            if (!string.IsNullOrEmpty(_StartsWith))
-            {
-                TextId.Text += _StartsWith.Substring(0, _StartsWith.Length);
+            if ( !string.IsNullOrEmpty( _StartsWith ) ) {
+                TextId.Text += _StartsWith.Substring( 0, _StartsWith.Length );
             }
             TextId.SelectionStart = TextId.Text.Length;
             TextId.Focus();
         }
+
 
         public AtIdSupplement()
         {
             InitializeComponent();
         }
 
+
         public AtIdSupplement(List<string> ItemList, string startCharacter)
         {
             InitializeComponent();
 
-            for (int i = 0; i < ItemList.Count; ++i)
-            {
-                this.TextId.AutoCompleteCustomSource.Add(ItemList[i]);
+            for ( int i = 0; i < ItemList.Count; ++i ) {
+                this.TextId.AutoCompleteCustomSource.Add( ItemList [i] );
             }
             startChar = startCharacter;
         }
 
+
         private void TextId_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) /*Handles TextId.PreviewKeyDown*/
         {
-            if (e.KeyCode == Keys.Tab)
-            {
+            if ( e.KeyCode == Keys.Tab ) {
                 inputText = this.TextId.Text + " ";
                 isBack = false;
                 this.Close();
             }
         }
 
-        public string StartsWith
-        {
-            get
-            {
+
+        public string StartsWith {
+            get {
                 return _StartsWith;
             }
-            set
-            {
+            set {
                 _StartsWith = value;
             }
         }
 
+
         private void AtIdSupplement_FormClosed(object sender, FormClosedEventArgs e) /*Handles MyBase.FormClosed*/
         {
             _StartsWith = "";
-            if (isBack)
-            {
+            if ( isBack ) {
                 this.DialogResult = DialogResult.Cancel;
-            }
-            else
-            {
+            } else {
                 this.DialogResult = DialogResult.OK;
             }
         }

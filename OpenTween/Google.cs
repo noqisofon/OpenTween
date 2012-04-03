@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +32,11 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Web;
 
+
 namespace OpenTween
 {
+
+
     public class Google
     {
 #region "Translation"
@@ -160,115 +162,119 @@ namespace OpenTween
         [DataContract]
         public class TranslateResponseData
         {
-            [DataMember(Name = "translatedText")] public string TranslatedText;
+            [DataMember(Name = "translatedText")]
+            public string TranslatedText;
         }
 
 
         [DataContract]
         private class TranslateResponse
         {
-            [DataMember(Name = "responseData")] public TranslateResponseData ResponseData = null;
-            [DataMember(Name = "responseDetails")] public string ResponseDetails = null;
-            [DataMember(Name = "responseStatus")] public HttpStatusCode ResponseStatus = 0;
+            [DataMember(Name = "responseData")]
+            public TranslateResponseData ResponseData = null;
+            [DataMember(Name = "responseDetails")]
+            public string ResponseDetails = null;
+            [DataMember(Name = "responseStatus")]
+            public HttpStatusCode ResponseStatus = 0;
         }
 
 
         [DataContract]
         public class LanguageDetectResponseData
         {
-            [DataMember(Name = "language")] public string Language;
-            [DataMember(Name = "isReliable")] public bool IsReliable;
-            [DataMember(Name = "confidence")] public double Confidence;
+            [DataMember(Name = "language")]
+            public string Language;
+            [DataMember(Name = "isReliable")]
+            public bool IsReliable;
+            [DataMember(Name = "confidence")]
+            public double Confidence;
         }
+
 
         [DataContract]
         private class LanguageDetectResponse
         {
-            [DataMember(Name = "responseData")] public LanguageDetectResponseData ResponseData = null;
-            [DataMember(Name = "responseDetails")] public string ResponseDetails = null;
-            [DataMember(Name = "responseStatus")] public HttpStatusCode ResponseStatus = 0;
+            [DataMember(Name = "responseData")]
+            public LanguageDetectResponseData ResponseData = null;
+            [DataMember(Name = "responseDetails")]
+            public string ResponseDetails = null;
+            [DataMember(Name = "responseStatus")]
+            public HttpStatusCode ResponseStatus = 0;
         }
 
         public bool Translate(string srclng, string dstlng, string source, ref string destination, ref string ErrMsg)
         {
-            var http = new HttpVarious();
+            var http = new HttpVarious ();
             var apiurl = TranslateEndPoint;
-            var headers = new Dictionary<string, string>();
-            headers.Add("v", "1.0");
+            var headers = new Dictionary<string, string> ();
+            headers.Add( "v", "1.0" );
 
             ErrMsg = "";
-            if (string.IsNullOrEmpty(srclng) || string.IsNullOrEmpty(dstlng))
-            {
+            if ( string.IsNullOrEmpty( srclng ) || string.IsNullOrEmpty( dstlng ) ) {
                 return false;
             }
-            headers.Add("User-Agent", MyCommon.GetUserAgentString());
-            headers.Add("langpair", srclng + "|" + dstlng);
+            headers.Add( "User-Agent", MyCommon.GetUserAgentString() );
+            headers.Add( "langpair", srclng + "|" + dstlng );
 
-            headers.Add("q", source);
+            headers.Add( "q", source );
 
             var content = "";
-            if (http.GetData(apiurl, headers, out content))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(TranslateResponse));
+            if ( http.GetData( apiurl, headers, out content ) ) {
+                var serializer = new DataContractJsonSerializer (typeof(TranslateResponse));
                 TranslateResponse res;
 
-                try
-                {
-                    res = MyCommon.CreateDataFromJson<TranslateResponse>(content);
-                }
-                catch(Exception)
-                {
+                try {
+                    res = MyCommon.CreateDataFromJson<TranslateResponse>( content );
+                } catch ( Exception ) {
                     ErrMsg = "Err:Invalid JSON";
                     return false;
                 }
 
-                if (res.ResponseData == null)
-                {
+                if ( res.ResponseData == null ) {
                     ErrMsg = "Err:" + res.ResponseDetails;
                     return false;
                 }
                 var _body = res.ResponseData.TranslatedText;
-                var buf = HttpUtility.UrlDecode(_body);
+                var buf = HttpUtility.UrlDecode( _body );
 
-                destination = string.Copy(buf);
+                destination = string.Copy( buf );
                 return true;
             }
             return false;
         }
 
+
         public string LanguageDetect(string source)
         {
-            var http = new HttpVarious();
+            var http = new HttpVarious ();
             var apiurl = LanguageDetectEndPoint;
-            var headers = new Dictionary<string, string>();
-            headers.Add("User-Agent", MyCommon.GetUserAgentString());
-            headers.Add("v", "1.0");
-            headers.Add("q", source);
+            var headers = new Dictionary<string, string> ();
+            headers.Add( "User-Agent", MyCommon.GetUserAgentString() );
+            headers.Add( "v", "1.0" );
+            headers.Add( "q", source );
             var content = "";
-            if (http.GetData(apiurl, headers, out content))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(LanguageDetectResponse));
-                try
-                {
-                    var res = MyCommon.CreateDataFromJson<LanguageDetectResponse>(content);
+            if ( http.GetData( apiurl, headers, out content ) ) {
+                var serializer = new DataContractJsonSerializer (typeof(LanguageDetectResponse));
+                try {
+                    var res = MyCommon.CreateDataFromJson<LanguageDetectResponse>( content );
                     return res.ResponseData.Language;
-                }
-                catch(Exception)
-                {
+                } catch ( Exception ) {
                     return "";
                 }
             }
             return "";
         }
 
+
         public string GetLanguageEnumFromIndex(int index)
         {
-            return LanguageTable[index];
+            return LanguageTable [index];
         }
+
 
         public int GetIndexFromLanguageEnum(string lang)
         {
-            return LanguageTable.IndexOf(lang);
+            return LanguageTable.IndexOf( lang );
         }
 #endregion
 
@@ -279,8 +285,10 @@ namespace OpenTween
         [DataContract]
         private class UrlShortenerParameter
         {
-            [DataMember(Name = "longUrl")] public string LongUrl = null;
+            [DataMember(Name = "longUrl")]
+            public string LongUrl = null;
         }
+
 
         [DataContract]
         private class UrlShortenerResponse
@@ -290,13 +298,13 @@ namespace OpenTween
 
         public string Shorten(string source)
         {
-            var http = new HttpVarious();
+            var http = new HttpVarious ();
             var apiurl = "https://www.googleapis.com/urlshortener/v1/url";
-            var headers = new Dictionary<string, string>();
-            headers.Add("User-Agent", MyCommon.GetUserAgentString());
-            headers.Add("Content-Type", "application/json");
+            var headers = new Dictionary<string, string> ();
+            headers.Add( "User-Agent", MyCommon.GetUserAgentString() );
+            headers.Add( "Content-Type", "application/json" );
 
-            http.PostData(apiurl, headers);
+            http.PostData( apiurl, headers );
             return "";
         }
 #endregion
@@ -304,8 +312,9 @@ namespace OpenTween
 #region "GoogleMaps"
         public string CreateGoogleStaticMapsUri(GlobalLocation locate)
         {
-            return CreateGoogleStaticMapsUri(locate.Latitude, locate.Longitude);
+            return CreateGoogleStaticMapsUri( locate.Latitude, locate.Longitude );
         }
+
 
         public string CreateGoogleStaticMapsUri(double lat, double lng)
         {
@@ -317,10 +326,12 @@ namespace OpenTween
             return "http://maps.google.com/maps/api/staticmap?center=" + location + "&size=" + width + "x" + height + "&zoom=" + zoom + "&markers=" + location + "&sensor=false";
         }
 
+
         public string CreateGoogleMapsUri(GlobalLocation locate)
         {
-            return CreateGoogleMapsUri(locate.Latitude, locate.Longitude);
+            return CreateGoogleMapsUri( locate.Latitude, locate.Longitude );
         }
+
 
         public string CreateGoogleMapsUri(double lat, double lng)
         {
@@ -333,7 +344,11 @@ namespace OpenTween
         public class GlobalLocation
         {
             public double Latitude { get; set; }
+
+
             public double Longitude { get; set; }
+
+
             public string LocateInfo { get; set; }
         }
 

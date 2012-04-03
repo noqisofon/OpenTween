@@ -23,30 +23,32 @@
 // with this program. if (not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
+
 namespace OpenTween
 {
+
+
     public class HttpOAuthApiProxy : HttpConnectionOAuth
     {
         private const string _apiHost = "api.twitter.com";
         private static string _proxyHost = "";
 
-        public static string ProxyHost
-        {
-            set
-            {
-                if (string.IsNullOrEmpty(value) || value == _apiHost)
+
+        public static string ProxyHost {
+            set {
+                if ( string.IsNullOrEmpty( value ) || value == _apiHost )
                     _proxyHost = "";
                 else
                     _proxyHost = value;
             }
         }
+
 
         protected override string CreateSignature(string tokenSecret,
                                          string method,
@@ -54,24 +56,24 @@ namespace OpenTween
                                          Dictionary<string, string> parameter)
         {
             //パラメタをソート済みディクショナリに詰替（OAuthの仕様）
-            SortedDictionary<string, string> sorted = new SortedDictionary<string, string>(parameter);
+            SortedDictionary<string, string> sorted = new SortedDictionary<string, string> (parameter);
             //URLエンコード済みのクエリ形式文字列に変換
-            string paramString = CreateQueryString(sorted);
+            string paramString = CreateQueryString( sorted );
             //アクセス先URLの整形
-            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Host, uri.AbsolutePath);
+            string url = string.Format( "{0}://{1}{2}", uri.Scheme, uri.Host, uri.AbsolutePath );
             //本来のアクセス先URLに再設定（api.twitter.com固定）
-            if (!string.IsNullOrEmpty(_proxyHost) && url.StartsWith(uri.Scheme + "://" + _proxyHost))
-                url = url.Replace(uri.Scheme + "://" + _proxyHost, uri.Scheme + "://" + _apiHost);
+            if ( !string.IsNullOrEmpty( _proxyHost ) && url.StartsWith( uri.Scheme + "://" + _proxyHost ) )
+                url = url.Replace( uri.Scheme + "://" + _proxyHost, uri.Scheme + "://" + _apiHost );
             //署名のベース文字列生成（&区切り）。クエリ形式文字列は再エンコードする
-            string signatureBase = String.Format("{0}&{1}&{2}", method, UrlEncode(url), UrlEncode(paramString));
+            string signatureBase = String.Format( "{0}&{1}&{2}", method, UrlEncode( url ), UrlEncode( paramString ) );
             //署名鍵の文字列をコンシューマー秘密鍵とアクセストークン秘密鍵から生成（&区切り。アクセストークン秘密鍵なくても&残すこと）
-            string key = UrlEncode(consumerSecret) + "&";
-            if (!string.IsNullOrEmpty(tokenSecret)) key += UrlEncode(tokenSecret);
+            string key = UrlEncode( consumerSecret ) + "&";
+            if ( !string.IsNullOrEmpty( tokenSecret ) )
+                key += UrlEncode( tokenSecret );
             //鍵生成＆署名生成
-            using (HMACSHA1 hmac = new HMACSHA1(Encoding.ASCII.GetBytes(key)))
-            {
-                byte[] hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(signatureBase));
-                return Convert.ToBase64String(hash);
+            using (HMACSHA1 hmac = new HMACSHA1(Encoding.ASCII.GetBytes(key))) {
+                byte[] hash = hmac.ComputeHash( Encoding.ASCII.GetBytes( signatureBase ) );
+                return Convert.ToBase64String( hash );
             }
         }
 

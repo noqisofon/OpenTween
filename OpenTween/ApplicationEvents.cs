@@ -33,20 +33,23 @@ using System.Globalization;
 using System.Reflection;
 
 
-namespace OpenTween {
+namespace OpenTween
+{
 
 
-    internal class MyApplication {
+    internal class MyApplication
+    {
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static int Main() {
+        static int Main()
+        {
             CheckSettingFilePath();
             InitCulture();
 
             string pt = Application.ExecutablePath.Replace( "\\", "/" ) + "/" + Application.ProductName;
-            using ( Mutex mt = new Mutex(false, pt) ) {
+            using (Mutex mt = new Mutex(false, pt)) {
                 if ( !mt.WaitOne( 0, false ) ) {
                     ShowPreviousWindow();
                     return 1;
@@ -56,7 +59,7 @@ namespace OpenTween {
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault( false );
-                Application.Run( new TweenMain() );
+                Application.Run( new TweenMain () );
 
                 mt.ReleaseMutex();
 
@@ -65,7 +68,8 @@ namespace OpenTween {
         }
 
 
-        private static void ShowPreviousWindow() {
+        private static void ShowPreviousWindow()
+        {
             // 実行中の同じアプリケーションのウィンドウ・ハンドルの取得
             var prevProcess = Win32Api.GetPreviousProcess();
             if ( prevProcess != null && prevProcess.MainWindowHandle == IntPtr.Zero ) {
@@ -89,7 +93,8 @@ namespace OpenTween {
         }
 
 
-        private static void MyApplication_UnhandledException(object sender, ThreadExceptionEventArgs e) {
+        private static void MyApplication_UnhandledException(object sender, ThreadExceptionEventArgs e)
+        {
             //GDI+のエラー原因を特定したい
             if ( e.Exception.Message != "A generic error occurred in GDI+." &&
                e.Exception.Message != "GDI+ で汎用エラーが発生しました。" ) {
@@ -100,7 +105,8 @@ namespace OpenTween {
         }
 
 
-        private static bool IsEqualCurrentCulture(string CultureName) {
+        private static bool IsEqualCurrentCulture(string CultureName)
+        {
             return Thread.CurrentThread.CurrentUICulture.Name.StartsWith( CultureName );
         }
 
@@ -123,24 +129,27 @@ namespace OpenTween {
         }
 
 
-        public static void InitCulture(string code) {
+        public static void InitCulture(string code)
+        {
             try {
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo( code );
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo (code);
             } catch ( Exception ) {
             }
         }
 
 
-        public static void InitCulture() {
+        public static void InitCulture()
+        {
             try {
                 if ( CultureCode != "OS" )
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo( CultureCode );
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo (CultureCode);
             } catch ( Exception ) {
             }
         }
 
 
-        private static void CheckSettingFilePath() {
+        private static void CheckSettingFilePath()
+        {
             if ( File.Exists( Path.Combine( Application.StartupPath, "roaming" ) ) ) {
                 MyCommon.settingPath = MySpecialPath.UserAppDataPath();
             } else {

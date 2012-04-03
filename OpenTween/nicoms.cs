@@ -23,11 +23,13 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
+
 
 namespace OpenTween
 {
+
+
     public static class nicoms
     {
         private static string[] _nicovideo =
@@ -46,31 +48,32 @@ namespace OpenTween
             "news.nicovideo.jp/watch/",
         };
 
+
         public static string Shorten(string url)
         {
             //整形（http(s)://を削除）
-            if (url.Length > 7 && url.Length < 128 && url.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-            {
-                url = url.Substring(7);
-            }
-            else
-            {
+            if ( url.Length > 7 && url.Length < 128 && url.StartsWith( "http://", StringComparison.OrdinalIgnoreCase ) ) {
+                url = url.Substring( 7 );
+            } else {
                 return url;
             }
 
-            foreach (var nv in _nicovideo)
-            {
-                if (url.StartsWith(nv)) return string.Format("{0}{1}", "http://nico.ms/", url.Substring(nv.Length));
+            foreach ( var nv in _nicovideo ) {
+                if ( url.StartsWith( nv ) )
+                    return string.Format( "{0}{1}", "http://nico.ms/", url.Substring( nv.Length ) );
             }
 
-            var i = url.IndexOf("nicovideo.jp/user/", StringComparison.OrdinalIgnoreCase);
-            if (i == 0 || i == 4) return string.Format("{0}{1}", "http://nico.ms/", url.Substring(13 + i));
+            var i = url.IndexOf( "nicovideo.jp/user/", StringComparison.OrdinalIgnoreCase );
+            if ( i == 0 || i == 4 )
+                return string.Format( "{0}{1}", "http://nico.ms/", url.Substring( 13 + i ) );
 
-            i = url.IndexOf("nicovideo.jp/mylist/", StringComparison.OrdinalIgnoreCase);
-            if (i == 0 || i == 4) return string.Format("{0}{1}", "http://nico.ms/", url.Substring(13 + i));
+            i = url.IndexOf( "nicovideo.jp/mylist/", StringComparison.OrdinalIgnoreCase );
+            if ( i == 0 || i == 4 )
+                return string.Format( "{0}{1}", "http://nico.ms/", url.Substring( 13 + i ) );
 
-            i = url.IndexOf("seiga.nicovideo.jp/watch/", StringComparison.OrdinalIgnoreCase);
-            if (i == 0) return string.Format("{0}{1}", "http://nico.ms/", url.Substring(25));
+            i = url.IndexOf( "seiga.nicovideo.jp/watch/", StringComparison.OrdinalIgnoreCase );
+            if ( i == 0 )
+                return string.Format( "{0}{1}", "http://nico.ms/", url.Substring( 25 ) );
 
             return "http://" + url;
         }

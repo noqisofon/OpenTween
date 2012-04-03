@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +32,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+
 
 namespace OpenTween
 {
@@ -48,38 +48,43 @@ namespace OpenTween
     /// 6. 必要な場合はInstance.Result(=Servicerのe.Result)を参照し戻り値を得る
     /// 7.Dispose タスクサービスが正常終了した場合は自分自身をCloseするので最後にDisposeすること。
     ///</remarks>
+
+
     public partial class FormInfo : Form
     {
         private class BackgroundWorkerServicer : BackgroundWorker
         {
             public object Result = null;
 
+
             protected override void OnRunWorkerCompleted(RunWorkerCompletedEventArgs e)
             {
                 this.Result = e.Result;
-                base.OnRunWorkerCompleted(e);
+                base.OnRunWorkerCompleted( e );
             }
         }
 
         private string _msg;
         private object _arg = null;
+        private BackgroundWorkerServicer Servicer = new BackgroundWorkerServicer ();
 
-        private BackgroundWorkerServicer Servicer = new BackgroundWorkerServicer();
 
         public FormInfo(Form owner,
                         string Message,
                         DoWorkEventHandler DoWork)
         {
-            doInitialize(owner, Message, DoWork, null, null);
+            doInitialize( owner, Message, DoWork, null, null );
         }
+
 
         public FormInfo(Form owner,
                         string Message,
                         DoWorkEventHandler DoWork,
                         RunWorkerCompletedEventHandler RunWorkerCompleted)
         {
-            doInitialize(owner, Message, DoWork, RunWorkerCompleted, null);
+            doInitialize( owner, Message, DoWork, RunWorkerCompleted, null );
         }
+
 
         public FormInfo(Form owner,
                         string Message,
@@ -87,8 +92,9 @@ namespace OpenTween
                         RunWorkerCompletedEventHandler RunWorkerCompleted,
                         object Argument)
         {
-            doInitialize(owner, Message, DoWork, RunWorkerCompleted, Argument);
+            doInitialize( owner, Message, DoWork, RunWorkerCompleted, Argument );
         }
+
 
         private void doInitialize(Form owner,
                                   string Message,
@@ -105,13 +111,13 @@ namespace OpenTween
             this.InfoMessage = Message;
             this.Servicer.DoWork += DoWork;
 
-            if (RunWorkerCompleted != null)
-            {
+            if ( RunWorkerCompleted != null ) {
                 this.Servicer.RunWorkerCompleted += RunWorkerCompleted;
             }
 
             this.Argument = Argument;
         }
+
 
         private void LabelInformation_TextChanged(object sender, EventArgs e)
         {
@@ -123,11 +129,9 @@ namespace OpenTween
         ///</summary>
         ///<param name="msg">表示するメッセージ</param>
         ///<returns>現在設定されているメッセージ</returns>
-        public string InfoMessage
-        {
+        public string InfoMessage {
             get { return _msg; }
-            set
-            {
+            set {
                 _msg = value;
                 LabelInformation.Text = _msg;
             }
@@ -138,8 +142,7 @@ namespace OpenTween
         ///</summary>
         ///<param name="args">Servicerへ渡すパラメータ</param>
         ///<returns>現在設定されているServicerへ渡すパラメータ</returns>
-        public object Argument
-        {
+        public object Argument {
             get { return _arg; }
             set { _arg = value; }
         }
@@ -148,17 +151,16 @@ namespace OpenTween
         ///Servicerのe.Result
         ///</summary>
         ///<returns>Servicerのe.Result</returns>
-        public object Result
-        {
+        public object Result {
             get { return Servicer.Result; }
         }
 
+
         private void FormInfo_Shown(object sender, EventArgs e)
         {
-            Servicer.RunWorkerAsync(_arg);
-            while (Servicer.IsBusy)
-            {
-                Thread.Sleep(100);
+            Servicer.RunWorkerAsync( _arg );
+            while ( Servicer.IsBusy ) {
+                Thread.Sleep( 100 );
                 Application.DoEvents();
             }
             this.TopMost = false;          // MessageBoxが裏に隠れる問題に対応
@@ -169,8 +171,7 @@ namespace OpenTween
 
         private void FormInfo_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (Owner != null && Owner.Created)
-            {
+            if ( Owner != null && Owner.Created ) {
                 Owner.TopMost = !Owner.TopMost;
                 Owner.TopMost = !Owner.TopMost;
             }

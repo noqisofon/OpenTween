@@ -23,7 +23,6 @@
 // with this program. if (not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,8 +32,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public partial class HashtagManage : Form
     {
         //入力補助画面
@@ -47,16 +49,18 @@ namespace OpenTween
         //編集モード
         private bool _isAdd = false;
 
+
         private void ChangeMode(bool isEdit)
         {
             this.GroupHashtag.Enabled = !isEdit;
             this.GroupDetail.Enabled = isEdit;
             this.TableLayoutButtons.Enabled = !isEdit;
-            if (isEdit)
+            if ( isEdit )
                 this.UseHashText.Focus();
             else
                 this.HistoryHashList.Focus();
         }
+
 
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -64,66 +68,68 @@ namespace OpenTween
             this.Close();
         }
 
+
         private void AddButton_Click(object sender, EventArgs e)
         {
             this.UseHashText.Text = "";
-            ChangeMode(true);
+            ChangeMode( true );
             _isAdd = true;
         }
 
+
         private void EditButton_Click(object sender, EventArgs e)
         {
-            if (this.HistoryHashList.SelectedIndices.Count == 0) return;
-            this.UseHashText.Text = this.HistoryHashList.SelectedItems[0].ToString();
-            ChangeMode(true);
+            if ( this.HistoryHashList.SelectedIndices.Count == 0 )
+                return;
+            this.UseHashText.Text = this.HistoryHashList.SelectedItems [0].ToString();
+            ChangeMode( true );
             _isAdd = false;
         }
 
+
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            if (this.HistoryHashList.SelectedIndices.Count == 0) return;
-            if (MessageBox.Show(Properties.Resources.DeleteHashtagsMessage1,
+            if ( this.HistoryHashList.SelectedIndices.Count == 0 )
+                return;
+            if ( MessageBox.Show( Properties.Resources.DeleteHashtagsMessage1,
                                 "Delete Hashtags",
                                 MessageBoxButtons.OKCancel,
-                                MessageBoxIcon.Question) == DialogResult.Cancel)
-            {
+                                MessageBoxIcon.Question ) == DialogResult.Cancel ) {
                 return;
             }
-            for (int i = 0; i < HistoryHashList.SelectedIndices.Count; i++)
-            {
-                if (UseHashText.Text == HistoryHashList.SelectedItems[0].ToString()) UseHashText.Text = "";
-                HistoryHashList.Items.RemoveAt(HistoryHashList.SelectedIndices[0]);
+            for ( int i = 0; i < HistoryHashList.SelectedIndices.Count; i++ ) {
+                if ( UseHashText.Text == HistoryHashList.SelectedItems [0].ToString() )
+                    UseHashText.Text = "";
+                HistoryHashList.Items.RemoveAt( HistoryHashList.SelectedIndices [0] );
             }
-            if (HistoryHashList.Items.Count > 0)
-            {
+            if ( HistoryHashList.Items.Count > 0 ) {
                 HistoryHashList.SelectedIndex = 0;
             }
         }
 
+
         private void UnSelectButton_Click(object sender, EventArgs e)
         {
-            do
-            {
+            do {
                 HistoryHashList.SelectedIndices.Clear();
             } while (HistoryHashList.SelectedIndices.Count > 0);
         }
 
+
         private int GetIndexOf(ListBox.ObjectCollection list, string value)
         {
-            if (string.IsNullOrEmpty(value)) return -1;
+            if ( string.IsNullOrEmpty( value ) )
+                return -1;
 
             int idx = 0;
 
-            foreach (object l in list)
-            {
+            foreach ( object l in list ) {
                 string src = l as string;
-                if (string.IsNullOrEmpty(src))
-                {
+                if ( string.IsNullOrEmpty( src ) ) {
                     idx += 1;
                     continue;
                 }
-                if (string.Compare(src, value, true) == 0)
-                {
+                if ( string.Compare( src, value, true ) == 0 ) {
                     return idx;
                 }
                 idx += 1;
@@ -133,49 +139,41 @@ namespace OpenTween
             return -1;
         }
 
+
         public void AddHashToHistory(string hash, bool isIgnorePermanent)
         {
             hash = hash.Trim();
-            if (!string.IsNullOrEmpty(hash))
-            {
-                if (isIgnorePermanent || !_isPermanent)
-                {
+            if ( !string.IsNullOrEmpty( hash ) ) {
+                if ( isIgnorePermanent || !_isPermanent ) {
                     //無条件に先頭に挿入
-                    int idx = GetIndexOf(HistoryHashList.Items, hash);
+                    int idx = GetIndexOf( HistoryHashList.Items, hash );
 
-                    if (idx != -1) HistoryHashList.Items.RemoveAt(idx);
-                    HistoryHashList.Items.Insert(0, hash);
-                }
-                else
-                {
+                    if ( idx != -1 )
+                        HistoryHashList.Items.RemoveAt( idx );
+                    HistoryHashList.Items.Insert( 0, hash );
+                } else {
                     //固定されていたら2行目に挿入
-                    int idx = GetIndexOf(HistoryHashList.Items, hash);
-                    if (_isPermanent)
-                    {
-                        if (idx > 0)
-                        {
+                    int idx = GetIndexOf( HistoryHashList.Items, hash );
+                    if ( _isPermanent ) {
+                        if ( idx > 0 ) {
                             //重複アイテムが2行目以降にあれば2行目へ
-                            HistoryHashList.Items.RemoveAt(idx);
-                            HistoryHashList.Items.Insert(1, hash);
-                        }
-                        else if (idx == -1)
-                        {
+                            HistoryHashList.Items.RemoveAt( idx );
+                            HistoryHashList.Items.Insert( 1, hash );
+                        } else if ( idx == -1 ) {
                             //重複アイテムなし
-                            if (HistoryHashList.Items.Count == 0)
-                            {
+                            if ( HistoryHashList.Items.Count == 0 ) {
                                 //リストが空なら追加
-                                HistoryHashList.Items.Add(hash);
-                            }
-                            else
-                            {
+                                HistoryHashList.Items.Add( hash );
+                            } else {
                                 //リストにアイテムがあれば2行目へ
-                                HistoryHashList.Items.Insert(1, hash);
+                                HistoryHashList.Items.Insert( 1, hash );
                             }
                         }
                     }
                 }
             }
         }
+
 
         private void HashtagManage_Shown(object sender, EventArgs e)
         {
@@ -184,17 +182,15 @@ namespace OpenTween
             this.RadioHead.Checked = this._isHead;
             this.RadioLast.Checked = !this._isHead;
             //リスト選択
-            if (this.HistoryHashList.Items.Contains(this._useHash))
-            {
+            if ( this.HistoryHashList.Items.Contains( this._useHash ) ) {
                 this.HistoryHashList.SelectedItem = this._useHash;
-            }
-            else
-            {
-                if (this.HistoryHashList.Items.Count > 0)
+            } else {
+                if ( this.HistoryHashList.Items.Count > 0 )
                     this.HistoryHashList.SelectedIndex = 0;
             }
-            this.ChangeMode(false);
+            this.ChangeMode( false );
         }
+
 
         public HashtagManage(AtIdSupplement hashSuplForm, string[] history, string permanentHash, bool IsPermanent, bool IsHead, bool IsNotAddToAtReply)
         {
@@ -204,30 +200,27 @@ namespace OpenTween
             // InitializeComponent() 呼び出しの後で初期化を追加します。
 
             _hashSupl = hashSuplForm;
-            HistoryHashList.Items.AddRange(history);
+            HistoryHashList.Items.AddRange( history );
             _useHash = permanentHash;
             _isPermanent = IsPermanent;
             _isHead = IsHead;
             _isNotAddToAtReply = IsNotAddToAtReply;
         }
 
+
         private void UseHashText_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == '#')
-            {
+            if ( e.KeyChar == '#' ) {
                 _hashSupl.ShowDialog();
-                if (!string.IsNullOrEmpty(_hashSupl.inputText))
-                {
+                if ( !string.IsNullOrEmpty( _hashSupl.inputText ) ) {
                     string fHalf = "";
                     string eHalf = "";
                     int selStart = UseHashText.SelectionStart;
-                    if (selStart > 0)
-                    {
-                        fHalf = UseHashText.Text.Substring(0, selStart);
+                    if ( selStart > 0 ) {
+                        fHalf = UseHashText.Text.Substring( 0, selStart );
                     }
-                    if (selStart < UseHashText.Text.Length)
-                    {
-                        eHalf = UseHashText.Text.Substring(selStart);
+                    if ( selStart < UseHashText.Text.Length ) {
+                        eHalf = UseHashText.Text.Substring( selStart );
                     }
                     UseHashText.Text = fHalf + _hashSupl.inputText + eHalf;
                     UseHashText.SelectionStart = selStart + _hashSupl.inputText.Length;
@@ -236,144 +229,141 @@ namespace OpenTween
             }
         }
 
+
         private void HistoryHashList_DoubleClick(object sender, EventArgs e)
         {
-            this.OK_Button_Click(null, null);
+            this.OK_Button_Click( null, null );
         }
+
 
         public void ToggleHash()
         {
-            if (string.IsNullOrEmpty(this._useHash))
-            {
-                if (this.HistoryHashList.Items.Count > 0)
-                    this._useHash = this.HistoryHashList.Items[0].ToString();
-            }
-            else
-            {
+            if ( string.IsNullOrEmpty( this._useHash ) ) {
+                if ( this.HistoryHashList.Items.Count > 0 )
+                    this._useHash = this.HistoryHashList.Items [0].ToString();
+            } else {
                 this._useHash = "";
             }
         }
 
-        public List<string> HashHistories
-        {
-            get
-            {
-                List<string> hash = new List<string>();
-                foreach (string item in HistoryHashList.Items)
-                {
-                    hash.Add(item);
+
+        public List<string> HashHistories {
+            get {
+                List<string> hash = new List<string> ();
+                foreach ( string item in HistoryHashList.Items ) {
+                    hash.Add( item );
                 }
                 return hash;
             }
         }
 
-        public string UseHash
-        {
+
+        public string UseHash {
             get { return _useHash; }
         }
+
 
         public void ClearHashtag()
         {
             this._useHash = "";
         }
 
+
         public void SetPermanentHash(string hash)
         {
             //固定ハッシュタグの変更
             _useHash = hash.Trim();
-            this.AddHashToHistory(_useHash, false);
+            this.AddHashToHistory( _useHash, false );
             this._isPermanent = true;
         }
 
-        public bool IsPermanent
-        {
+
+        public bool IsPermanent {
             get { return _isPermanent; }
         }
 
-        public bool IsHead
-        {
+
+        public bool IsHead {
             get { return _isHead; }
         }
 
-        public bool IsNotAddToAtReply
-        {
+
+        public bool IsNotAddToAtReply {
             get { return _isNotAddToAtReply; }
         }
+
 
         private void PermOK_Button_Click(object sender, EventArgs e)
         {
             //ハッシュタグの整形
             string hashStr = UseHashText.Text;
-            if (!this.AdjustHashtags(ref hashStr, true)) return;
+            if ( !this.AdjustHashtags( ref hashStr, true ) )
+                return;
 
             UseHashText.Text = hashStr;
             int idx = 0;
-            if (!this._isAdd && this.HistoryHashList.SelectedIndices.Count > 0)
-            {
-                idx = this.HistoryHashList.SelectedIndices[0];
-                this.HistoryHashList.Items.RemoveAt(idx);
-                do
-                {
+            if ( !this._isAdd && this.HistoryHashList.SelectedIndices.Count > 0 ) {
+                idx = this.HistoryHashList.SelectedIndices [0];
+                this.HistoryHashList.Items.RemoveAt( idx );
+                do {
                     this.HistoryHashList.SelectedIndices.Clear();
                 } while (this.HistoryHashList.SelectedIndices.Count > 0);
-                this.HistoryHashList.Items.Insert(idx, hashStr);
+                this.HistoryHashList.Items.Insert( idx, hashStr );
                 this.HistoryHashList.SelectedIndex = idx;
-            }
-            else
-            {
-                this.AddHashToHistory(hashStr, false);
-                do
-                {
+            } else {
+                this.AddHashToHistory( hashStr, false );
+                do {
                     this.HistoryHashList.SelectedIndices.Clear();
                 } while (this.HistoryHashList.SelectedIndices.Count > 0);
-                this.HistoryHashList.SelectedIndex = this.HistoryHashList.Items.IndexOf(hashStr);
+                this.HistoryHashList.SelectedIndex = this.HistoryHashList.Items.IndexOf( hashStr );
             }
 
-            ChangeMode(false);
+            ChangeMode( false );
         }
+
 
         private void PermCancel_Button_Click(object sender, EventArgs e)
         {
-            if (this.HistoryHashList.Items.Count > 0 && this.HistoryHashList.SelectedIndices.Count > 0)
-                this.UseHashText.Text = this.HistoryHashList.Items[this.HistoryHashList.SelectedIndices[0]].ToString();
+            if ( this.HistoryHashList.Items.Count > 0 && this.HistoryHashList.SelectedIndices.Count > 0 )
+                this.UseHashText.Text = this.HistoryHashList.Items [this.HistoryHashList.SelectedIndices [0]].ToString();
             else
                 this.UseHashText.Text = "";
 
-            ChangeMode(false);
+            ChangeMode( false );
         }
+
 
         private void HistoryHashList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-                this.DeleteButton_Click(null, null);
-            else if (e.KeyCode == Keys.Insert)
-                this.AddButton_Click(null, null);
+            if ( e.KeyCode == Keys.Delete )
+                this.DeleteButton_Click( null, null );
+            else if ( e.KeyCode == Keys.Insert )
+                this.AddButton_Click( null, null );
         }
+
 
         private bool AdjustHashtags(ref string hashtag, bool isShowWarn)
         {
             //ハッシュタグの整形
             hashtag = hashtag.Trim();
-            if (string.IsNullOrEmpty(hashtag))
-            {
-                if (isShowWarn) MessageBox.Show("emply hashtag.", "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            if ( string.IsNullOrEmpty( hashtag ) ) {
+                if ( isShowWarn )
+                    MessageBox.Show( "emply hashtag.", "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk );
                 return false;
             }
-            hashtag = hashtag.Replace("＃", "#");
-            hashtag = hashtag.Replace("　", " ");
+            hashtag = hashtag.Replace( "＃", "#" );
+            hashtag = hashtag.Replace( "　", " " );
             string adjust = "";
-            foreach (string hash in hashtag.Split(' '))
-            {
-                if (hash.Length > 0)
-                {
-                    if (!hash.StartsWith("#"))
-                    {
-                        if (isShowWarn) MessageBox.Show("Invalid hashtag. -> " + hash, "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            foreach ( string hash in hashtag.Split(' ') ) {
+                if ( hash.Length > 0 ) {
+                    if ( !hash.StartsWith( "#" ) ) {
+                        if ( isShowWarn )
+                            MessageBox.Show( "Invalid hashtag. -> " + hash, "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk );
                         return false;
                     }
-                    if (hash.Length == 1)
-                    {
-                        if (isShowWarn) MessageBox.Show("empty hashtag.", "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    if ( hash.Length == 1 ) {
+                        if ( isShowWarn )
+                            MessageBox.Show( "empty hashtag.", "Hashtag warning", MessageBoxButtons.OK, MessageBoxIcon.Asterisk );
                         return false;
                     }
                     //使用不可の文字チェックはしない
@@ -384,21 +374,18 @@ namespace OpenTween
             return true;
         }
 
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
             string hash = "";
-            foreach (string hs in this.HistoryHashList.SelectedItems)
-            {
+            foreach ( string hs in this.HistoryHashList.SelectedItems ) {
                 hash += hs + " ";
             }
             hash = hash.Trim();
-            if (!string.IsNullOrEmpty(hash))
-            {
-                this.AddHashToHistory(hash, true);
+            if ( !string.IsNullOrEmpty( hash ) ) {
+                this.AddHashToHistory( hash, true );
                 this._isPermanent = this.CheckPermanent.Checked;
-            }
-            else
-            {
+            } else {
                 //使用ハッシュが未選択ならば、固定オプション外す
                 this._isPermanent = false;
             }
@@ -409,25 +396,24 @@ namespace OpenTween
             this.Close();
         }
 
+
         private void HashtagManage_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
+            if ( e.KeyCode == Keys.Enter ) {
                 e.Handled = true;
-                if (this.GroupDetail.Enabled)
-                    this.PermOK_Button_Click(null, null);
+                if ( this.GroupDetail.Enabled )
+                    this.PermOK_Button_Click( null, null );
                 else
-                    this.OK_Button_Click(null, null);
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
+                    this.OK_Button_Click( null, null );
+            } else if ( e.KeyCode == Keys.Escape ) {
                 e.Handled = true;
-                if (this.GroupDetail.Enabled)
-                    this.PermCancel_Button_Click(null, null);
+                if ( this.GroupDetail.Enabled )
+                    this.PermCancel_Button_Click( null, null );
                 else
-                    this.Cancel_Button_Click(null, null);
+                    this.Cancel_Button_Click( null, null );
             }
         }
+
 
         private void CheckNotAddToAtReply_CheckedChanged(object sender, EventArgs e)
         {

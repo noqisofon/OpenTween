@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
@@ -32,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Drawing;
+
 
 ///<summary>
 ///HttpWebRequest,HttpWebResponseを使用した基本的な通信機能を提供する
@@ -42,6 +42,8 @@ using System.Drawing;
 ///</remarks>
 namespace OpenTween
 {
+
+
     public class HttpConnection
     {
         ///<summary>
@@ -57,7 +59,7 @@ namespace OpenTween
         ///<summary>
         ///クッキー保存用コンテナ
         ///</summary>
-        private static CookieContainer cookieContainer = new CookieContainer();
+        private static CookieContainer cookieContainer = new CookieContainer ();
 
         ///<summary>
         ///初期化済みフラグ
@@ -93,41 +95,38 @@ namespace OpenTween
                                                Dictionary<string, string> param,
                                                bool withCookie)
         {
-            if (!isInitialize) throw new Exception("Sequence error.(not initialized)");
+            if ( !isInitialize )
+                throw new Exception ("Sequence error.(not initialized)");
 
             //GETメソッドの場合はクエリとurlを結合
-            UriBuilder ub = new UriBuilder(requestUri.AbsoluteUri);
-            if (param != null && (method == "GET" || method == "DELETE" || method == "HEAD"))
-            {
-                ub.Query = CreateQueryString(param);
+            UriBuilder ub = new UriBuilder (requestUri.AbsoluteUri);
+            if ( param != null && (method == "GET" || method == "DELETE" || method == "HEAD") ) {
+                ub.Query = CreateQueryString( param );
             }
 
-            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(ub.Uri);
+            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create( ub.Uri );
 
             webReq.ReadWriteTimeout = 90 * 1000; //Streamの読み込みは90秒でタイムアウト（デフォルト5分）
 
             //プロキシ設定
-            if (proxyKind != ProxyType.IE) webReq.Proxy = proxy;
+            if ( proxyKind != ProxyType.IE )
+                webReq.Proxy = proxy;
 
             webReq.Method = method;
-            if (method == "POST" || method == "PUT")
-            {
+            if ( method == "POST" || method == "PUT" ) {
                 webReq.ContentType = "application/x-www-form-urlencoded";
                 //POST/PUTメソッドの場合は、ボディデータとしてクエリ構成して書き込み
-                using (StreamWriter writer = new StreamWriter(webReq.GetRequestStream()))
-                {
-                    writer.Write(CreateQueryString(param));
+                using (StreamWriter writer = new StreamWriter(webReq.GetRequestStream())) {
+                    writer.Write( CreateQueryString( param ) );
                 }
             }
             //cookie設定
-            if (withCookie) webReq.CookieContainer = cookieContainer;
+            if ( withCookie )
+                webReq.CookieContainer = cookieContainer;
             //タイムアウト設定
-            if (InstanceTimeout > 0)
-            {
+            if ( InstanceTimeout > 0 ) {
                 webReq.Timeout = InstanceTimeout;
-            }
-            else
-            {
+            } else {
                 webReq.Timeout = DefaultTimeout;
             }
 
@@ -152,134 +151,129 @@ namespace OpenTween
                                                List<KeyValuePair<String, FileInfo>> binaryFileInfo,
                                                bool withCookie)
         {
-            if (!isInitialize) throw new Exception("Sequence error.(not initialized)");
+            if ( !isInitialize )
+                throw new Exception ("Sequence error.(not initialized)");
 
             //methodはPOST,PUTのみ許可
-            UriBuilder ub = new UriBuilder(requestUri.AbsoluteUri);
-            if (method == "GET" || method == "DELETE" || method == "HEAD")
-                throw new ArgumentException("Method must be POST or PUT");
-            if ((param == null || param.Count == 0) && (binaryFileInfo == null || binaryFileInfo.Count == 0))
-                throw new ArgumentException("Data is empty");
+            UriBuilder ub = new UriBuilder (requestUri.AbsoluteUri);
+            if ( method == "GET" || method == "DELETE" || method == "HEAD" )
+                throw new ArgumentException ("Method must be POST or PUT");
+            if ( (param == null || param.Count == 0) && (binaryFileInfo == null || binaryFileInfo.Count == 0) )
+                throw new ArgumentException ("Data is empty");
 
-            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(ub.Uri);
+            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create( ub.Uri );
 
             //プロキシ設定
-            if (proxyKind != ProxyType.IE) webReq.Proxy = proxy;
+            if ( proxyKind != ProxyType.IE )
+                webReq.Proxy = proxy;
 
             webReq.Method = method;
-            if (method == "POST" || method == "PUT")
-            {
+            if ( method == "POST" || method == "PUT" ) {
                 string boundary = System.Environment.TickCount.ToString();
                 webReq.ContentType = "multipart/form-data; boundary=" + boundary;
-                using (Stream reqStream = webReq.GetRequestStream())
-                {
+                using (Stream reqStream = webReq.GetRequestStream()) {
                     //POST送信する文字データを作成
-                    if (param != null)
-                    {
+                    if ( param != null ) {
                         string postData = "";
-                        foreach (KeyValuePair<string, string> kvp in param)
-                        {
+                        foreach ( KeyValuePair<string, string> kvp in param ) {
                             postData += "--" + boundary + "\r\n" +
                                     "Content-Disposition: form-data; name=\"" + kvp.Key + "\"" +
                                     "\r\n\r\n" + kvp.Value + "\r\n";
                         }
-                        byte[] postBytes = Encoding.UTF8.GetBytes(postData);
-                        reqStream.Write(postBytes, 0, postBytes.Length);
+                        byte[] postBytes = Encoding.UTF8.GetBytes( postData );
+                        reqStream.Write( postBytes, 0, postBytes.Length );
                     }
                     //POST送信するバイナリデータを作成
-                    if (binaryFileInfo != null)
-                    {
-                        foreach (KeyValuePair<string, FileInfo> kvp in binaryFileInfo)
-                        {
+                    if ( binaryFileInfo != null ) {
+                        foreach ( KeyValuePair<string, FileInfo> kvp in binaryFileInfo ) {
                             string postData = "";
-                            byte[] crlfByte = Encoding.UTF8.GetBytes("\r\n");
+                            byte[] crlfByte = Encoding.UTF8.GetBytes( "\r\n" );
                             //コンテンツタイプの指定
                             string mime = "";
-                            switch (kvp.Value.Extension.ToLower())
-                            {
-                                case ".jpg":
-                                case ".jpeg":
-                                case ".jpe":
-                                    mime = "image/jpeg";
-                                    break;
-                                case ".gif":
-                                    mime = "image/gif";
-                                    break;
-                                case ".png":
-                                    mime = "image/png";
-                                    break;
-                                case ".tiff":
-                                case ".tif":
-                                    mime = "image/tiff";
-                                    break;
-                                case ".bmp":
-                                    mime = "image/x-bmp";
-                                    break;
-                                case ".avi":
-                                    mime = "video/avi";
-                                    break;
-                                case ".wmv":
-                                    mime = "video/x-ms-wmv";
-                                    break;
-                                case ".flv":
-                                    mime = "video/x-flv";
-                                    break;
-                                case ".m4v":
-                                    mime = "video/x-m4v";
-                                    break;
-                                case ".mov":
-                                    mime = "video/quicktime";
-                                    break;
-                                case ".mp4":
-                                    mime = "video/3gpp";
-                                    break;
-                                case ".rm":
-                                    mime = "application/vnd.rn-realmedia";
-                                    break;
-                                case ".mpeg":
-                                case ".mpg":
-                                    mime = "video/mpeg";
-                                    break;
-                                case ".3gp":
-                                    mime = "movie/3gp";
-                                    break;
-                                case ".3g2":
-                                    mime = "video/3gpp2";
-                                    break;
-                                default:
-                                    mime = "application/octet-stream\r\nContent-Transfer-Encoding: binary";
-                                    break;
+                            switch ( kvp.Value.Extension.ToLower() ) {
+                            case ".jpg":
+                            case ".jpeg":
+                            case ".jpe":
+                                mime = "image/jpeg";
+                                break;
+                            case ".gif":
+                                mime = "image/gif";
+                                break;
+                            case ".png":
+                                mime = "image/png";
+                                break;
+                            case ".tiff":
+                            case ".tif":
+                                mime = "image/tiff";
+                                break;
+                            case ".bmp":
+                                mime = "image/x-bmp";
+                                break;
+                            case ".avi":
+                                mime = "video/avi";
+                                break;
+                            case ".wmv":
+                                mime = "video/x-ms-wmv";
+                                break;
+                            case ".flv":
+                                mime = "video/x-flv";
+                                break;
+                            case ".m4v":
+                                mime = "video/x-m4v";
+                                break;
+                            case ".mov":
+                                mime = "video/quicktime";
+                                break;
+                            case ".mp4":
+                                mime = "video/3gpp";
+                                break;
+                            case ".rm":
+                                mime = "application/vnd.rn-realmedia";
+                                break;
+                            case ".mpeg":
+                            case ".mpg":
+                                mime = "video/mpeg";
+                                break;
+                            case ".3gp":
+                                mime = "movie/3gp";
+                                break;
+                            case ".3g2":
+                                mime = "video/3gpp2";
+                                break;
+                            default:
+                                mime = "application/octet-stream\r\nContent-Transfer-Encoding: binary";
+                                break;
                             }
                             postData = "--" + boundary + "\r\n" +
                                 "Content-Disposition: form-data; name=\"" + kvp.Key + "\"; filename=\"" +
                                 kvp.Value.Name + "\"\r\n" +
                                 "Content-Type: " + mime + "\r\n\r\n";
-                            byte[] postBytes = Encoding.UTF8.GetBytes(postData);
-                            reqStream.Write(postBytes, 0, postBytes.Length);
+                            byte[] postBytes = Encoding.UTF8.GetBytes( postData );
+                            reqStream.Write( postBytes, 0, postBytes.Length );
                             //ファイルを読み出してHTTPのストリームに書き込み
-                            using (FileStream fs = new FileStream(kvp.Value.FullName, FileMode.Open, FileAccess.Read))
-                            {
+                            using (FileStream fs = new FileStream(kvp.Value.FullName, FileMode.Open, FileAccess.Read)) {
                                 int readSize = 0;
                                 byte[] readBytes = new byte[0x1000];
-                                while (true)
-                                {
-                                    readSize = fs.Read(readBytes, 0, readBytes.Length);
-                                    if (readSize == 0) break;
-                                    reqStream.Write(readBytes, 0, readSize);
+                                while ( true ) {
+                                    readSize = fs.Read( readBytes, 0, readBytes.Length );
+                                    if ( readSize == 0 )
+                                        break;
+                                    reqStream.Write( readBytes, 0, readSize );
                                 }
                             }
-                            reqStream.Write(crlfByte, 0, crlfByte.Length);
+                            reqStream.Write( crlfByte, 0, crlfByte.Length );
                         }
                     }
                     //終端
-                    byte[] endBytes = Encoding.UTF8.GetBytes("--" + boundary + "--\r\n");
-                    reqStream.Write(endBytes, 0, endBytes.Length);
+                    byte[] endBytes = Encoding.UTF8.GetBytes( "--" + boundary + "--\r\n" );
+                    reqStream.Write( endBytes, 0, endBytes.Length );
                 }
             }
             //cookie設定
-            if (withCookie) webReq.CookieContainer = cookieContainer;
+            if ( withCookie )
+                webReq.CookieContainer = cookieContainer;
             //タイムアウト設定
-            if (InstanceTimeout > 0)
+            if ( InstanceTimeout > 0 )
                 webReq.Timeout = InstanceTimeout;
             else
                 webReq.Timeout = DefaultTimeout;
@@ -305,43 +299,35 @@ namespace OpenTween
                                              Dictionary<string, string> headerInfo,
                                              bool withCookie)
         {
-            try
-            {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse())
-                {
+            try {
+                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
                     HttpStatusCode statusCode = webRes.StatusCode;
                     //cookie保持
-                    if (withCookie) SaveCookie(webRes.Cookies);
+                    if ( withCookie )
+                        SaveCookie( webRes.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo(webRes, headerInfo);
+                    GetHeaderInfo( webRes, headerInfo );
                     //応答のストリームをコピーして戻す
-                    if (webRes.ContentLength > 0)
-                    {
+                    if ( webRes.ContentLength > 0 ) {
                         //gzipなら応答ストリームの内容は伸張済み。それ以外なら伸張する。
-                        if (webRes.ContentEncoding == "gzip" || webRes.ContentEncoding == "deflate")
-                        {
-                            using (Stream stream = webRes.GetResponseStream())
-                            {
-                                if (stream != null) CopyStream(stream, contentStream);
+                        if ( webRes.ContentEncoding == "gzip" || webRes.ContentEncoding == "deflate" ) {
+                            using (Stream stream = webRes.GetResponseStream()) {
+                                if ( stream != null )
+                                    CopyStream( stream, contentStream );
                             }
-                        }
-                        else
-                        {
-                            using (Stream stream = new GZipStream(webRes.GetResponseStream(), CompressionMode.Decompress))
-                            {
-                                if (stream != null) CopyStream(stream, contentStream);
+                        } else {
+                            using (Stream stream = new GZipStream(webRes.GetResponseStream(), CompressionMode.Decompress)) {
+                                if ( stream != null )
+                                    CopyStream( stream, contentStream );
                             }
                         }
                     }
                     return statusCode;
                 }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.ProtocolError)
-                {
+            } catch ( WebException ex ) {
+                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
                     HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo(res, headerInfo);
+                    GetHeaderInfo( res, headerInfo );
                     return res.StatusCode;
                 }
                 throw;
@@ -366,31 +352,25 @@ namespace OpenTween
                                              Dictionary<string, string> headerInfo,
                                              bool withCookie)
         {
-            try
-            {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse())
-                {
+            try {
+                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
                     HttpStatusCode statusCode = webRes.StatusCode;
                     //cookie保持
-                    if (withCookie) SaveCookie(webRes.Cookies);
+                    if ( withCookie )
+                        SaveCookie( webRes.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo(webRes, headerInfo);
+                    GetHeaderInfo( webRes, headerInfo );
                     //応答のストリームをテキストに書き出し
-                    using (StreamReader sr = new StreamReader(webRes.GetResponseStream()))
-                    {
+                    using (StreamReader sr = new StreamReader(webRes.GetResponseStream())) {
                         contentText = sr.ReadToEnd();
                     }
                     return statusCode;
                 }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.ProtocolError)
-                {
+            } catch ( WebException ex ) {
+                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
                     HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo(res, headerInfo);
-                    using (StreamReader sr = new StreamReader(res.GetResponseStream()))
-                    {
+                    GetHeaderInfo( res, headerInfo );
+                    using (StreamReader sr = new StreamReader(res.GetResponseStream())) {
                         contentText = sr.ReadToEnd();
                     }
                     return res.StatusCode;
@@ -414,24 +394,20 @@ namespace OpenTween
                                              Dictionary<string, string> headerInfo,
                                              bool withCookie)
         {
-            try
-            {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse())
-                {
+            try {
+                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
                     HttpStatusCode statusCode = webRes.StatusCode;
                     //cookie保持
-                    if (withCookie) SaveCookie(webRes.Cookies);
+                    if ( withCookie )
+                        SaveCookie( webRes.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo(webRes, headerInfo);
+                    GetHeaderInfo( webRes, headerInfo );
                     return statusCode;
                 }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.ProtocolError)
-                {
+            } catch ( WebException ex ) {
+                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
                     HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo(res, headerInfo);
+                    GetHeaderInfo( res, headerInfo );
                     return res.StatusCode;
                 }
                 throw;
@@ -455,27 +431,23 @@ namespace OpenTween
                                              Dictionary<string, string> headerInfo,
                                              bool withCookie)
         {
-            try
-            {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse())
-                {
+            try {
+                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
                     HttpStatusCode statusCode = webRes.StatusCode;
                     //cookie保持
-                    if (withCookie) SaveCookie(webRes.Cookies);
+                    if ( withCookie )
+                        SaveCookie( webRes.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo(webRes, headerInfo);
+                    GetHeaderInfo( webRes, headerInfo );
                     //応答のストリームをBitmapにして戻す
                     //if (webRes.ContentLength > 0) contentBitmap = new Bitmap(webRes.GetResponseStream());
-                    contentBitmap = new Bitmap(webRes.GetResponseStream());
+                    contentBitmap = new Bitmap (webRes.GetResponseStream());
                     return statusCode;
                 }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.ProtocolError)
-                {
+            } catch ( WebException ex ) {
+                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
                     HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo(res, headerInfo);
+                    GetHeaderInfo( res, headerInfo );
                     contentBitmap = null;
                     return res.StatusCode;
                 }
@@ -488,12 +460,10 @@ namespace OpenTween
         ///</summary>
         private void SaveCookie(CookieCollection cookieCollection)
         {
-            foreach (Cookie ck in cookieCollection)
-            {
-                if (ck.Domain.StartsWith("."))
-                {
-                    ck.Domain = ck.Domain.Substring(1, ck.Domain.Length - 1);
-                    cookieContainer.Add(ck);
+            foreach ( Cookie ck in cookieCollection ) {
+                if ( ck.Domain.StartsWith( "." ) ) {
+                    ck.Domain = ck.Domain.Substring( 1, ck.Domain.Length - 1 );
+                    cookieContainer.Add( ck );
                 }
             }
         }
@@ -505,21 +475,25 @@ namespace OpenTween
         ///<param name="outStream">コピー先ストリームインスタンス。書き込み可であること</param>
         private void CopyStream(Stream inStream, Stream outStream)
         {
-            if (inStream == null) throw new ArgumentNullException("inStream");
-            if (outStream == null) throw new ArgumentNullException("outStream");
-            if (!inStream.CanRead) throw new ArgumentException("Input stream can not read.");
-            if (!outStream.CanWrite) throw new ArgumentException("Output stream can not write.");
-            if (inStream.CanSeek && inStream.Length == 0) throw new ArgumentException("Input stream do not have data.");
+            if ( inStream == null )
+                throw new ArgumentNullException ("inStream");
+            if ( outStream == null )
+                throw new ArgumentNullException ("outStream");
+            if ( !inStream.CanRead )
+                throw new ArgumentException ("Input stream can not read.");
+            if ( !outStream.CanWrite )
+                throw new ArgumentException ("Output stream can not write.");
+            if ( inStream.CanSeek && inStream.Length == 0 )
+                throw new ArgumentException ("Input stream do not have data.");
 
-            do
-            {
+            do {
                 byte[] buffer = new byte[1024];
                 int i = buffer.Length;
-                i = inStream.Read(buffer, 0, i);
-                if (i == 0) break;
-                outStream.Write(buffer, 0, i);
-            }
-            while (true);
+                i = inStream.Read( buffer, 0, i );
+                if ( i == 0 )
+                    break;
+                outStream.Write( buffer, 0, i );
+            } while (true);
         }
 
         ///<summary>
@@ -530,38 +504,30 @@ namespace OpenTween
         private void GetHeaderInfo(HttpWebResponse webResponse,
                                    Dictionary<string, string> headerInfo)
         {
-            if (headerInfo == null) return;
+            if ( headerInfo == null )
+                return;
 
-            if (headerInfo.Count > 0)
-            {
+            if ( headerInfo.Count > 0 ) {
                 string[] keys = new string[headerInfo.Count];
-                headerInfo.Keys.CopyTo(keys, 0);
-                foreach (string key in keys)
-                {
-                    if (Array.IndexOf(webResponse.Headers.AllKeys, key) > -1)
-                    {
-                        headerInfo[key] = webResponse.Headers[key];
-                    }
-                    else
-                    {
-                        headerInfo[key] = "";
+                headerInfo.Keys.CopyTo( keys, 0 );
+                foreach ( string key in keys ) {
+                    if ( Array.IndexOf( webResponse.Headers.AllKeys, key ) > -1 ) {
+                        headerInfo [key] = webResponse.Headers [key];
+                    } else {
+                        headerInfo [key] = "";
                     }
                 }
             }
 
             HttpStatusCode statusCode = webResponse.StatusCode;
-            if (statusCode == HttpStatusCode.MovedPermanently ||
+            if ( statusCode == HttpStatusCode.MovedPermanently ||
                 statusCode == HttpStatusCode.Found ||
                 statusCode == HttpStatusCode.SeeOther ||
-                statusCode == HttpStatusCode.TemporaryRedirect)
-            {
-                if (headerInfo.ContainsKey("Location"))
-                {
-                    headerInfo["Location"] = webResponse.Headers["Location"];
-                }
-                else
-                {
-                    headerInfo.Add("Location", webResponse.Headers["Location"]);
+                statusCode == HttpStatusCode.TemporaryRedirect ) {
+                if ( headerInfo.ContainsKey( "Location" ) ) {
+                    headerInfo ["Location"] = webResponse.Headers ["Location"];
+                } else {
+                    headerInfo.Add( "Location", webResponse.Headers ["Location"] );
                 }
             }
         }
@@ -572,14 +538,14 @@ namespace OpenTween
         ///<param name="param">クエリ、またはポストデータとなるkey-valueコレクション</param>
         protected string CreateQueryString(IDictionary<string, string> param)
         {
-            if (param == null || param.Count == 0) return string.Empty;
+            if ( param == null || param.Count == 0 )
+                return string.Empty;
 
-            StringBuilder query = new StringBuilder();
-            foreach (string key in param.Keys)
-            {
-                query.AppendFormat("{0}={1}&", UrlEncode(key), UrlEncode(param[key]));
+            StringBuilder query = new StringBuilder ();
+            foreach ( string key in param.Keys ) {
+                query.AppendFormat( "{0}={1}&", UrlEncode( key ), UrlEncode( param [key] ) );
             }
-            return query.ToString(0, query.Length - 1);
+            return query.ToString( 0, query.Length - 1 );
         }
 
         ///<summary>
@@ -589,15 +555,14 @@ namespace OpenTween
         ///<returns>key-valueのコレクション</returns>
         protected NameValueCollection ParseQueryString(string queryString)
         {
-            NameValueCollection query = new NameValueCollection();
-            string[] parts = queryString.Split('&');
-            foreach (string part in parts)
-            {
-                int index = part.IndexOf('=');
-                if (index == -1)
-                    query.Add(Uri.UnescapeDataString(part), "");
+            NameValueCollection query = new NameValueCollection ();
+            string[] parts = queryString.Split( '&' );
+            foreach ( string part in parts ) {
+                int index = part.IndexOf( '=' );
+                if ( index == -1 )
+                    query.Add( Uri.UnescapeDataString( part ), "" );
                 else
-                    query.Add(Uri.UnescapeDataString(part.Substring(0, index)), Uri.UnescapeDataString(part.Substring(index + 1)));
+                    query.Add( Uri.UnescapeDataString( part.Substring( 0, index ) ), Uri.UnescapeDataString( part.Substring( index + 1 ) ) );
             }
             return query;
         }
@@ -610,15 +575,14 @@ namespace OpenTween
         protected string UrlEncode(string stringToEncode)
         {
             const string UnreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-            StringBuilder sb = new StringBuilder();
-            byte[] bytes = Encoding.UTF8.GetBytes(stringToEncode);
+            StringBuilder sb = new StringBuilder ();
+            byte[] bytes = Encoding.UTF8.GetBytes( stringToEncode );
 
-            foreach (byte b in bytes)
-            {
-                if (UnreservedChars.IndexOf((char)b) != -1)
-                    sb.Append((char)b);
+            foreach ( byte b in bytes ) {
+                if ( UnreservedChars.IndexOf( (char)b ) != -1 )
+                    sb.Append( (char)b );
                 else
-                    sb.AppendFormat("%{0:X2}", b);
+                    sb.AppendFormat( "%{0:X2}", b );
             }
             return sb.ToString();
         }
@@ -632,15 +596,13 @@ namespace OpenTween
         ///<summary>
         ///通信タイムアウト時間（ms）。10～120秒の範囲で指定。範囲外は20秒とする
         ///</summary>
-        protected int InstanceTimeout
-        {
+        protected int InstanceTimeout {
             get { return _timeout; }
-            set
-            {
+            set {
                 const int TimeoutMinValue = 10000;
                 const int TimeoutMaxValue = 120000;
-                if (value < TimeoutMinValue || value > TimeoutMaxValue)
-                    throw new ArgumentOutOfRangeException("Set " + TimeoutMinValue + "-" + TimeoutMaxValue + ": Value=" + value);
+                if ( value < TimeoutMinValue || value > TimeoutMaxValue )
+                    throw new ArgumentOutOfRangeException ("Set " + TimeoutMinValue + "-" + TimeoutMaxValue + ": Value=" + value);
                 else
                     _timeout = value;
             }
@@ -656,15 +618,13 @@ namespace OpenTween
         ///<summary>
         ///通信タイムアウト時間（ms）。10～120秒の範囲で指定。範囲外は20秒とする
         ///</summary>
-        protected static int DefaultTimeout
-        {
+        protected static int DefaultTimeout {
             get { return timeout; }
-            set
-            {
+            set {
                 const int TimeoutMinValue = 10000;
                 const int TimeoutMaxValue = 120000;
                 const int TimeoutDefaultValue = 20000;
-                if (value < TimeoutMinValue || value > TimeoutMaxValue)
+                if ( value < TimeoutMinValue || value > TimeoutMaxValue )
                     // 範囲外ならデフォルト値設定
                     timeout = TimeoutDefaultValue;
                 else
@@ -696,23 +656,22 @@ namespace OpenTween
             isInitialize = true;
             ServicePointManager.Expect100Continue = false;
             DefaultTimeout = timeout * 1000;     //s -> ms
-            switch (proxyType)
-            {
-                case ProxyType.None:
-                    proxy = null;
-                    break;
-                case ProxyType.Specified:
-                    proxy = new WebProxy("http://" + proxyAddress + ":" + proxyPort);
-                    if (!String.IsNullOrEmpty(proxyUser) || !String.IsNullOrEmpty(proxyPassword))
-                        proxy.Credentials = new NetworkCredential(proxyUser, proxyPassword);
-                    break;
-                case ProxyType.IE:
+            switch ( proxyType ) {
+            case ProxyType.None:
+                proxy = null;
+                break;
+            case ProxyType.Specified:
+                proxy = new WebProxy ("http://" + proxyAddress + ":" + proxyPort);
+                if ( !String.IsNullOrEmpty( proxyUser ) || !String.IsNullOrEmpty( proxyPassword ) )
+                    proxy.Credentials = new NetworkCredential (proxyUser, proxyPassword);
+                break;
+            case ProxyType.IE:
                     //IE設定（システム設定）はデフォルト値なので処理しない
-                    break;
+                break;
             }
             proxyKind = proxyType;
 
-            Win32Api.SetProxy(proxyType, proxyAddress, proxyPort, proxyUser, proxyPassword);
+            Win32Api.SetProxy( proxyType, proxyAddress, proxyPort, proxyUser, proxyPassword );
         }
     }
 }

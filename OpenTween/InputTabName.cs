@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,8 +32,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
+
+
     public partial class InputTabName : Form
     {
         public InputTabName()
@@ -42,11 +44,13 @@ namespace OpenTween
             InitializeComponent();
         }
 
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
 
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -55,70 +59,75 @@ namespace OpenTween
             this.Close();
         }
 
-        public string TabName
-        {
+
+        public string TabName {
             get { return this.TextTabName.Text.Trim(); }
             set { TextTabName.Text = value.Trim(); }
         }
 
-        public string FormTitle
-        {
+
+        public string FormTitle {
             set { this.Text = value; }
         }
 
-        public string FormDescription
-        {
+
+        public string FormDescription {
             set { this.LabelDescription.Text = value; }
         }
 
+
         private bool _isShowUsage;
-        public bool IsShowUsage
-        {
+
+
+        public bool IsShowUsage {
             set { _isShowUsage = value; }
         }
 
+
         private MyCommon.TabUsageType _usage;
-        public MyCommon.TabUsageType Usage
-        {
+
+
+        public MyCommon.TabUsageType Usage {
             get { return _usage; }
         }
+
 
         private void InputTabName_Load(object sender, EventArgs e)
         {
             this.LabelUsage.Visible = false;
             this.ComboUsage.Visible = false;
-            this.ComboUsage.Items.Add(Properties.Resources.InputTabName_Load1);
-            this.ComboUsage.Items.Add("Lists");
-            this.ComboUsage.Items.Add("PublicSearch");
+            this.ComboUsage.Items.Add( Properties.Resources.InputTabName_Load1 );
+            this.ComboUsage.Items.Add( "Lists" );
+            this.ComboUsage.Items.Add( "PublicSearch" );
             this.ComboUsage.SelectedIndex = 0;
         }
+
 
         private void InputTabName_Shown(object sender, EventArgs e)
         {
             ActiveControl = TextTabName;
-            if (_isShowUsage)
-            {
+            if ( _isShowUsage ) {
                 this.LabelUsage.Visible = true;
                 this.ComboUsage.Visible = true;
             }
         }
 
+
         private void ComboUsage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (ComboUsage.SelectedIndex)
-            {
-                case 0:
-                    _usage = MyCommon.TabUsageType.UserDefined;
-                    break;
-                case 1:
-                    _usage = MyCommon.TabUsageType.Lists;
-                    break;
-                case 2:
-                    _usage = MyCommon.TabUsageType.PublicSearch;
-                    break;
-                default:
-                    _usage = MyCommon.TabUsageType.Undefined;
-                    break;
+            switch ( ComboUsage.SelectedIndex ) {
+            case 0:
+                _usage = MyCommon.TabUsageType.UserDefined;
+                break;
+            case 1:
+                _usage = MyCommon.TabUsageType.Lists;
+                break;
+            case 2:
+                _usage = MyCommon.TabUsageType.PublicSearch;
+                break;
+            default:
+                _usage = MyCommon.TabUsageType.Undefined;
+                break;
             }
         }
     }

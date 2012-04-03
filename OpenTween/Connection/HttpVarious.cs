@@ -23,7 +23,6 @@
 // with this program. if (not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Net;
 using System.Collections.Generic;
@@ -36,266 +35,250 @@ using System.Drawing.Drawing2D;
 
 namespace OpenTween
 {
+
+
     public class HttpVarious : HttpConnection
     {
         public string GetRedirectTo(string url)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(HeadMethod, new Uri(url), null, false);
+            try {
+                HttpWebRequest req = CreateRequest( HeadMethod, new Uri (url), null, false );
                 req.Timeout = 5000;
                 req.AllowAutoRedirect = false;
                 string data;
-                Dictionary<string, string> head = new Dictionary<string, string>();
-                HttpStatusCode ret = GetResponse(req, out data, head, false);
-                if (head.ContainsKey("Location"))
-                {
-                    return head["Location"];
-                }
-                else
-                {
+                Dictionary<string, string> head = new Dictionary<string, string> ();
+                HttpStatusCode ret = GetResponse( req, out data, head, false );
+                if ( head.ContainsKey( "Location" ) ) {
+                    return head ["Location"];
+                } else {
                     return url;
                 }
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 return url;
             }
         }
 
+
         public Image GetImage(Uri url)
         {
-            return GetImage(url.ToString());
+            return GetImage( url.ToString() );
         }
+
 
         public Image GetImage(string url)
         {
-            return GetImage(url, 10000);
+            return GetImage( url, 10000 );
         }
+
 
         public Image GetImage(string url, int timeout)
         {
             string errmsg;
-            return GetImage(url, "", timeout, out errmsg);
+            return GetImage( url, "", timeout, out errmsg );
         }
+
 
         public Image GetImage(string url, string referer)
         {
             string errmsg;
-            return GetImage(url, referer, 10000, out errmsg);
+            return GetImage( url, referer, 10000, out errmsg );
         }
+
 
         public Image GetImage(string url, string referer, int timeout, out string errmsg)
         {
-            return GetImageInternal(CheckValidImage, url, referer, timeout, out errmsg);
+            return GetImageInternal( CheckValidImage, url, referer, timeout, out errmsg );
         }
+
 
         public Image GetIconImage(string url, int timeout)
         {
             string errmsg;
-            return GetImageInternal(CheckValidIconImage, url, "", timeout, out errmsg);
+            return GetImageInternal( CheckValidIconImage, url, "", timeout, out errmsg );
         }
 
-        private delegate Image CheckValidImageDelegate(Image img, int width, int height);
+        private delegate Image CheckValidImageDelegate(Image img,int width,int height);
+
 
         private Image GetImageInternal(CheckValidImageDelegate CheckImage, string url, string referer, int timeout, out string errmsg)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(GetMethod, new Uri(url), null, false);
-                if (!String.IsNullOrEmpty(referer)) req.Referer = referer;
-                if (timeout < 3000 || timeout > 30000)
-                {
+            try {
+                HttpWebRequest req = CreateRequest( GetMethod, new Uri (url), null, false );
+                if ( !String.IsNullOrEmpty( referer ) )
+                    req.Referer = referer;
+                if ( timeout < 3000 || timeout > 30000 ) {
                     req.Timeout = 10000;
-                }
-                else
-                {
+                } else {
                     req.Timeout = timeout;
                 }
                 Bitmap img;
-                HttpStatusCode ret = GetResponse(req, out img, null, false);
-                if (ret == HttpStatusCode.OK)
-                {
+                HttpStatusCode ret = GetResponse( req, out img, null, false );
+                if ( ret == HttpStatusCode.OK ) {
                     errmsg = "";
-                }
-                else
-                {
+                } else {
                     errmsg = ret.ToString();
                 }
-                if (img != null) img.Tag = url;
-                if (ret == HttpStatusCode.OK) return CheckImage(img, img.Width, img.Height);
+                if ( img != null )
+                    img.Tag = url;
+                if ( ret == HttpStatusCode.OK )
+                    return CheckImage( img, img.Width, img.Height );
                 return null;
-            }
-            catch (WebException ex)
-            {
+            } catch ( WebException ex ) {
                 errmsg = ex.Message;
                 return null;
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 errmsg = "";
                 return null;
             }
         }
 
+
         public bool PostData(string Url, Dictionary<string, string> param)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(PostMethod, new Uri(Url), param, false);
-                HttpStatusCode res = this.GetResponse(req, null, false);
-                if (res == HttpStatusCode.OK) return true;
+            try {
+                HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
+                HttpStatusCode res = this.GetResponse( req, null, false );
+                if ( res == HttpStatusCode.OK )
+                    return true;
                 return false;
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 return false;
             }
         }
 
+
         public bool PostData(string Url, Dictionary<string, string> param, out string content)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(PostMethod, new Uri(Url), param, false);
-                HttpStatusCode res = this.GetResponse(req, out content, null, false);
-                if (res == HttpStatusCode.OK) return true;
+            try {
+                HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
+                HttpStatusCode res = this.GetResponse( req, out content, null, false );
+                if ( res == HttpStatusCode.OK )
+                    return true;
                 return false;
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 content = null;
                 return false;
             }
         }
 
+
         public bool GetData(string Url, Dictionary<string, string> param, out string content, string userAgent)
         {
             string errmsg;
-            return GetData(Url, param, out content, 100000, out errmsg, userAgent);
+            return GetData( Url, param, out content, 100000, out errmsg, userAgent );
         }
+
 
         public bool GetData(string Url, Dictionary<string, string> param, out string content)
         {
-            return GetData(Url, param, out content, 100000);
+            return GetData( Url, param, out content, 100000 );
         }
+
 
         public bool GetData(string Url, Dictionary<string, string> param, out string content, int timeout)
         {
             string errmsg;
-            return GetData(Url, param, out content, timeout, out errmsg, "");
+            return GetData( Url, param, out content, timeout, out errmsg, "" );
         }
+
 
         public bool GetData(string Url, Dictionary<string, string> param, out string content, int timeout, out string errmsg, string userAgent)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(GetMethod, new Uri(Url), param, false);
-                if (timeout < 3000 || timeout > 100000)
-                {
+            try {
+                HttpWebRequest req = CreateRequest( GetMethod, new Uri (Url), param, false );
+                if ( timeout < 3000 || timeout > 100000 ) {
                     req.Timeout = 10000;
-                }
-                else
-                {
+                } else {
                     req.Timeout = timeout;
                 }
-                if (!String.IsNullOrEmpty(userAgent)) req.UserAgent = userAgent;
-                HttpStatusCode res = this.GetResponse(req, out content, null, false);
-                if (res == HttpStatusCode.OK)
-                {
+                if ( !String.IsNullOrEmpty( userAgent ) )
+                    req.UserAgent = userAgent;
+                HttpStatusCode res = this.GetResponse( req, out content, null, false );
+                if ( res == HttpStatusCode.OK ) {
                     errmsg = "";
                     return true;
                 }
                 errmsg = res.ToString();
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch ( Exception ex ) {
                 content = null;
                 errmsg = ex.Message;
                 return false;
             }
         }
 
+
         public HttpStatusCode GetContent(string method, Uri Url, Dictionary<string, string> param, out string content, Dictionary<string, string> headerInfo, string userAgent)
         {
             //Searchで使用。呼び出し元で例外キャッチしている。
-            HttpWebRequest req = CreateRequest(method, Url, param, false);
+            HttpWebRequest req = CreateRequest( method, Url, param, false );
             req.UserAgent = userAgent;
-            return this.GetResponse(req, out content, headerInfo, false);
+            return this.GetResponse( req, out content, headerInfo, false );
         }
+
 
         public bool GetDataToFile(string Url, string savePath)
         {
-            try
-            {
-                HttpWebRequest req = CreateRequest(GetMethod, new Uri(Url), null, false);
+            try {
+                HttpWebRequest req = CreateRequest( GetMethod, new Uri (Url), null, false );
                 req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                 req.UserAgent = MyCommon.GetUserAgentString();
-                using (FileStream strm = new FileStream(savePath, FileMode.Create, FileAccess.Write))
-                {
-                    try
-                    {
-                        HttpStatusCode res = this.GetResponse(req, strm, null, false);
-                        if (res == HttpStatusCode.OK) return true;
+                using (FileStream strm = new FileStream(savePath, FileMode.Create, FileAccess.Write)) {
+                    try {
+                        HttpStatusCode res = this.GetResponse( req, strm, null, false );
+                        if ( res == HttpStatusCode.OK )
+                            return true;
                         return false;
-                    }
-                    catch (Exception)
-                    {
+                    } catch ( Exception ) {
                         return false;
                     }
                 }
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 return false;
             }
         }
 
+
         private Image CheckValidIconImage(Image img, int width, int height)
         {
-            return CheckValidImage(img, 48, 48);
+            return CheckValidImage( img, 48, 48 );
         }
+
 
         public Image CheckValidImage(Image img, int width, int height)
         {
-            if (img == null) return null;
+            if ( img == null )
+                return null;
 
             Bitmap bmp = null;
 
-            try
-            {
-                bmp = new Bitmap(width, height);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
+            try {
+                bmp = new Bitmap (width, height);
+                using (Graphics g = Graphics.FromImage(bmp)) {
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    g.DrawImage(img, 0, 0, width, height);
+                    g.DrawImage( img, 0, 0, width, height );
                 }
                 bmp.Tag = img.Tag;
 
                 Bitmap result = bmp;
                 bmp = null; //返り値のBitmapはDisposeしない
                 return result;
-            }
-            catch (Exception)
-            {
-                if (bmp != null)
-                {
+            } catch ( Exception ) {
+                if ( bmp != null ) {
                     bmp.Dispose();
                     bmp = null;
                 }
 
-                bmp = new Bitmap(width, height);
+                bmp = new Bitmap (width, height);
                 bmp.Tag = img.Tag;
 
                 Bitmap result = bmp;
                 bmp = null; //返り値のBitmapはDisposeしない
                 return result;
-            }
-            finally
-            {
-                if (bmp != null) bmp.Dispose();
+            } finally {
+                if ( bmp != null )
+                    bmp.Dispose();
                 img.Dispose();
             }
         }

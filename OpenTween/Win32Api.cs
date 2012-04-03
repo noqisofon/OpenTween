@@ -23,7 +23,6 @@
 // with this program. if not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -31,9 +30,12 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Net;
 
+
 namespace OpenTween
 {
     //[Microsoft.VisualBasic.CompilerServices.StandardModule]
+
+
     public static class Win32Api
     {
         #region "先行起動プロセスをアクティブにする"
@@ -41,13 +43,12 @@ namespace OpenTween
         public static void WakeupWindow(IntPtr hWnd)
         {
             // メイン・ウィンドウが最小化されていれば元に戻す
-            if (IsIconic(hWnd))
-            {
-                ShowWindowAsync(hWnd, SW_RESTORE);
+            if ( IsIconic( hWnd ) ) {
+                ShowWindowAsync( hWnd, SW_RESTORE );
             }
 
             // メイン・ウィンドウを最前面に表示する
-            SetForegroundWindow(hWnd);
+            SetForegroundWindow( hWnd );
         }
 
         // 外部プロセスのメイン・ウィンドウを起動するためのWin32 API
@@ -73,18 +74,15 @@ namespace OpenTween
         public static Process GetPreviousProcess()
         {
             var curProcess = Process.GetCurrentProcess();
-            var allProcesses = Process.GetProcessesByName(curProcess.ProcessName);
+            var allProcesses = Process.GetProcessesByName( curProcess.ProcessName );
 
-            foreach (Process checkProcess in allProcesses)
-            {
+            foreach ( Process checkProcess in allProcesses ) {
                 // 自分自身のプロセスIDは無視する
-                if (checkProcess.Id != curProcess.Id)
-                {
+                if ( checkProcess.Id != curProcess.Id ) {
                     // プロセスのフルパス名を比較して同じアプリケーションか検証
-                    if (string.Compare(
+                    if ( string.Compare(
                             checkProcess.MainModule.FileName,
-                            curProcess.MainModule.FileName, true) == 0)
-                    {
+                            curProcess.MainModule.FileName, true ) == 0 ) {
                         // 同じフルパス名のプロセスを取得
                         return checkProcess;
                     }
@@ -309,90 +307,91 @@ namespace OpenTween
             const string TRAY_PAGER = "SysPager";
             const string TOOLBAR_CONTROL = "ToolbarWindow32";
             //タスクバーのハンドル取得
-            var taskbarWin = FindWindow(TRAY_WINDOW, null);
-            if (taskbarWin.Equals(IntPtr.Zero)) return false;
+            var taskbarWin = FindWindow( TRAY_WINDOW, null );
+            if ( taskbarWin.Equals( IntPtr.Zero ) )
+                return false;
             //通知領域のハンドル取得
-            var trayWin = FindWindowEx(taskbarWin, IntPtr.Zero, TRAY_NOTIFYWINDOW, null);
-            if (trayWin.Equals(IntPtr.Zero)) return false;
+            var trayWin = FindWindowEx( taskbarWin, IntPtr.Zero, TRAY_NOTIFYWINDOW, null );
+            if ( trayWin.Equals( IntPtr.Zero ) )
+                return false;
             //SysPagerの有無確認。（XP/2000はSysPagerあり）
-            var tempWin = FindWindowEx(trayWin, IntPtr.Zero, TRAY_PAGER, null);
-            if (tempWin.Equals(IntPtr.Zero)) tempWin = trayWin;
+            var tempWin = FindWindowEx( trayWin, IntPtr.Zero, TRAY_PAGER, null );
+            if ( tempWin.Equals( IntPtr.Zero ) )
+                tempWin = trayWin;
             //タスクトレイがツールバーで出来ているか確認
             // → ツールバーでなければ終了
-            var toolWin = FindWindowEx(tempWin, IntPtr.Zero, TOOLBAR_CONTROL, null);
-            if (toolWin.Equals(IntPtr.Zero)) return false;
+            var toolWin = FindWindowEx( tempWin, IntPtr.Zero, TOOLBAR_CONTROL, null );
+            if ( toolWin.Equals( IntPtr.Zero ) )
+                return false;
             //タスクトレイのプロセス（Explorer）を取得し、外部から参照するために開く
             int expPid = 0;
-            GetWindowThreadProcessId(toolWin, out expPid);
-            var hProc = OpenProcess(ProcessAccess.VMOperation | ProcessAccess.VMRead | ProcessAccess.VMWrite, false, expPid);
-            if (hProc.Equals(IntPtr.Zero)) return false;
+            GetWindowThreadProcessId( toolWin, out expPid );
+            var hProc = OpenProcess( ProcessAccess.VMOperation | ProcessAccess.VMRead | ProcessAccess.VMWrite, false, expPid );
+            if ( hProc.Equals( IntPtr.Zero ) )
+                return false;
 
             //プロセスを閉じるためにtry-finally
-            try
-            {
-                var tbButtonLocal = new TBBUTTON();   //本プロセス内のタスクバーボタン情報作成（サイズ特定でのみ使用）
+            try {
+                var tbButtonLocal = new TBBUTTON ();   //本プロセス内のタスクバーボタン情報作成（サイズ特定でのみ使用）
                 //Explorer内のタスクバーボタン格納メモリ確保
-                var ptbSysButton = VirtualAllocEx(hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf(tbButtonLocal), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite);
-                if (ptbSysButton.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                try
-                {
-                    var tbButtonInfoLocal = new TBBUTTONINFO();   //本プロセス内ツールバーボタン詳細情報作成
+                var ptbSysButton = VirtualAllocEx( hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf( tbButtonLocal ), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite );
+                if ( ptbSysButton.Equals( IntPtr.Zero ) )
+                    return false; //メモリ確保失敗
+                try {
+                    var tbButtonInfoLocal = new TBBUTTONINFO ();   //本プロセス内ツールバーボタン詳細情報作成
                     //Explorer内のタスクバーボタン詳細情報格納メモリ確保
-                    var ptbSysInfo = VirtualAllocEx(hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf(tbButtonInfoLocal), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite);
-                    if (ptbSysInfo.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                    try
-                    {
+                    var ptbSysInfo = VirtualAllocEx( hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf( tbButtonInfoLocal ), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite );
+                    if ( ptbSysInfo.Equals( IntPtr.Zero ) )
+                        return false; //メモリ確保失敗
+                    try {
                         const int titleSize = 256;    //Tooltip文字列長
                         var title = "";            //Tooltip文字列
                         //共有メモリにTooltip読込メモリ確保
-                        var pszTitle = Marshal.AllocCoTaskMem(titleSize);
-                        if (pszTitle.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                        try
-                        {
+                        var pszTitle = Marshal.AllocCoTaskMem( titleSize );
+                        if ( pszTitle.Equals( IntPtr.Zero ) )
+                            return false; //メモリ確保失敗
+                        try {
                             //Explorer内にTooltip読込メモリ確保
-                            var pszSysTitle = VirtualAllocEx(hProc, IntPtr.Zero, (IntPtr)titleSize, AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite);
-                            if (pszSysTitle.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                            try
-                            {
+                            var pszSysTitle = VirtualAllocEx( hProc, IntPtr.Zero, (IntPtr)titleSize, AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite );
+                            if ( pszSysTitle.Equals( IntPtr.Zero ) )
+                                return false; //メモリ確保失敗
+                            try {
                                 //通知領域ボタン数取得
-                                var iCount = (int)SendMessage(toolWin, (int)Sm_Message.TB_BUTTONCOUNT, new IntPtr(0), new IntPtr(0));
+                                var iCount = (int)SendMessage( toolWin, (int)Sm_Message.TB_BUTTONCOUNT, new IntPtr (0), new IntPtr (0) );
                                 //左から順に情報取得
-                                for (var i = 0; i < iCount; i++)
-                                {
+                                for ( var i = 0; i < iCount; i++ ) {
                                     var dwBytes = 0;  //読み書きバイト数
-                                    var tbButtonLocal2 = new TBBUTTON();  //ボタン情報
-                                    var tbButtonInfoLocal2 = new TBBUTTONINFO();  //ボタン詳細情報
+                                    var tbButtonLocal2 = new TBBUTTON ();  //ボタン情報
+                                    var tbButtonInfoLocal2 = new TBBUTTONINFO ();  //ボタン詳細情報
                                     //共有メモリにボタン情報読込メモリ確保
-                                    var ptrLocal = Marshal.AllocCoTaskMem(Marshal.SizeOf(tbButtonLocal));
-                                    if (ptrLocal.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                                    try
-                                    {
-                                        Marshal.StructureToPtr(tbButtonLocal, ptrLocal, true);   //共有メモリ初期化
+                                    var ptrLocal = Marshal.AllocCoTaskMem( Marshal.SizeOf( tbButtonLocal ) );
+                                    if ( ptrLocal.Equals( IntPtr.Zero ) )
+                                        return false; //メモリ確保失敗
+                                    try {
+                                        Marshal.StructureToPtr( tbButtonLocal, ptrLocal, true );   //共有メモリ初期化
                                         //ボタン情報取得（idCommandを取得するため）
                                         SendMessage(
                                             toolWin,
                                             (int)Sm_Message.TB_GETBUTTON,
-                                            new IntPtr(i),
-                                            ptbSysButton);
+                                            new IntPtr (i),
+                                            ptbSysButton );
                                         //Explorer内のメモリを共有メモリに読み込み
                                         ReadProcessMemory(
                                             hProc,
                                             ptbSysButton,
                                             ptrLocal,
-                                            (IntPtr)Marshal.SizeOf(tbButtonLocal),
-                                            out dwBytes);
+                                            (IntPtr)Marshal.SizeOf( tbButtonLocal ),
+                                            out dwBytes );
                                         //共有メモリの内容を構造体に変換
                                         tbButtonLocal2 = (TBBUTTON)Marshal.PtrToStructure(
                                                                 ptrLocal,
-                                                                typeof(TBBUTTON));
-                                    }
-                                    finally
-                                    {
-                                        Marshal.FreeCoTaskMem(ptrLocal); //共有メモリ解放
+                                                                typeof(TBBUTTON) );
+                                    } finally {
+                                        Marshal.FreeCoTaskMem( ptrLocal ); //共有メモリ解放
                                     }
 
                                     //ボタン詳細情報を取得するためのマスク等を設定
-                                    tbButtonInfoLocal.cbSize = Marshal.SizeOf(tbButtonInfoLocal);
+                                    tbButtonInfoLocal.cbSize = Marshal.SizeOf( tbButtonInfoLocal );
                                     tbButtonInfoLocal.dwMask = (int)(ToolbarButtonMask.TBIF_COMMAND | ToolbarButtonMask.TBIF_LPARAM | ToolbarButtonMask.TBIF_TEXT);
                                     tbButtonInfoLocal.pszText = pszSysTitle;     //Tooltip書き込み先領域
                                     tbButtonInfoLocal.cchText = titleSize;
@@ -401,103 +400,88 @@ namespace OpenTween
                                         hProc,
                                         ptbSysInfo,
                                         ref tbButtonInfoLocal,
-                                        (IntPtr)Marshal.SizeOf(tbButtonInfoLocal),
-                                        out dwBytes);
+                                        (IntPtr)Marshal.SizeOf( tbButtonInfoLocal ),
+                                        out dwBytes );
                                     //ボタン詳細情報取得
                                     SendMessage(
                                         toolWin,
                                         (int)Sm_Message.TB_GETBUTTONINFO,
                                         tbButtonLocal2.idCommand,
-                                        ptbSysInfo);
+                                        ptbSysInfo );
                                     //共有メモリにボタン詳細情報を読み込む領域確保
-                                    var ptrInfo = Marshal.AllocCoTaskMem(Marshal.SizeOf(tbButtonInfoLocal));
-                                    if (ptrInfo.Equals(IntPtr.Zero)) return false; //共有メモリ確保失敗
-                                    try
-                                    {
-                                        Marshal.StructureToPtr(tbButtonInfoLocal, ptrInfo, true);    //共有メモリ初期化
+                                    var ptrInfo = Marshal.AllocCoTaskMem( Marshal.SizeOf( tbButtonInfoLocal ) );
+                                    if ( ptrInfo.Equals( IntPtr.Zero ) )
+                                        return false; //共有メモリ確保失敗
+                                    try {
+                                        Marshal.StructureToPtr( tbButtonInfoLocal, ptrInfo, true );    //共有メモリ初期化
                                         //Explorer内のメモリを共有メモリに読み込み
                                         ReadProcessMemory(
                                             hProc,
                                             ptbSysInfo,
                                             ptrInfo,
-                                            (IntPtr)Marshal.SizeOf(tbButtonInfoLocal),
-                                            out dwBytes);
+                                            (IntPtr)Marshal.SizeOf( tbButtonInfoLocal ),
+                                            out dwBytes );
                                         //共有メモリの内容を構造体に変換
                                         tbButtonInfoLocal2 = (TBBUTTONINFO)Marshal.PtrToStructure(
                                                                     ptrInfo,
-                                                                    typeof(TBBUTTONINFO));
-                                    }
-                                    finally
-                                    {
-                                        Marshal.FreeCoTaskMem(ptrInfo);  //共有メモリ解放
+                                                                    typeof(TBBUTTONINFO) );
+                                    } finally {
+                                        Marshal.FreeCoTaskMem( ptrInfo );  //共有メモリ解放
                                     }
                                     //Tooltipの内容をExplorer内のメモリから共有メモリへ読込
-                                    ReadProcessMemory(hProc, pszSysTitle, pszTitle, (IntPtr)titleSize, out dwBytes);
+                                    ReadProcessMemory( hProc, pszSysTitle, pszTitle, (IntPtr)titleSize, out dwBytes );
                                     //ローカル変数へ変換
-                                    title = Marshal.PtrToStringAnsi(pszTitle, titleSize);
+                                    title = Marshal.PtrToStringAnsi( pszTitle, titleSize );
 
                                     //Tooltipが指定文字列を含んでいればクリック
-                                    if (title.Contains(tooltip))
-                                    {
+                                    if ( title.Contains( tooltip ) ) {
                                         //PostMessageでクリックを送るために、ボタン詳細情報のlParamでポイントされているTRAYNOTIFY情報が必要
-                                        var tNotify = new TRAYNOTIFY();
-                                        var tNotify2 = new TRAYNOTIFY();
+                                        var tNotify = new TRAYNOTIFY ();
+                                        var tNotify2 = new TRAYNOTIFY ();
                                         //共有メモリ確保
-                                        var ptNotify = Marshal.AllocCoTaskMem(Marshal.SizeOf(tNotify));
-                                        if (ptNotify.Equals(IntPtr.Zero)) return false; //メモリ確保失敗
-                                        try
-                                        {
-                                            Marshal.StructureToPtr(tNotify, ptNotify, true); //初期化
+                                        var ptNotify = Marshal.AllocCoTaskMem( Marshal.SizeOf( tNotify ) );
+                                        if ( ptNotify.Equals( IntPtr.Zero ) )
+                                            return false; //メモリ確保失敗
+                                        try {
+                                            Marshal.StructureToPtr( tNotify, ptNotify, true ); //初期化
                                             //lParamのメモリを読込
                                             ReadProcessMemory(
                                                 hProc,
                                                 tbButtonInfoLocal2.lParam,
                                                 ptNotify,
-                                                (IntPtr)Marshal.SizeOf(tNotify),
-                                                out dwBytes);
+                                                (IntPtr)Marshal.SizeOf( tNotify ),
+                                                out dwBytes );
                                             //構造体へ変換
                                             tNotify2 = (TRAYNOTIFY)
                                                             Marshal.PtrToStructure(
                                                                 ptNotify,
-                                                                typeof(TRAYNOTIFY));
-                                        }
-                                        finally
-                                        {
-                                            Marshal.FreeCoTaskMem(ptNotify); //共有メモリ解放
+                                                                typeof(TRAYNOTIFY) );
+                                        } finally {
+                                            Marshal.FreeCoTaskMem( ptNotify ); //共有メモリ解放
                                         }
                                         //クリックするためには通知領域がアクティブでなければならない
-                                        SetForegroundWindow(tNotify2.hWnd);
+                                        SetForegroundWindow( tNotify2.hWnd );
                                         //左クリック
-                                        PostMessage(tNotify2.hWnd, tNotify2.uCallbackMessage, (IntPtr)tNotify2.uID, (IntPtr)PM_Message.WM_LBUTTONDOWN);
-                                        PostMessage(tNotify2.hWnd, tNotify2.uCallbackMessage, (IntPtr)tNotify2.uID, (IntPtr)PM_Message.WM_LBUTTONUP);
+                                        PostMessage( tNotify2.hWnd, tNotify2.uCallbackMessage, (IntPtr)tNotify2.uID, (IntPtr)PM_Message.WM_LBUTTONDOWN );
+                                        PostMessage( tNotify2.hWnd, tNotify2.uCallbackMessage, (IntPtr)tNotify2.uID, (IntPtr)PM_Message.WM_LBUTTONUP );
                                         return true;
                                     }
                                 }
                                 return false;    //該当なし
+                            } finally {
+                                VirtualFreeEx( hProc, pszSysTitle, (IntPtr)titleSize, MemoryFreeTypes.Release );   //メモリ解放
                             }
-                            finally
-                            {
-                                VirtualFreeEx(hProc, pszSysTitle, (IntPtr)titleSize, MemoryFreeTypes.Release);   //メモリ解放
-                            }
+                        } finally {
+                            Marshal.FreeCoTaskMem( pszTitle );     //共有メモリ解放
                         }
-                        finally
-                        {
-                            Marshal.FreeCoTaskMem(pszTitle);     //共有メモリ解放
-                        }
+                    } finally {
+                        VirtualFreeEx( hProc, ptbSysInfo, (IntPtr)Marshal.SizeOf( tbButtonInfoLocal ), MemoryFreeTypes.Release );    //メモリ解放
                     }
-                    finally
-                    {
-                        VirtualFreeEx(hProc, ptbSysInfo, (IntPtr)Marshal.SizeOf(tbButtonInfoLocal), MemoryFreeTypes.Release);    //メモリ解放
-                    }
+                } finally {
+                    VirtualFreeEx( hProc, ptbSysButton, (IntPtr)Marshal.SizeOf( tbButtonLocal ), MemoryFreeTypes.Release );      //メモリ解放
                 }
-                finally
-                {
-                    VirtualFreeEx(hProc, ptbSysButton, (IntPtr)Marshal.SizeOf(tbButtonLocal), MemoryFreeTypes.Release);      //メモリ解放
-                }
-            }
-            finally
-            {
-                CloseHandle(hProc);  //Explorerのプロセス閉じる
+            } finally {
+                CloseHandle( hProc );  //Explorerのプロセス閉じる
             }
         }
         #endregion
@@ -513,14 +497,14 @@ namespace OpenTween
             FlashSpecification flashType,
             int flashCount)
         {
-            var fInfo = new FLASHWINFO();
-            fInfo.cbSize = Convert.ToInt32(Marshal.SizeOf(fInfo));
+            var fInfo = new FLASHWINFO ();
+            fInfo.cbSize = Convert.ToInt32( Marshal.SizeOf( fInfo ) );
             fInfo.hwnd = hwnd;
             fInfo.dwFlags = (int)FlashSpecification.FlashAll;
             fInfo.uCount = flashCount;
             fInfo.dwTimeout = 0;
 
-            return FlashWindowEx(ref fInfo);
+            return FlashWindowEx( ref fInfo );
         }
 
         public enum FlashSpecification : uint
@@ -578,12 +562,13 @@ namespace OpenTween
         //スクリーンセーバーが起動中かを取得する定数
         private const int SPI_GETSCREENSAVERRUNNING = 0x61;
 
+
         public static bool IsScreenSaverRunning()
         {
             var ret = 0;
             var isRunning = false;
 
-            ret = SystemParametersInfo(SPI_GETSCREENSAVERRUNNING, 0, ref isRunning, 0);
+            ret = SystemParametersInfo( SPI_GETSCREENSAVERRUNNING, 0, ref isRunning, 0 );
             return isRunning;
         }
         #endregion
@@ -592,42 +577,44 @@ namespace OpenTween
         [DllImport("user32")]
         private static extern int RegisterHotKey(IntPtr hwnd, int id,
             int fsModifiers, int vk);
+
+
         [DllImport("user32")]
         private static extern int UnregisterHotKey(IntPtr hwnd, int id);
+
+
         [DllImport("kernel32", CharSet = CharSet.Auto, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         private static extern ushort GlobalAddAtom([MarshalAs(UnmanagedType.LPTStr)] string lpString);
+
+
         [DllImport("kernel32")]
         private static extern ushort GlobalDeleteAtom(ushort nAtom);
+
 
         private static int registerCount = 0;
         // register a global hot key
         public static int RegisterGlobalHotKey(int hotkeyValue, int modifiers, Form targetForm)
         {
             ushort hotkeyID = 0;
-            try
-            {
+            try {
                 // use the GlobalAddAtom API to get a unique ID (as suggested by MSDN docs)
                 registerCount++;
-                var atomName = Thread.CurrentThread.ManagedThreadId.ToString("X8") + targetForm.Name + registerCount.ToString();
-                hotkeyID = GlobalAddAtom(atomName);
-                if (hotkeyID == 0)
-                {
-                    throw new Exception("Unable to generate unique hotkey ID. Error code: " +
+                var atomName = Thread.CurrentThread.ManagedThreadId.ToString( "X8" ) + targetForm.Name + registerCount.ToString();
+                hotkeyID = GlobalAddAtom( atomName );
+                if ( hotkeyID == 0 ) {
+                    throw new Exception ("Unable to generate unique hotkey ID. Error code: " +
                        Marshal.GetLastWin32Error().ToString());
                 }
 
                 // register the hotkey, throw if any error
-                if (RegisterHotKey(targetForm.Handle, hotkeyID, modifiers, hotkeyValue) == 0)
-                {
-                    throw new Exception("Unable to register hotkey. Error code: " +
+                if ( RegisterHotKey( targetForm.Handle, hotkeyID, modifiers, hotkeyValue ) == 0 ) {
+                    throw new Exception ("Unable to register hotkey. Error code: " +
                        Marshal.GetLastWin32Error().ToString());
                 }
                 return hotkeyID;
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 // clean up if hotkey registration failed
-                UnregisterGlobalHotKey(hotkeyID, targetForm);
+                UnregisterGlobalHotKey( hotkeyID, targetForm );
                 return 0;
             }
         }
@@ -635,11 +622,10 @@ namespace OpenTween
         // unregister a global hotkey
         public static void UnregisterGlobalHotKey(ushort hotkeyID, Form targetForm)
         {
-            if (hotkeyID != 0)
-            {
-                UnregisterHotKey(targetForm.Handle, hotkeyID);
+            if ( hotkeyID != 0 ) {
+                UnregisterHotKey( targetForm.Handle, hotkeyID );
                 // clean up the atom list
-                GlobalDeleteAtom(hotkeyID);
+                GlobalDeleteAtom( hotkeyID );
                 hotkeyID = 0;
             }
         }
@@ -658,15 +644,19 @@ namespace OpenTween
             public IntPtr proxy;
             public IntPtr proxyBypass;
 
+
             public void Dispose()
             {
-                Dispose(true);
+                Dispose( true );
             }
+
 
             private void Dispose(bool disposing)
             {
-                if (proxy != IntPtr.Zero) Marshal.FreeHGlobal(proxy);
-                if (proxyBypass != IntPtr.Zero) Marshal.FreeHGlobal(proxyBypass);
+                if ( proxy != IntPtr.Zero )
+                    Marshal.FreeHGlobal( proxy );
+                if ( proxyBypass != IntPtr.Zero )
+                    Marshal.FreeHGlobal( proxyBypass );
             }
         }
 
@@ -680,93 +670,75 @@ namespace OpenTween
             INTERNET_PROXY_INFO ipi;
 
             // Filling in structure
-            if (!string.IsNullOrEmpty(strProxy))
-            {
+            if ( !string.IsNullOrEmpty( strProxy ) ) {
                 ipi.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
-                ipi.proxy = Marshal.StringToHGlobalAnsi(strProxy);
-                ipi.proxyBypass = Marshal.StringToHGlobalAnsi("local");
-            }
-            else if (strProxy == null)
-            {
+                ipi.proxy = Marshal.StringToHGlobalAnsi( strProxy );
+                ipi.proxyBypass = Marshal.StringToHGlobalAnsi( "local" );
+            } else if ( strProxy == null ) {
                 //IE Default
                 var p = WebRequest.GetSystemWebProxy();
-                if (p.IsBypassed(new Uri("http://www.google.com/")))
-                {
+                if ( p.IsBypassed( new Uri ("http://www.google.com/") ) ) {
                     ipi.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
                     ipi.proxy = IntPtr.Zero;
                     ipi.proxyBypass = IntPtr.Zero;
-                }
-                else
-                {
+                } else {
                     ipi.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
-                    ipi.proxy = Marshal.StringToHGlobalAnsi(p.GetProxy(new Uri("http://www.google.com/")).Authority);
-                    ipi.proxyBypass = Marshal.StringToHGlobalAnsi("local");
+                    ipi.proxy = Marshal.StringToHGlobalAnsi( p.GetProxy( new Uri ("http://www.google.com/") ).Authority );
+                    ipi.proxyBypass = Marshal.StringToHGlobalAnsi( "local" );
                 }
-            }
-            else
-            {
+            } else {
                 ipi.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
                 ipi.proxy = IntPtr.Zero;
                 ipi.proxyBypass = IntPtr.Zero;
             }
 
-            try
-            {
+            try {
                 // Allocating memory
-                var pIpi = Marshal.AllocCoTaskMem(Marshal.SizeOf(ipi));
-                if (pIpi.Equals(IntPtr.Zero)) return;
-                try
-                {
+                var pIpi = Marshal.AllocCoTaskMem( Marshal.SizeOf( ipi ) );
+                if ( pIpi.Equals( IntPtr.Zero ) )
+                    return;
+                try {
                     // Converting structure to IntPtr
-                    Marshal.StructureToPtr(ipi, pIpi, true);
-                    var ret = InternetSetOption(IntPtr.Zero,
+                    Marshal.StructureToPtr( ipi, pIpi, true );
+                    var ret = InternetSetOption( IntPtr.Zero,
                                                            INTERNET_OPTION_PROXY,
                                                            pIpi,
-                                                           Marshal.SizeOf(ipi));
+                                                           Marshal.SizeOf( ipi ) );
+                } finally {
+                    Marshal.FreeCoTaskMem( pIpi );
                 }
-                finally
-                {
-                    Marshal.FreeCoTaskMem(pIpi);
-                }
-            }
-            finally
-            {
+            } finally {
                 ipi.Dispose();
             }
         }
+
 
         private static void RefreshProxyAccount(string username, string password)
         {
             const int INTERNET_OPTION_PROXY_USERNAME = 43;
             const int INTERNET_OPTION_PROXY_PASSWORD = 44;
 
-            if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
-            {
-                var ret = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY_USERNAME, IntPtr.Zero, 0);
-                ret = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY_PASSWORD, IntPtr.Zero, 0);
-            }
-            else
-            {
-                var pUser = Marshal.StringToBSTR(username);
-                var pPass = Marshal.StringToBSTR(password);
-                try
-                {
-                    var ret = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY_USERNAME, pUser, username.Length + 1);
-                    ret = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY_PASSWORD, pPass, password.Length + 1);
-                }
-                finally
-                {
-                    Marshal.FreeBSTR(pUser);
-                    Marshal.FreeBSTR(pPass);
+            if ( !string.IsNullOrEmpty( username ) || !string.IsNullOrEmpty( password ) ) {
+                var ret = InternetSetOption( IntPtr.Zero, INTERNET_OPTION_PROXY_USERNAME, IntPtr.Zero, 0 );
+                ret = InternetSetOption( IntPtr.Zero, INTERNET_OPTION_PROXY_PASSWORD, IntPtr.Zero, 0 );
+            } else {
+                var pUser = Marshal.StringToBSTR( username );
+                var pPass = Marshal.StringToBSTR( password );
+                try {
+                    var ret = InternetSetOption( IntPtr.Zero, INTERNET_OPTION_PROXY_USERNAME, pUser, username.Length + 1 );
+                    ret = InternetSetOption( IntPtr.Zero, INTERNET_OPTION_PROXY_PASSWORD, pPass, password.Length + 1 );
+                } finally {
+                    Marshal.FreeBSTR( pUser );
+                    Marshal.FreeBSTR( pPass );
                 }
             }
         }
 
+
         public static void SetProxy(HttpConnection.ProxyType pType, string host, int port, string username, string password)
         {
             string proxy = null;
-            switch (pType)
-            {
+            switch ( pType ) {
             case HttpConnection.ProxyType.IE:
                 proxy = null;
                 break;
@@ -777,8 +749,8 @@ namespace OpenTween
                 proxy = host + (port > 0 ? ":" + port.ToString() : "");
                 break;
             }
-            RefreshProxySettings(proxy);
-            RefreshProxyAccount(username, password);
+            RefreshProxySettings( proxy );
+            RefreshProxyAccount( username, password );
         }
 #endregion
     }

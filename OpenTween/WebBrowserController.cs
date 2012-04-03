@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +33,12 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 
+
 namespace OpenTween
 {
     #region "WebBrowserAPI"
+
+
     internal class WebBrowserAPI
     {
         public static int INET_E_DEFAULT_ACTION = unchecked((int)0x800C0011);
@@ -51,13 +53,11 @@ namespace OpenTween
         }
 
         public static int URLACTION_MIN = 0x1000;
-
         public static int URLACTION_DOWNLOAD_MIN = 0x1000;
         public static int URLACTION_DOWNLOAD_SIGNED_ACTIVEX = 0x1001;
         public static int URLACTION_DOWNLOAD_UNSIGNED_ACTIVEX = 0x1004;
         public static int URLACTION_DOWNLOAD_CURR_MAX = 0x1004;
         public static int URLACTION_DOWNLOAD_MAX = 0x11FF;
-
         public static int URLACTION_ACTIVEX_MIN = 0x1200;
         public static int URLACTION_ACTIVEX_RUN = 0x1200;
         public static int URLPOLICY_ACTIVEX_CHECK_LIST = 0x10000;
@@ -70,7 +70,6 @@ namespace OpenTween
         public static int URLACTION_ACTIVEX_NO_WEBOC_SCRIPT = 0x1206;
         public static int URLACTION_ACTIVEX_CURR_MAX = 0x1206;
         public static int URLACTION_ACTIVEX_MAX = 0x13FF;
-
         public static int URLACTION_SCRIPT_MIN = 0x1400;
         public static int URLACTION_SCRIPT_RUN = 0x1400;
         public static int URLACTION_SCRIPT_JAVA_USE = 0x1402;
@@ -79,7 +78,6 @@ namespace OpenTween
         public static int URLACTION_SCRIPT_PASTE = 0x1407;
         public static int URLACTION_SCRIPT_CURR_MAX = 0x1407;
         public static int URLACTION_SCRIPT_MAX = 0x15FF;
-
         public static int URLACTION_HTML_MIN = 0x1600;
         public static int URLACTION_HTML_SUBMIT_FORMS = 0x1601;                                 // aggregate next two
         public static int URLACTION_HTML_SUBMIT_FORMS_FROM = 0x1602;                            //
@@ -91,7 +89,6 @@ namespace OpenTween
         public static int URLACTION_HTML_META_REFRESH = 0x1608;
         public static int URLACTION_HTML_MIXED_CONTENT = 0x1609;
         public static int URLACTION_HTML_MAX = 0x17FF;
-
         public static int URLACTION_SHELL_MIN = 0x1800;
         public static int URLACTION_SHELL_INSTALL_DTITEMS = 0x1800;
         public static int URLACTION_SHELL_MOVE_OR_COPY = 0x1802;
@@ -101,35 +98,24 @@ namespace OpenTween
         public static int URLACTION_SHELL_SHELLEXECUTE = 0x1806;
         public static int URLACTION_SHELL_CURR_MAX = 0x1806;
         public static int URLACTION_SHELL_MAX = 0x19FF;
-
         public static int URLACTION_NETWORK_MIN = 0x1A00;
-
         public static int URLACTION_CREDENTIALS_USE = 0x1A00;
         public static int URLPOLICY_CREDENTIALS_SILENT_LOGON_OK = 0x0;
         public static int URLPOLICY_CREDENTIALS_MUST_PROMPT_USER = 0x10000;
         public static int URLPOLICY_CREDENTIALS_CONDITIONAL_PROMPT = 0x20000;
         public static int URLPOLICY_CREDENTIALS_ANONYMOUS_ONLY = 0x30000;
-
         public static int URLACTION_AUTHENTICATE_CLIENT = 0x1A01;
         public static int URLPOLICY_AUTHENTICATE_CLEARTEXT_OK = 0x0;
         public static int URLPOLICY_AUTHENTICATE_CHALLENGE_RESPONSE = 0x10000;
         public static int URLPOLICY_AUTHENTICATE_MUTUAL_ONLY = 0x30000;
-
-
         public static int URLACTION_COOKIES = 0x1A02;
         public static int URLACTION_COOKIES_SESSION = 0x1A03;
-
         public static int URLACTION_CLIENT_CERT_PROMPT = 0x1A04;
-
         public static int URLACTION_COOKIES_THIRD_PARTY = 0x1A05;
         public static int URLACTION_COOKIES_SESSION_THIRD_PARTY = 0x1A06;
-
         public static int URLACTION_COOKIES_ENABLED = 0x1A10;
-
         public static int URLACTION_NETWORK_CURR_MAX = 0x1A10;
         public static int URLACTION_NETWORK_MAX = 0x1BFF;
-
-
         public static int URLACTION_JAVA_MIN = 0x1C00;
         public static int URLACTION_JAVA_PERMISSIONS = 0x1C00;
         public static int URLPOLICY_JAVA_PROHIBIT = 0x0;
@@ -184,18 +170,15 @@ namespace OpenTween
         // Logging is done regardless of whether user was queried.
         public static int URLPOLICY_LOG_ON_ALLOW = 0x40;
         public static int URLPOLICY_LOG_ON_DISALLOW = 0x80;
-
         public static int URLPOLICY_MASK_PERMISSIONS = 0xF;
-
-
         public static int URLPOLICY_DONTCHECKDLGBOX = 0x100;
 
 
         // ----------------------------------------------------------------------
         // ここ以下は COM Interface の宣言です。
-        public static Guid IID_IProfferService = new Guid("cb728b20-f786-11ce-92ad-00aa00a74cd0");
-        public static Guid SID_SProfferService = new Guid("cb728b20-f786-11ce-92ad-00aa00a74cd0");
-        public static Guid IID_IInternetSecurityManager = new Guid("79eac9ee-baf9-11ce-8c82-00aa004ba90b");
+        public static Guid IID_IProfferService = new Guid ("cb728b20-f786-11ce-92ad-00aa00a74cd0");
+        public static Guid SID_SProfferService = new Guid ("cb728b20-f786-11ce-92ad-00aa00a74cd0");
+        public static Guid IID_IInternetSecurityManager = new Guid ("79eac9ee-baf9-11ce-8c82-00aa004ba90b");
 
         [ComImport,
         Guid("6d5140c1-7436-11ce-8034-00aa006009fa"),
@@ -206,6 +189,7 @@ namespace OpenTween
             int QueryService([In] ref Guid guidService, [In] ref Guid riid, out IntPtr ppvObject);
         }
 
+
         [ComImport,
         Guid("cb728b20-f786-11ce-92ad-00aa00a74cd0"),
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -214,9 +198,11 @@ namespace OpenTween
             [PreserveSig]
             int ProfferService([In] ref Guid guidService, [In] IServiceProvider psp, out int cookie);
 
+
             [PreserveSig]
             int RevokeService([In] int cookie);
         }
+
 
         [ComImport,
         Guid("79eac9ed-baf9-11ce-8c82-00aa004ba90b"),
@@ -226,9 +212,11 @@ namespace OpenTween
             [PreserveSig]
             int GetWindow(out IntPtr hwnd);
 
+
             [PreserveSig]
             int EnableModeless([In, MarshalAs(UnmanagedType.Bool)] bool fEnable);
         }
+
 
         [ComImport,
         Guid("79eac9ee-baf9-11ce-8c82-00aa004ba90b"),
@@ -238,23 +226,30 @@ namespace OpenTween
             [PreserveSig]
             int SetSecuritySite([In] IInternetSecurityMgrSite pSite);
 
+
             [PreserveSig]
             int GetSecuritySite(out IInternetSecurityMgrSite pSite);
+
 
             [PreserveSig]
             int MapUrlToZone([In, MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, out int pdwZone, int dwFlags);
 
+
             [PreserveSig]
             int GetSecurityId([MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, [MarshalAs(UnmanagedType.LPArray)] byte[] pbSecurityId, ref UInt32 pcbSecurityId, UInt32 dwReserved);
+
 
             [PreserveSig]
             int ProcessUrlAction([In, MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, int dwAction, out byte pPolicy, int cbPolicy, byte pContext, int cbContext, int dwFlags, int dwReserved);
 
+
             [PreserveSig]
             int QueryCustomPolicy([In, MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, ref Guid guidKey, byte ppPolicy, int pcbPolicy, byte pContext, int cbContext, int dwReserved);
 
+
             [PreserveSig]
             int SetZoneMapping(int dwZone, [In, MarshalAs(UnmanagedType.LPWStr)] string lpszPattern, int dwFlags);
+
 
             [PreserveSig]
             int GetZoneMappings(int dwZone, ref IEnumString ppenumstring, int dwFlags);
@@ -280,11 +275,10 @@ namespace OpenTween
             ALLOW_SCRIPT = 0x2,
         }
 
-        private object ocx = new object();
+        private object ocx = new object ();
         private WebBrowserAPI.IServiceProvider ocxServiceProvider;
-        private IntPtr profferServicePtr = new IntPtr();
+        private IntPtr profferServicePtr = new IntPtr ();
         private WebBrowserAPI.IProfferService profferService;
-
         private POLICY _Policy = 0; // DefaultですべてDisAllow
 
         public InternetSecurityManager(WebBrowser _WebBrowser)
@@ -293,9 +287,8 @@ namespace OpenTween
             _WebBrowser.DocumentText = "about:blank"; //ActiveXを初期化する
             int hresult = 0;
 
-            do
-            {
-                Thread.Sleep(100);
+            do {
+                Thread.Sleep( 100 );
                 Application.DoEvents();
             } while (_WebBrowser.ReadyState != WebBrowserReadyState.Complete);
 
@@ -304,66 +297,58 @@ namespace OpenTween
             // IServiceProvider.QueryService() を使って IProfferService を取得
             ocxServiceProvider = (WebBrowserAPI.IServiceProvider)ocx;
 
-            try
-            {
+            try {
                 hresult = ocxServiceProvider.QueryService(
                                 ref WebBrowserAPI.SID_SProfferService,
-                                ref WebBrowserAPI.IID_IProfferService, out profferServicePtr);
-            }
-            catch (SEHException ex)
-            {
-                MyCommon.TraceOut(ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString("X8") + Environment.NewLine);
+                                ref WebBrowserAPI.IID_IProfferService, out profferServicePtr );
+            } catch ( SEHException ex ) {
+                MyCommon.TraceOut( ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
                 return;
-            }
-            catch (ExternalException ex)
-            {
-                MyCommon.TraceOut(ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString("X8") + Environment.NewLine);
+            } catch ( ExternalException ex ) {
+                MyCommon.TraceOut( ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
                 return;
             }
 
 
-            profferService = (WebBrowserAPI.IProfferService)Marshal.GetObjectForIUnknown(profferServicePtr);
+            profferService = (WebBrowserAPI.IProfferService)Marshal.GetObjectForIUnknown( profferServicePtr );
 
             // IProfferService.ProfferService() を使って
             // 自分を IInternetSecurityManager として提供
-            try
-            {
+            try {
                 int cookie = 0;
                 hresult = profferService.ProfferService(
-                                ref WebBrowserAPI.IID_IInternetSecurityManager, this, out cookie);
-            }
-            catch (SEHException ex)
-            {
-                MyCommon.TraceOut(ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString("X8") + Environment.NewLine);
+                                ref WebBrowserAPI.IID_IInternetSecurityManager, this, out cookie );
+            } catch ( SEHException ex ) {
+                MyCommon.TraceOut( ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
                 return;
-            }
-            catch (ExternalException ex)
-            {
-                MyCommon.TraceOut(ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString("X8") + Environment.NewLine);
+            } catch ( ExternalException ex ) {
+                MyCommon.TraceOut( ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
                 return;
             }
         }
+
 
         int WebBrowserAPI.IServiceProvider.QueryService(ref Guid guidService,
             ref Guid riid, out IntPtr ppvObject)
         {
 
             ppvObject = IntPtr.Zero;
-            if (guidService.CompareTo(
-                WebBrowserAPI.IID_IInternetSecurityManager) == 0)
-            {
+            if ( guidService.CompareTo(
+                WebBrowserAPI.IID_IInternetSecurityManager ) == 0 ) {
                 // 自分から IID_IInternetSecurityManager を
                 // QueryInterface して返す
-                var punk = Marshal.GetIUnknownForObject(this);
-                return Marshal.QueryInterface(punk, ref riid, out ppvObject);
+                var punk = Marshal.GetIUnknownForObject( this );
+                return Marshal.QueryInterface( punk, ref riid, out ppvObject );
             }
             return HRESULT.E_NOINTERFACE;
         }
+
 
         int WebBrowserAPI.IInternetSecurityManager.GetSecurityId(string pwszUrl, byte[] pbSecurityId, ref uint pcbSecurityId, uint dwReserved)
         {
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
+
 
         int WebBrowserAPI.IInternetSecurityManager.GetSecuritySite(out WebBrowserAPI.IInternetSecurityMgrSite pSite)
         {
@@ -371,65 +356,60 @@ namespace OpenTween
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
 
+
         int WebBrowserAPI.IInternetSecurityManager.GetZoneMappings(int dwZone, ref IEnumString ppenumstring, int dwFlags)
         {
             ppenumstring = null;
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
 
+
         int WebBrowserAPI.IInternetSecurityManager.MapUrlToZone(string pwszUrl, out int pdwZone, int dwFlags)
         {
             pdwZone = 0;
-            if (pwszUrl == "about:blank") return WebBrowserAPI.INET_E_DEFAULT_ACTION;
-            try
-            {
-                var urlStr = MyCommon.IDNDecode(pwszUrl);
-                if (object.ReferenceEquals(urlStr, null)) return WebBrowserAPI.URLPOLICY_DISALLOW;
-                var url = new Uri(urlStr);
-                if (url.Scheme == "data")
-                {
+            if ( pwszUrl == "about:blank" )
+                return WebBrowserAPI.INET_E_DEFAULT_ACTION;
+            try {
+                var urlStr = MyCommon.IDNDecode( pwszUrl );
+                if ( object.ReferenceEquals( urlStr, null ) )
+                    return WebBrowserAPI.URLPOLICY_DISALLOW;
+                var url = new Uri (urlStr);
+                if ( url.Scheme == "data" ) {
                     return WebBrowserAPI.URLPOLICY_DISALLOW;
                 }
-            }
-            catch (Exception)
-            {
+            } catch ( Exception ) {
                 return WebBrowserAPI.URLPOLICY_DISALLOW;
             }
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
 
+
         const byte URLPOLICY_ALLOW = 0;
+
 
         int WebBrowserAPI.IInternetSecurityManager.ProcessUrlAction(string pwszUrl, int dwAction, out byte pPolicy, int cbPolicy, byte pContext, int cbContext, int dwFlags, int dwReserved)
         {
             pPolicy = URLPOLICY_ALLOW;
             //スクリプト実行状態かを検査しポリシー設定
-            if (WebBrowserAPI.URLACTION_SCRIPT_MIN <= dwAction &
-                dwAction <= WebBrowserAPI.URLACTION_SCRIPT_MAX)
-            {
+            if ( WebBrowserAPI.URLACTION_SCRIPT_MIN <= dwAction &
+                dwAction <= WebBrowserAPI.URLACTION_SCRIPT_MAX ) {
                 // スクリプト実行状態
-                if ((_Policy & POLICY.ALLOW_SCRIPT) == POLICY.ALLOW_SCRIPT)
-                {
+                if ( (_Policy & POLICY.ALLOW_SCRIPT) == POLICY.ALLOW_SCRIPT ) {
                     pPolicy = WebBrowserAPI.URLPOLICY_ALLOW;
-                }
-                else
-                {
+                } else {
                     pPolicy = WebBrowserAPI.URLPOLICY_DISALLOW;
                 }
-                if (Regex.IsMatch(pwszUrl, @"^https?://((api\.)?twitter\.com/|([a-zA-Z0-9]+\.)?twimg\.com/|ssl\.google-analytics\.com/)")) pPolicy = WebBrowserAPI.URLPOLICY_ALLOW;
+                if ( Regex.IsMatch( pwszUrl, @"^https?://((api\.)?twitter\.com/|([a-zA-Z0-9]+\.)?twimg\.com/|ssl\.google-analytics\.com/)" ) )
+                    pPolicy = WebBrowserAPI.URLPOLICY_ALLOW;
                 return HRESULT.S_OK;
             }
             // ActiveX実行状態かを検査しポリシー設定
-            if (WebBrowserAPI.URLACTION_ACTIVEX_MIN <= dwAction &
-                dwAction <= WebBrowserAPI.URLACTION_ACTIVEX_MAX)
-            {
+            if ( WebBrowserAPI.URLACTION_ACTIVEX_MIN <= dwAction &
+                dwAction <= WebBrowserAPI.URLACTION_ACTIVEX_MAX ) {
                 // ActiveX実行状態
-                if ((_Policy & POLICY.ALLOW_ACTIVEX) == POLICY.ALLOW_ACTIVEX)
-                {
+                if ( (_Policy & POLICY.ALLOW_ACTIVEX) == POLICY.ALLOW_ACTIVEX ) {
                     pPolicy = WebBrowserAPI.URLPOLICY_ALLOW;
-                }
-                else
-                {
+                } else {
                     pPolicy = WebBrowserAPI.URLPOLICY_DISALLOW;
                 }
                 return HRESULT.S_OK;
@@ -438,15 +418,18 @@ namespace OpenTween
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
 
+
         int WebBrowserAPI.IInternetSecurityManager.QueryCustomPolicy(string pwszUrl, ref Guid guidKey, byte ppPolicy, int pcbPolicy, byte pContext, int cbContext, int dwReserved)
         {
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
 
+
         int WebBrowserAPI.IInternetSecurityManager.SetSecuritySite(WebBrowserAPI.IInternetSecurityMgrSite pSite)
         {
             return WebBrowserAPI.INET_E_DEFAULT_ACTION;
         }
+
 
         int WebBrowserAPI.IInternetSecurityManager.SetZoneMapping(int dwZone, string lpszPattern, int dwFlags)
         {
@@ -454,14 +437,11 @@ namespace OpenTween
         }
 
 
-        public POLICY SecurityPolicy
-        {
-            get
-            {
+        public POLICY SecurityPolicy {
+            get {
                 return _Policy;
             }
-            set
-            {
+            set {
                 _Policy = value;
             }
         }

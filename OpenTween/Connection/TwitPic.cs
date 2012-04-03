@@ -40,160 +40,160 @@ using Array = System.Array;
 
 namespace OpenTween
 {
-	public class TwitPic : HttpConnectionOAuthEcho, IMultimediaShareService
-	{
-		private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
+ public class TwitPic : HttpConnectionOAuthEcho, IMultimediaShareService
+ {
+     private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
 
-		private string[] multimediaExt = new string[] { ".avi", ".wmv", ".flv", ".m4v", ".mov", ".mp4", ".rm", ".mpeg", ".mpg", ".3gp", ".3g2" };
+     private string[] multimediaExt = new string[] { ".avi", ".wmv", ".flv", ".m4v", ".mov", ".mp4", ".rm", ".mpeg", ".mpg", ".3gp", ".3g2" };
 
-		private const long MaxFileSize = 10 * 1024 * 1024; // Image only
-		// Multimedia filesize limit unknown. But length limit is 1:30.
+     private const long MaxFileSize = 10 * 1024 * 1024; // Image only
+     // Multimedia filesize limit unknown. But length limit is 1:30.
 
-		private Twitter tw;
+     private Twitter tw;
 
-		public string Upload( ref string filePath, ref string message, long reply_to )
-		{
-			if ( string.IsNullOrEmpty( filePath ) )
-				return "Err:File isn't specified.";
-			if ( string.IsNullOrEmpty( message ) )
-				message = "";
+     public string Upload( ref string filePath, ref string message, long reply_to )
+     {
+         if ( string.IsNullOrEmpty( filePath ) )
+             return "Err:File isn't specified.";
+         if ( string.IsNullOrEmpty( message ) )
+             message = "";
 
-			FileInfo mediaFile;
-			try
-			{
-				mediaFile = new FileInfo( filePath );
-			}
-			catch ( NotSupportedException ex )
-			{
-				return "Err:" + ex.Message;
-			}
-			if ( mediaFile == null || !mediaFile.Exists )
-				return "Err:File isn't exists.";
+         FileInfo mediaFile;
+         try
+         {
+             mediaFile = new FileInfo( filePath );
+         }
+         catch ( NotSupportedException ex )
+         {
+             return "Err:" + ex.Message;
+         }
+         if ( mediaFile == null || !mediaFile.Exists )
+             return "Err:File isn't exists.";
 
-			string content = "";
-			HttpStatusCode ret;
-			// TwitPicへの投稿
-			try
-			{
-				ret = this.UploadFile( mediaFile, message, ref content );
-			}
-			catch ( Exception ex )
-			{
-				return "Err:" + ex.Message;
-			}
-			string url = "";
-			if ( ret == HttpStatusCode.OK )
-			{
-				XmlDocument xd = new XmlDocument();
-				try
-				{
-					xd.LoadXml( content );
-					// URLの取得
-					url = xd.SelectSingleNode( "/image/url" ).InnerText;
-				}
-				catch ( XmlException ex )
-				{
-					return "Err:" + ex.Message;
-				}
-				catch ( Exception ex )
-				{
-					return "Err:" + ex.Message;
-				}
-			}
-			else
-				return "Err:" + ret.ToString();
+         string content = "";
+         HttpStatusCode ret;
+         // TwitPicへの投稿
+         try
+         {
+             ret = this.UploadFile( mediaFile, message, ref content );
+         }
+         catch ( Exception ex )
+         {
+             return "Err:" + ex.Message;
+         }
+         string url = "";
+         if ( ret == HttpStatusCode.OK )
+         {
+             XmlDocument xd = new XmlDocument();
+             try
+             {
+                 xd.LoadXml( content );
+                 // URLの取得
+                 url = xd.SelectSingleNode( "/image/url" ).InnerText;
+             }
+             catch ( XmlException ex )
+             {
+                 return "Err:" + ex.Message;
+             }
+             catch ( Exception ex )
+             {
+                 return "Err:" + ex.Message;
+             }
+         }
+         else
+             return "Err:" + ret.ToString();
 
-			// アップロードまでは成功
-			filePath = "";
-			if ( string.IsNullOrEmpty( message ) )
-				message = "";
-			if ( string.IsNullOrEmpty( url ) )
-				url = "";
-			// Twitterへの投稿
-			// 投稿メッセージの再構成
-			if ( message.Length + AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia + 1 > 140 )
-				message = message.Substring( 0, 140 - AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia - 1 ) + " " + url;
-			else
-				message += " " + url;
+         // アップロードまでは成功
+         filePath = "";
+         if ( string.IsNullOrEmpty( message ) )
+             message = "";
+         if ( string.IsNullOrEmpty( url ) )
+             url = "";
+         // Twitterへの投稿
+         // 投稿メッセージの再構成
+         if ( message.Length + AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia + 1 > 140 )
+             message = message.Substring( 0, 140 - AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia - 1 ) + " " + url;
+         else
+             message += " " + url;
 
-			return tw.PostStatus( message, 0 );
-		}
+         return tw.PostStatus( message, 0 );
+     }
 
-		private HttpStatusCode UploadFile( FileInfo mediaFile, string message, ref string content )
-		{
-			// Message必須
-			if ( string.IsNullOrEmpty( message ) )
-				message = "";
-			// Check filetype and size(Max 5MB)
-			if ( !this.CheckValidExtension( mediaFile.Extension ) )
-				throw new ArgumentException( "Service don't support this filetype." );
-			if ( !this.CheckValidFilesize( mediaFile.Extension, mediaFile.Length ) )
-				throw new ArgumentException( "File is too large." );
+     private HttpStatusCode UploadFile( FileInfo mediaFile, string message, ref string content )
+     {
+         // Message必須
+         if ( string.IsNullOrEmpty( message ) )
+             message = "";
+         // Check filetype and size(Max 5MB)
+         if ( !this.CheckValidExtension( mediaFile.Extension ) )
+             throw new ArgumentException( "Service don't support this filetype." );
+         if ( !this.CheckValidFilesize( mediaFile.Extension, mediaFile.Length ) )
+             throw new ArgumentException( "File is too large." );
 
-			Dictionary< string, string > param = new Dictionary< string, string >();
-			param.Add( "key", ApplicationSettings.TwitpicApiKey );
-			param.Add( "message", message );
-			List< KeyValuePair< string, FileInfo > > binary = new List< KeyValuePair< string, FileInfo > >();
-			binary.Add( new KeyValuePair< string, FileInfo >( "media", mediaFile ) );
-			if ( this.GetFileType( mediaFile.Extension ) == UploadFileType.Picture )
-				this.InstanceTimeout = 60000; // タイムアウト60秒
-			else
-				this.InstanceTimeout = 120000;
+         Dictionary< string, string > param = new Dictionary< string, string >();
+         param.Add( "key", ApplicationSettings.TwitpicApiKey );
+         param.Add( "message", message );
+         List< KeyValuePair< string, FileInfo > > binary = new List< KeyValuePair< string, FileInfo > >();
+         binary.Add( new KeyValuePair< string, FileInfo >( "media", mediaFile ) );
+         if ( this.GetFileType( mediaFile.Extension ) == UploadFileType.Picture )
+             this.InstanceTimeout = 60000; // タイムアウト60秒
+         else
+             this.InstanceTimeout = 120000;
 
-			return this.GetContent( HttpConnection.PostMethod, new Uri( "http://api.twitpic.com/2/upload.xml" ), param, binary, ref content, null, null );
-		}
+         return this.GetContent( HttpConnection.PostMethod, new Uri( "http://api.twitpic.com/2/upload.xml" ), param, binary, ref content, null, null );
+     }
 
-		public bool CheckValidExtension( string ext )
-		{
-			if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
-				return true;
-			if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
-				return true;
+     public bool CheckValidExtension( string ext )
+     {
+         if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
+             return true;
+         if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
+             return true;
 
-			return false;
-		}
+         return false;
+     }
 
-		public string GetFileOpenDialogFilter()
-		{
-			return "Image Files(*" + string.Join( ";*", this.pictureExt ) + ")|*" + string.Join( ";*", this.pictureExt )
-			       + "|Videos(*" + string.Join( ";*", this.multimediaExt ) + ")|*" + string.Join( ";*", this.multimediaExt );
-		}
+     public string GetFileOpenDialogFilter()
+     {
+         return "Image Files(*" + string.Join( ";*", this.pictureExt ) + ")|*" + string.Join( ";*", this.pictureExt )
+                + "|Videos(*" + string.Join( ";*", this.multimediaExt ) + ")|*" + string.Join( ";*", this.multimediaExt );
+     }
 
-		public UploadFileType GetFileType( string ext )
-		{
-			if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
-				return UploadFileType.Picture;
-			if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
-				return UploadFileType.MultiMedia;
+     public UploadFileType GetFileType( string ext )
+     {
+         if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
+             return UploadFileType.Picture;
+         if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
+             return UploadFileType.MultiMedia;
 
-			return UploadFileType.Invalid;
-		}
+         return UploadFileType.Invalid;
+     }
 
-		public bool IsSupportedFileType( UploadFileType type )
-		{
-			return !type.Equals( UploadFileType.Invalid );
-		}
+     public bool IsSupportedFileType( UploadFileType type )
+     {
+         return !type.Equals( UploadFileType.Invalid );
+     }
 
-		public bool CheckValidFilesize( string ext, long fileSize )
-		{
-			if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
-				return fileSize <= TwitPic.MaxFileSize;
-			if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
-				return true; // Multimedia : no check
+     public bool CheckValidFilesize( string ext, long fileSize )
+     {
+         if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
+             return fileSize <= TwitPic.MaxFileSize;
+         if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
+             return true; // Multimedia : no check
 
-			return false;
-		}
+         return false;
+     }
 
-		public bool Configuration( string key, object value )
-		{
-			return true;
-		}
+     public bool Configuration( string key, object value )
+     {
+         return true;
+     }
 
-		public TwitPic( Twitter twitter )
-			: base( new Uri( "http://api.twitter.com/" ), new Uri( "https://api.twitter.com/1/account/verify_credentials.json" ) )
-		{
-			this.tw = twitter;
+     public TwitPic( Twitter twitter )
+         : base( new Uri( "http://api.twitter.com/" ), new Uri( "https://api.twitter.com/1/account/verify_credentials.json" ) )
+     {
+         this.tw = twitter;
             this.Initialize( ApplicationSettings.TwitterConsumerKey, ApplicationSettings.TwitterConsumerSecret, tw.AccessToken, tw.AccessTokenSecret, "", "" );
-		}
-	}
+     }
+ }
 }

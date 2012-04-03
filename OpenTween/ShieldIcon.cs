@@ -23,13 +23,15 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
+
 namespace OpenTween
 {
+
+
     public class ShieldIcon
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -49,11 +51,10 @@ namespace OpenTween
         [DllImport("user32.dll")]
         private static extern bool DestroyIcon(IntPtr hIcon);
 
+
         const int SIID_SHIELD = 77;
         const uint SHGFI_ICON = 0x100;
         const uint SHGFI_SMALLICON = 0x1;
-
-
         private Image icondata = null;
         private SHSTOCKICONINFO sii;
 
@@ -61,46 +62,40 @@ namespace OpenTween
         public ShieldIcon()
         {
             //NT6 kernelかどうか検査
-            if (!MyCommon.IsNT6())
-            {
+            if ( !MyCommon.IsNT6() ) {
                 icondata = null;
                 return;
             }
 
-            try
-            {
-                sii = new SHSTOCKICONINFO();
-                sii.cbSize = Marshal.SizeOf(sii);
+            try {
+                sii = new SHSTOCKICONINFO ();
+                sii.cbSize = Marshal.SizeOf( sii );
                 sii.hIcon = IntPtr.Zero;
 
                 int ret;
-                ret = SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON | SHGFI_SMALLICON, ref sii);
-                if (ret != 0)
-                {
+                ret = SHGetStockIconInfo( SIID_SHIELD, SHGFI_ICON | SHGFI_SMALLICON, ref sii );
+                if ( ret != 0 ) {
                     icondata = null;
                     return;
                 }
 
-                icondata = Bitmap.FromHicon(sii.hIcon);
-            }
-            catch (Exception)
-            {
+                icondata = Bitmap.FromHicon( sii.hIcon );
+            } catch ( Exception ) {
                 icondata = null;
             }
         }
 
+
         public void Dispose()
         {
-            if (icondata != null)
-            {
+            if ( icondata != null ) {
                 icondata.Dispose();
             }
         }
 
-        public Image Icon
-        {
-            get
-            {
+
+        public Image Icon {
+            get {
                 //return icondata;
                 //シールドアイコンのデータを返さないように　あとでどうにかする
                 return null;
