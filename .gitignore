@@ -1,4 +1,14 @@
+*~
+\#*#
+
 *.suo
 *.user
-bin
-obj
+*.userprefs
+*.resources
+*.pidb
+*.diff
+*.temp
+
+bin/
+obj/
+OpenTween/bin

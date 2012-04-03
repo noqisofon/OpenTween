@@ -23,7 +23,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,13 +33,15 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace OpenTween
-{
-    public sealed class PostClass : ICloneable
-    {
-        public class StatusGeo
-        {
+
+namespace OpenTween {
+
+
+    public sealed class PostClass : ICloneable {
+        public class StatusGeo {
             public double Lng { get; set; }
+
+
             public double Lat { get; set; }
         }
         private string _Nick;
@@ -73,13 +74,18 @@ namespace OpenTween
         private bool _IsDeleted = false;
         private long _InReplyToUserId = 0;
         private StatusGeo _postGeo = new StatusGeo();
+
+
         public int RetweetedCount { get; set; }
+
+
         public long RetweetedByUserId { get; set; }
+
+
         public Dictionary<string, string> Media { get; set; }
 
         [Flags]
-        private enum States
-        {
+        private enum States {
             None = 0,
             Protect = 1,
             Mark = 2,
@@ -113,8 +119,7 @@ namespace OpenTween
                 string RetweetedBy,
                 long RetweetedId,
                 StatusGeo Geo)
-            : this()
-        {
+            : this() {
             _Nick = Nickname;
             _textFromApi = textFromApi;
             _ImageUrl = ImageUrl;
@@ -143,288 +148,251 @@ namespace OpenTween
             _postGeo = Geo;
         }
 
-        public PostClass()
-        {
+
+        public PostClass() {
             RetweetedCount = 0;
             RetweetedByUserId = 0;
             Media = new Dictionary<string, string>();
         }
 
-        public string Nickname
-        {
-            get
-            {
+
+        public string Nickname {
+            get {
                 return _Nick;
             }
-            set
-            {
+            set {
                 _Nick = value;
             }
         }
-        public string TextFromApi
-        {
-            get
-            {
+
+
+        public string TextFromApi {
+            get {
                 return _textFromApi;
             }
-            set
-            {
+            set {
                 _textFromApi = value;
             }
         }
-        public string ImageUrl
-        {
-            get
-            {
+
+
+        public string ImageUrl {
+            get {
                 return _ImageUrl;
             }
-            set
-            {
+            set {
                 _ImageUrl = value;
             }
         }
-        public string ScreenName
-        {
-            get
-            {
+
+
+        public string ScreenName {
+            get {
                 return _screenName;
             }
-            set
-            {
+            set {
                 _screenName = value;
             }
         }
-        public DateTime CreatedAt
-        {
-            get
-            {
+
+
+        public DateTime CreatedAt {
+            get {
                 return _createdAt;
             }
-            set
-            {
+            set {
                 _createdAt = value;
             }
         }
-        public long StatusId
-        {
-            get
-            {
+
+
+        public long StatusId {
+            get {
                 return _statusId;
             }
-            set
-            {
+            set {
                 _statusId = value;
             }
         }
-        public bool IsFav
-        {
-            get
-            {
-                if (this.RetweetedId > 0 && TabInformations.GetInstance().RetweetSource(this.RetweetedId) != null)
-                {
-                    return TabInformations.GetInstance().RetweetSource(this.RetweetedId).IsFav;
-                }
-                else
-                {
+
+
+        public bool IsFav {
+            get {
+                if ( this.RetweetedId > 0 && TabInformations.GetInstance().RetweetSource( this.RetweetedId ) != null ) {
+                    return TabInformations.GetInstance().RetweetSource( this.RetweetedId ).IsFav;
+                } else {
                     return _IsFav;
                 }
             }
-            set
-            {
+            set {
                 _IsFav = value;
-                if (this.RetweetedId > 0 && TabInformations.GetInstance().RetweetSource(this.RetweetedId) != null)
-                {
-                    TabInformations.GetInstance().RetweetSource(this.RetweetedId).IsFav = value;
+                if ( this.RetweetedId > 0 && TabInformations.GetInstance().RetweetSource( this.RetweetedId ) != null ) {
+                    TabInformations.GetInstance().RetweetSource( this.RetweetedId ).IsFav = value;
                 }
             }
         }
-        public string Text
-        {
-            get
-            {
+
+
+        public string Text {
+            get {
                 return _text;
             }
-            set
-            {
+            set {
                 _text = value;
             }
         }
-        public bool IsRead
-        {
-            get
-            {
+
+
+        public bool IsRead {
+            get {
                 return _IsRead;
             }
-            set
-            {
+            set {
                 _IsRead = value;
             }
         }
-        public bool IsReply
-        {
-            get
-            {
+
+
+        public bool IsReply {
+            get {
                 return _IsReply;
             }
-            set
-            {
+            set {
                 _IsReply = value;
             }
         }
-        public bool IsExcludeReply
-        {
-            get
-            {
+
+
+        public bool IsExcludeReply {
+            get {
                 return _IsExcludeReply;
             }
-            set
-            {
+            set {
                 _IsExcludeReply = value;
             }
         }
-        public bool IsProtect
-        {
-            get
-            {
+
+
+        public bool IsProtect {
+            get {
                 return _IsProtect;
             }
-            set
-            {
-                if (value)
-                {
+            set {
+                if ( value ) {
                     _states = _states | States.Protect;
-                }
-                else
-                {
+                } else {
                     _states = _states & ~States.Protect;
                 }
                 _IsProtect = value;
             }
         }
-        public bool IsOwl
-        {
-            get
-            {
+
+
+        public bool IsOwl {
+            get {
                 return _IsOWL;
             }
-            set
-            {
+            set {
                 _IsOWL = value;
             }
         }
-        public bool IsMark
-        {
-            get
-            {
+
+
+        public bool IsMark {
+            get {
                 return _IsMark;
             }
-            set
-            {
-                if (value)
-                {
+            set {
+                if ( value ) {
                     _states = _states | States.Mark;
-                }
-                else
-                {
+                } else {
                     _states = _states & ~States.Mark;
                 }
                 _IsMark = value;
             }
         }
-        public string InReplyToUser
-        {
-            get
-            {
+
+
+        public string InReplyToUser {
+            get {
                 return _InReplyToUser;
             }
-            set
-            {
+            set {
                 _InReplyToUser = value;
             }
         }
-        public long InReplyToStatusId
-        {
-            get
-            {
+
+
+        public long InReplyToStatusId {
+            get {
                 return _InReplyToStatusId;
             }
-            set
-            {
-                if (value > 0)
-                {
+            set {
+                if ( value > 0 ) {
                     _states = _states | States.Reply;
-                }
-                else
-                {
+                } else {
                     _states = _states & ~States.Reply;
                 }
                 _InReplyToStatusId = value;
             }
         }
 
-        public long InReplyToUserId
-        {
-            get
-            {
+
+        public long InReplyToUserId {
+            get {
                 return _InReplyToUserId;
             }
-            set
-            {
+            set {
                 _InReplyToUserId = value;
             }
         }
-        public string Source
-        {
-            get
-            {
+
+
+        public string Source {
+            get {
                 return _Source;
             }
-            set
-            {
+            set {
                 _Source = value;
             }
         }
-        public string SourceHtml
-        {
-            get
-            {
+
+
+        public string SourceHtml {
+            get {
                 return _SourceHtml;
             }
-            set
-            {
+            set {
                 _SourceHtml = value;
             }
         }
-        public List<string> ReplyToList
-        {
-            get
-            {
+
+
+        public List<string> ReplyToList {
+            get {
                 return _ReplyToList;
             }
-            set
-            {
+            set {
                 _ReplyToList = value;
             }
         }
-        public bool IsMe
-        {
-            get
-            {
+
+
+        public bool IsMe {
+            get {
                 return _IsMe;
             }
-            set
-            {
+            set {
                 _IsMe = value;
             }
         }
-        public bool IsDm
-        {
-            get
-            {
+
+
+        public bool IsDm {
+            get {
                 return _IsDm;
             }
-            set
-            {
+            set {
                 _IsDm = value;
             }
         }
@@ -435,71 +403,62 @@ namespace OpenTween
         //        return _statuses;
         //    }
         //}
-        public long UserId
-        {
-            get
-            {
+        public long UserId {
+            get {
                 return _UserId;
             }
-            set
-            {
+            set {
                 _UserId = value;
             }
         }
-        public bool FilterHit
-        {
-            get
-            {
+
+
+        public bool FilterHit {
+            get {
                 return _FilterHit;
             }
-            set
-            {
+            set {
                 _FilterHit = value;
             }
         }
-        public string RetweetedBy
-        {
-            get
-            {
+
+
+        public string RetweetedBy {
+            get {
                 return _RetweetedBy;
             }
-            set
-            {
+            set {
                 _RetweetedBy = value;
             }
         }
-        public long RetweetedId
-        {
-            get
-            {
+
+
+        public long RetweetedId {
+            get {
                 return _RetweetedId;
             }
-            set
-            {
+            set {
                 _RetweetedId = value;
             }
         }
-        public string RelTabName
-        {
-            get
-            {
+
+
+        public string RelTabName {
+            get {
                 return _SearchTabName;
             }
-            set
-            {
+            set {
                 _SearchTabName = value;
             }
         }
-        public bool IsDeleted
-        {
-            get
-            {
+
+
+        public bool IsDeleted {
+            get {
                 return _IsDeleted;
             }
-            set
-            {
-                if (value)
-                {
+            set {
+                if ( value ) {
                     this.InReplyToStatusId = 0;
                     this.InReplyToUser = "";
                     this.InReplyToUserId = 0;
@@ -511,98 +470,94 @@ namespace OpenTween
             }
         }
 
+
         public int FavoritedCount { get; set; }
 
-        public StatusGeo PostGeo
-        {
-            get
-            {
+
+        public StatusGeo PostGeo {
+            get {
                 return _postGeo;
             }
-            set
-            {
-                if (value != null && (value.Lat != 0 || value.Lng != 0))
-                {
+            set {
+                if ( value != null && ( value.Lat != 0 || value.Lng != 0 ) ) {
                     _states |= States.Geo;
-                }
-                else
-                {
+                } else {
                     _states &= ~States.Geo;
                 }
                 _postGeo = value;
             }
         }
 
-        public int StateIndex
-        {
-            get
-            {
+
+        public int StateIndex {
+            get {
                 return (int)_states - 1;
             }
         }
 
-        public PostClass Copy()
-        {
-            var post = (PostClass)((ICloneable)this).Clone();
-            post.ReplyToList = new List<string>(this.ReplyToList);
+
+        public PostClass Copy() {
+            var post = (PostClass)( (ICloneable)this ).Clone();
+            post.ReplyToList = new List<string>( this.ReplyToList );
             return post;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null || this.GetType() != obj.GetType()) return false;
-            return this.Equals((PostClass)obj);
+
+        public override bool Equals(object obj) {
+            if ( obj == null || this.GetType() != obj.GetType() )
+                return false;
+            return this.Equals( (PostClass)obj );
         }
 
-        public bool Equals(PostClass other)
-        {
-            if (other == null) return false;
-            return (this.Nickname == other.Nickname) &&
-                    (this.TextFromApi == other.TextFromApi) &&
-                    (this.ImageUrl == other.ImageUrl) &&
-                    (this.ScreenName == other.ScreenName) &&
-                    (this.CreatedAt == other.CreatedAt) &&
-                    (this.StatusId == other.StatusId) &&
-                    (this.IsFav == other.IsFav) &&
-                    (this.Text == other.Text) &&
-                    (this.IsRead == other.IsRead) &&
-                    (this.IsReply == other.IsReply) &&
-                    (this.IsExcludeReply == other.IsExcludeReply) &&
-                    (this.IsProtect == other.IsProtect) &&
-                    (this.IsOwl == other.IsOwl) &&
-                    (this.IsMark == other.IsMark) &&
-                    (this.InReplyToUser == other.InReplyToUser) &&
-                    (this.InReplyToStatusId == other.InReplyToStatusId) &&
-                    (this.Source == other.Source) &&
-                    (this.SourceHtml == other.SourceHtml) &&
-                    (this.ReplyToList.Equals(other.ReplyToList)) &&
-                    (this.IsMe == other.IsMe) &&
-                    (this.IsDm == other.IsDm) &&
-                    (this.UserId == other.UserId) &&
-                    (this.FilterHit == other.FilterHit) &&
-                    (this.RetweetedBy == other.RetweetedBy) &&
-                    (this.RetweetedId == other.RetweetedId) &&
-                    (this.RelTabName == other.RelTabName) &&
-                    (this.IsDeleted == other.IsDeleted) &&
-                    (this.InReplyToUserId == other.InReplyToUserId);
+
+        public bool Equals(PostClass other) {
+            if ( other == null )
+                return false;
+            return ( this.Nickname == other.Nickname ) &&
+                    ( this.TextFromApi == other.TextFromApi ) &&
+                    ( this.ImageUrl == other.ImageUrl ) &&
+                    ( this.ScreenName == other.ScreenName ) &&
+                    ( this.CreatedAt == other.CreatedAt ) &&
+                    ( this.StatusId == other.StatusId ) &&
+                    ( this.IsFav == other.IsFav ) &&
+                    ( this.Text == other.Text ) &&
+                    ( this.IsRead == other.IsRead ) &&
+                    ( this.IsReply == other.IsReply ) &&
+                    ( this.IsExcludeReply == other.IsExcludeReply ) &&
+                    ( this.IsProtect == other.IsProtect ) &&
+                    ( this.IsOwl == other.IsOwl ) &&
+                    ( this.IsMark == other.IsMark ) &&
+                    ( this.InReplyToUser == other.InReplyToUser ) &&
+                    ( this.InReplyToStatusId == other.InReplyToStatusId ) &&
+                    ( this.Source == other.Source ) &&
+                    ( this.SourceHtml == other.SourceHtml ) &&
+                    ( this.ReplyToList.Equals( other.ReplyToList ) ) &&
+                    ( this.IsMe == other.IsMe ) &&
+                    ( this.IsDm == other.IsDm ) &&
+                    ( this.UserId == other.UserId ) &&
+                    ( this.FilterHit == other.FilterHit ) &&
+                    ( this.RetweetedBy == other.RetweetedBy ) &&
+                    ( this.RetweetedId == other.RetweetedId ) &&
+                    ( this.RelTabName == other.RelTabName ) &&
+                    ( this.IsDeleted == other.IsDeleted ) &&
+                    ( this.InReplyToUserId == other.InReplyToUserId );
 
         }
 
-        public override int GetHashCode()
-        {
+
+        public override int GetHashCode() {
             return this.StatusId.GetHashCode();
         }
 
 #region "IClonable.Clone"
-        object ICloneable.Clone()
-        {
+        object ICloneable.Clone() {
             return this.MemberwiseClone();
         }
 #endregion
     }
 
-    public sealed class TabInformations
-    {
+
+    public sealed class TabInformations {
         //個別タブの情報をDictionaryで保持
         private IdComparerClass _sorter;
         private Dictionary<string, TabClass> _tabs = new Dictionary<string, TabClass>();
@@ -613,8 +568,7 @@ namespace OpenTween
         private Stack<TabClass> _removedTab = new Stack<TabClass>();
         private List<ScrubGeoInfo> _scrubGeo = new List<ScrubGeoInfo>();
 
-        private class ScrubGeoInfo
-        {
+        private class ScrubGeoInfo {
             public long UserId = 0;
             public long UpToStatusId = 0;
         }
@@ -630,39 +584,32 @@ namespace OpenTween
         private List<PostClass> _notifyPosts;
         private readonly object LockObj = new object();
         private readonly object LockUnread = new object();
-
         private static TabInformations _instance = new TabInformations();
 
         //List
         private List<ListElement> _lists = new List<ListElement>();
 
-        private TabInformations()
-        {
+
+        private TabInformations() {
             _sorter = new IdComparerClass();
             RemovedTab = _removedTab;
         }
 
-        public static TabInformations GetInstance()
-        {
+
+        public static TabInformations GetInstance() {
             return _instance;    //singleton
         }
 
-        public List<ListElement> SubscribableLists
-        {
-            get
-            {
+
+        public List<ListElement> SubscribableLists {
+            get {
                 return _lists;
             }
-            set
-            {
-                if (value != null && value.Count > 0)
-                {
-                    foreach (var tb in this.GetTabsByType(MyCommon.TabUsageType.Lists))
-                    {
-                        foreach (var list in value)
-                        {
-                            if (tb.ListInfo.Id == list.Id)
-                            {
+            set {
+                if ( value != null && value.Count > 0 ) {
+                    foreach ( var tb in this.GetTabsByType(MyCommon.TabUsageType.Lists) ) {
+                        foreach ( var list in value ) {
+                            if ( tb.ListInfo.Id == list.Id ) {
                                 tb.ListInfo = list;
                                 break;
                             }
@@ -673,10 +620,11 @@ namespace OpenTween
             }
         }
 
-        public bool AddTab(string TabName, MyCommon.TabUsageType TabType, ListElement List)
-        {
-            if (_tabs.ContainsKey(TabName)) return false;
-            _tabs.Add(TabName, new TabClass(TabName, TabType, List));
+
+        public bool AddTab(string TabName, MyCommon.TabUsageType TabType, ListElement List) {
+            if ( _tabs.ContainsKey( TabName ) )
+                return false;
+            _tabs.Add( TabName, new TabClass( TabName, TabType, List ) );
             _tabs[TabName].Sorter.Mode = _sorter.Mode;
             _tabs[TabName].Sorter.Order = _sorter.Order;
             return true;
@@ -687,135 +635,114 @@ namespace OpenTween
         //    _tabs.Add(TabName, Tab);
         //}
 
-        public void RemoveTab(string TabName)
-        {
-            lock (LockObj)
-            {
-                if (IsDefaultTab(TabName)) return; //念のため
-                if (!_tabs[TabName].IsInnerStorageTabType)
-                {
-                    var homeTab = GetTabByType(MyCommon.TabUsageType.Home);
-                    var dmName = GetTabByType(MyCommon.TabUsageType.DirectMessage).TabName;
+        public void RemoveTab(string TabName) {
+            lock ( LockObj ) {
+                if ( IsDefaultTab( TabName ) )
+                    return; //念のため
+                if ( !_tabs[TabName].IsInnerStorageTabType ) {
+                    var homeTab = GetTabByType( MyCommon.TabUsageType.Home );
+                    var dmName = GetTabByType( MyCommon.TabUsageType.DirectMessage ).TabName;
 
-                    for (int idx = 0; idx < _tabs[TabName].AllCount; ++idx)
-                    {
+                    for ( int idx = 0; idx < _tabs[TabName].AllCount; ++idx ) {
                         var exist = false;
-                        var Id = _tabs[TabName].GetId(idx);
-                        if (Id < 0) continue;
-                        foreach (var key in _tabs.Keys)
-                        {
-                            if (key != TabName && key != dmName)
-                            {
-                                if (_tabs[key].Contains(Id))
-                                {
+                        var Id = _tabs[TabName].GetId( idx );
+                        if ( Id < 0 )
+                            continue;
+                        foreach ( var key in _tabs.Keys ) {
+                            if ( key != TabName && key != dmName ) {
+                                if ( _tabs[key].Contains( Id ) ) {
                                     exist = true;
                                     break;
                                 }
                             }
                         }
-                        if (!exist) homeTab.Add(Id, _statuses[Id].IsRead, false);
+                        if ( !exist )
+                            homeTab.Add( Id, _statuses[Id].IsRead, false );
                     }
                 }
-                _removedTab.Push(_tabs[TabName]);
-                _tabs.Remove(TabName);
+                _removedTab.Push( _tabs[TabName] );
+                _tabs.Remove( TabName );
             }
         }
+
 
         public Stack<TabClass> RemovedTab;
 
-        public bool ContainsTab(string TabText)
-        {
-            return _tabs.ContainsKey(TabText);
+
+        public bool ContainsTab(string TabText) {
+            return _tabs.ContainsKey( TabText );
         }
 
-        public bool ContainsTab(TabClass ts)
-        {
-            return _tabs.ContainsValue(ts);
+
+        public bool ContainsTab(TabClass ts) {
+            return _tabs.ContainsValue( ts );
         }
 
-        public Dictionary<string, TabClass> Tabs
-        {
-            get
-            {
+
+        public Dictionary<string, TabClass> Tabs {
+            get {
                 return _tabs;
             }
-            set
-            {
+            set {
                 _tabs = value;
             }
         }
 
-        public Dictionary<string, TabClass>.KeyCollection KeysTab
-        {
-            get
-            {
+
+        public Dictionary<string, TabClass>.KeyCollection KeysTab {
+            get {
                 return _tabs.Keys;
             }
         }
 
-        public void SortPosts()
-        {
-            foreach (var key in _tabs.Keys)
-            {
+
+        public void SortPosts() {
+            foreach ( var key in _tabs.Keys ) {
                 _tabs[key].Sort();
             }
         }
 
-        public SortOrder SortOrder
-        {
-            get
-            {
+
+        public SortOrder SortOrder {
+            get {
                 return _sorter.Order;
             }
-            set
-            {
+            set {
                 _sorter.Order = value;
-                foreach (var key in _tabs.Keys)
-                {
+                foreach ( var key in _tabs.Keys ) {
                     _tabs[key].Sorter.Order = value;
                 }
             }
         }
 
-        public IdComparerClass.ComparerMode SortMode
-        {
-            get
-            {
+
+        public IdComparerClass.ComparerMode SortMode {
+            get {
                 return _sorter.Mode;
             }
-            set
-            {
+            set {
                 _sorter.Mode = value;
-                foreach (var key in _tabs.Keys)
-                {
+                foreach ( var key in _tabs.Keys ) {
                     _tabs[key].Sorter.Mode = value;
                 }
             }
         }
 
-        public SortOrder ToggleSortOrder(IdComparerClass.ComparerMode SortMode)
-        {
-            if (_sorter.Mode == SortMode)
-            {
-                if (_sorter.Order == SortOrder.Ascending)
-                {
+
+        public SortOrder ToggleSortOrder(IdComparerClass.ComparerMode SortMode) {
+            if ( _sorter.Mode == SortMode ) {
+                if ( _sorter.Order == SortOrder.Ascending ) {
                     _sorter.Order = SortOrder.Descending;
-                }
-                else
-                {
+                } else {
                     _sorter.Order = SortOrder.Ascending;
                 }
-                foreach (var key in _tabs.Keys)
-                {
+                foreach ( var key in _tabs.Keys ) {
                     _tabs[key].Sorter.Order = _sorter.Order;
                 }
-            }
-            else
-            {
+            } else {
                 _sorter.Mode = SortMode;
                 _sorter.Order = SortOrder.Ascending;
-                foreach (var key in _tabs.Keys)
-                {
+                foreach ( var key in _tabs.Keys ) {
                     _tabs[key].Sorter.Mode = SortMode;
                     _tabs[key].Sorter.Order = SortOrder.Ascending;
                 }
@@ -824,81 +751,64 @@ namespace OpenTween
             return _sorter.Order;
         }
 
-    //    public PostClass RetweetSource(long Id)
-    //    {
-    //        get
-    //        {
-    //            if (_retweets.ContainsKey(Id))
-    //            {
-    //                return _retweets[Id];
-    //            }
-    //            else
-    //            {
-    //                return null;
-    //            }
-    //        }
-    //    }
-        public PostClass RetweetSource(long Id)
-        {
-            if (_retweets.ContainsKey(Id))
-            {
+        //    public PostClass RetweetSource(long Id)
+        //    {
+        //        get
+        //        {
+        //            if (_retweets.ContainsKey(Id))
+        //            {
+        //                return _retweets[Id];
+        //            }
+        //            else
+        //            {
+        //                return null;
+        //            }
+        //        }
+        //    }
+        public PostClass RetweetSource(long Id) {
+            if ( _retweets.ContainsKey( Id ) ) {
                 return _retweets[Id];
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
 
-        public void RemoveFavPost(long Id)
-        {
-            lock (LockObj)
-            {
+
+        public void RemoveFavPost(long Id) {
+            lock ( LockObj ) {
                 PostClass post = null;
-                var tab = this.GetTabByType(MyCommon.TabUsageType.Favorites);
+                var tab = this.GetTabByType( MyCommon.TabUsageType.Favorites );
                 var tn = tab.TabName;
-                if (_statuses.ContainsKey(Id))
-                {
+                if ( _statuses.ContainsKey( Id ) ) {
                     post = _statuses[Id];
                     //指定タブから該当ID削除
                     var tType = tab.TabType;
-                    if (tab.Contains(Id))
-                    {
-                        if (tab.UnreadManage && !post.IsRead)    //未読管理
-                        {
-                            lock (LockUnread)
-                            {
+                    if ( tab.Contains( Id ) ) {
+                        if ( tab.UnreadManage && !post.IsRead ) {    //未読管理
+                            lock ( LockUnread ) {
                                 tab.UnreadCount--;
-                                this.SetNextUnreadId(Id, tab);
+                                this.SetNextUnreadId( Id, tab );
                             }
                         }
-                        tab.Remove(Id);
+                        tab.Remove( Id );
                     }
                     //FavタブからRetweet発言を削除する場合は、他の同一参照Retweetも削除
-                    if (tType == MyCommon.TabUsageType.Favorites && post.RetweetedId > 0)
-                    {
-                        for (int i = 0; i < tab.AllCount; i++)
-                        {
+                    if ( tType == MyCommon.TabUsageType.Favorites && post.RetweetedId > 0 ) {
+                        for ( int i = 0; i < tab.AllCount; i++ ) {
                             PostClass rPost = null;
-                            try
-                            {
+                            try {
                                 rPost = this[tn, i];
-                            }
-                            catch (ArgumentOutOfRangeException)
-                            {
+                            } catch ( ArgumentOutOfRangeException ) {
                                 break;
                             }
-                            if (rPost.RetweetedId > 0 && rPost.RetweetedId == post.RetweetedId)
-                            {
-                                if (tab.UnreadManage && !rPost.IsRead)    //未読管理
-                                {
-                                    lock (LockUnread)
-                                    {
+                            if ( rPost.RetweetedId > 0 && rPost.RetweetedId == post.RetweetedId ) {
+                                if ( tab.UnreadManage && !rPost.IsRead ) {    //未読管理
+                                    lock ( LockUnread ) {
                                         tab.UnreadCount--;
-                                        this.SetNextUnreadId(rPost.StatusId, tab);
+                                        this.SetNextUnreadId( rPost.StatusId, tab );
                                     }
                                 }
-                                tab.Remove(rPost.StatusId);
+                                tab.Remove( rPost.StatusId );
                             }
                         }
                     }
@@ -921,25 +831,22 @@ namespace OpenTween
             }
         }
 
-        public void ScrubGeoReserve(long id, long upToStatusId)
-        {
-            lock (LockObj)
-            {
+
+        public void ScrubGeoReserve(long id, long upToStatusId) {
+            lock ( LockObj ) {
                 //this._scrubGeo.Add(new ScrubGeoInfo With {.UserId = id, .UpToStatusId = upToStatusId});
-                this.ScrubGeo(id, upToStatusId);
+                this.ScrubGeo( id, upToStatusId );
             }
         }
 
-        private void ScrubGeo(long userId, long upToStatusId)
-        {
-            lock (LockObj)
-            {
+
+        private void ScrubGeo(long userId, long upToStatusId) {
+            lock ( LockObj ) {
                 var userPosts = from post in this._statuses.Values
                                 where post.UserId == userId && post.UserId <= upToStatusId
                                 select post;
 
-                foreach (var p in userPosts)
-                {
+                foreach ( var p in userPosts ) {
                     p.PostGeo = new PostClass.StatusGeo();
                 }
 
@@ -948,78 +855,63 @@ namespace OpenTween
                                  where post.UserId == userId && post.UserId <= upToStatusId
                                  select post;
 
-                foreach (var p in userPosts2)
-                {
+                foreach ( var p in userPosts2 ) {
                     p.PostGeo = new PostClass.StatusGeo();
                 }
             }
         }
 
-        public void RemovePostReserve(long id)
-        {
-            lock (LockObj)
-            {
-                this._deletedIds.Add(id);
-                this.DeletePost(id);   //UI選択行がずれるため、RemovePostは使用しない
+
+        public void RemovePostReserve(long id) {
+            lock ( LockObj ) {
+                this._deletedIds.Add( id );
+                this.DeletePost( id );   //UI選択行がずれるため、RemovePostは使用しない
             }
         }
 
-        public void RemovePost(long Id)
-        {
-            lock (LockObj)
-            {
+
+        public void RemovePost(long Id) {
+            lock ( LockObj ) {
                 PostClass post = null;
                 //if (_statuses.ContainsKey(Id))
                 //各タブから該当ID削除
-                foreach (var key in _tabs.Keys)
-                {
+                foreach ( var key in _tabs.Keys ) {
                     var tab = _tabs[key];
-                    if (tab.Contains(Id))
-                    {
-                        if (!tab.IsInnerStorageTabType)
-                        {
+                    if ( tab.Contains( Id ) ) {
+                        if ( !tab.IsInnerStorageTabType ) {
                             post = _statuses[Id];
-                            if (tab.UnreadManage && !post.IsRead)    //未読管理
-                            {
-                                lock (LockUnread)
-                                {
+                            if ( tab.UnreadManage && !post.IsRead ) {    //未読管理
+                                lock ( LockUnread ) {
                                     tab.UnreadCount--;
-                                    this.SetNextUnreadId(Id, tab);
+                                    this.SetNextUnreadId( Id, tab );
+                                }
+                            }
+                        } else { //未読数がずれる可能性があるためtab.Postsの未読も確認する
+                            if ( tab.UnreadManage && !tab.Posts[Id].IsRead ) {    //未読管理
+                                lock ( LockUnread ) {
+                                    tab.UnreadCount--;
+                                    this.SetNextUnreadId( Id, tab );
                                 }
                             }
                         }
-                        else //未読数がずれる可能性があるためtab.Postsの未読も確認する
-                        {
-                            if (tab.UnreadManage && !tab.Posts[Id].IsRead)    //未読管理
-                            {
-                                lock (LockUnread)
-                                {
-                                    tab.UnreadCount--;
-                                    this.SetNextUnreadId(Id, tab);
-                                }
-                            }
-                        }
-                        tab.Remove(Id);
+                        tab.Remove( Id );
                     }
                 }
-                if (_statuses.ContainsKey(Id)) _statuses.Remove(Id);
+                if ( _statuses.ContainsKey( Id ) )
+                    _statuses.Remove( Id );
             }
         }
 
-        private void DeletePost(long Id)
-        {
-            lock (LockObj)
-            {
+
+        private void DeletePost(long Id) {
+            lock ( LockObj ) {
                 PostClass post = null;
-                if (_statuses.ContainsKey(Id))
-                {
+                if ( _statuses.ContainsKey( Id ) ) {
                     post = _statuses[Id];
                     post.IsDeleted = true;
                 }
-                foreach (var tb in this.GetTabsInnerStorageType())
-                {
-                    if (tb.Contains(Id))
-                    {
+                foreach ( var tb in this.GetTabsInnerStorageType() ) {
+                    if ( tb.Contains( Id ) ) {
                         post = tb.Posts[Id];
                         post.IsDeleted = true;
                     }
@@ -1027,60 +919,44 @@ namespace OpenTween
             }
         }
 
-        public int GetOldestUnreadIndex(string TabName)
-        {
+
+        public int GetOldestUnreadIndex(string TabName) {
             var tb = _tabs[TabName];
-            if (tb.OldestUnreadId > -1 &&
-                tb.Contains(tb.OldestUnreadId) &&
-                tb.UnreadCount > 0)
-            {
+            if ( tb.OldestUnreadId > -1 &&
+                tb.Contains( tb.OldestUnreadId ) &&
+                tb.UnreadCount > 0 ) {
                 //未読アイテムへ
                 bool isRead;
-                if (!tb.IsInnerStorageTabType)
-                {
+                if ( !tb.IsInnerStorageTabType ) {
                     isRead = _statuses[tb.OldestUnreadId].IsRead;
-                }
-                else
-                {
+                } else {
                     isRead = tb.Posts[tb.OldestUnreadId].IsRead;
                 }
-                if (isRead)
-                {
+                if ( isRead ) {
                     //状態不整合（最古未読ＩＤが実は既読）
-                    lock (LockUnread)
-                    {
-                        this.SetNextUnreadId(-1, tb);  //頭から探索
+                    lock ( LockUnread ) {
+                        this.SetNextUnreadId( -1, tb );  //頭から探索
                     }
-                    if (tb.OldestUnreadId == -1)
-                    {
+                    if ( tb.OldestUnreadId == -1 ) {
                         return -1;
+                    } else {
+                        return tb.IndexOf( tb.OldestUnreadId );
                     }
-                    else
-                    {
-                        return tb.IndexOf(tb.OldestUnreadId);
-                    }
+                } else {
+                    return tb.IndexOf( tb.OldestUnreadId );    //最短経路;
                 }
-                else
-                {
-                    return tb.IndexOf(tb.OldestUnreadId);    //最短経路;
-                }
-            }
-            else
-            {
+            } else {
                 //一見未読なさそうだが、未読カウントはあるので探索
                 //if (tb.UnreadCount > 0)
-                if (!(tb.UnreadManage && AppendSettingDialog.Instance.UnreadManage)) return -1;
-                lock (LockUnread)
-                {
-                    this.SetNextUnreadId(-1, tb);
-                }
-                if (tb.OldestUnreadId == -1)
-                {
+                if ( !( tb.UnreadManage && AppendSettingDialog.Instance.UnreadManage ) )
                     return -1;
+                lock ( LockUnread ) {
+                    this.SetNextUnreadId( -1, tb );
                 }
-                else
-                {
-                    return tb.IndexOf(tb.OldestUnreadId);
+                if ( tb.OldestUnreadId == -1 ) {
+                    return -1;
+                } else {
+                    return tb.IndexOf( tb.OldestUnreadId );
                 }
                 //else
                 //{
@@ -1089,69 +965,51 @@ namespace OpenTween
             }
         }
 
-        private void SetNextUnreadId(long CurrentId, TabClass Tab)
-        {
+
+        private void SetNextUnreadId(long CurrentId, TabClass Tab) {
             //CurrentID:今既読にしたID(OldestIDの可能性あり)
             //最古未読が設定されていて、既読の場合（1発言以上存在）
-            try
-            {
+            try {
                 Dictionary<long, PostClass> posts;
-                if (!Tab.IsInnerStorageTabType)
-                {
+                if ( !Tab.IsInnerStorageTabType ) {
                     posts = _statuses;
-                }
-                else
-                {
+                } else {
                     posts = Tab.Posts;
                 }
-                if (Tab.OldestUnreadId > -1 &&
-                    posts.ContainsKey(Tab.OldestUnreadId) &&
+                if ( Tab.OldestUnreadId > -1 &&
+                    posts.ContainsKey( Tab.OldestUnreadId ) &&
                     posts[Tab.OldestUnreadId].IsRead &&
-                    _sorter.Mode == IdComparerClass.ComparerMode.Id)     //次の未読探索
-                {
-                    if (Tab.UnreadCount == 0)
-                    {
+                    _sorter.Mode == IdComparerClass.ComparerMode.Id ) {     //次の未読探索
+                    if ( Tab.UnreadCount == 0 ) {
                         //未読数０→最古未読なし
                         Tab.OldestUnreadId = -1;
-                    }
-                    else if (Tab.OldestUnreadId == CurrentId && CurrentId > -1)
-                    {
+                    } else if ( Tab.OldestUnreadId == CurrentId && CurrentId > -1 ) {
                         //最古IDを既読にしたタイミング→次のIDから続けて探索
-                        var idx = Tab.IndexOf(CurrentId);
-                        if (idx > -1)
-                        {
+                        var idx = Tab.IndexOf( CurrentId );
+                        if ( idx > -1 ) {
                             //続きから探索
-                            FindUnreadId(idx, Tab);
-                        }
-                        else
-                        {
+                            FindUnreadId( idx, Tab );
+                        } else {
                             //頭から探索
-                            FindUnreadId(-1, Tab);
+                            FindUnreadId( -1, Tab );
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //頭から探索
-                        FindUnreadId(-1, Tab);
+                        FindUnreadId( -1, Tab );
                     }
-                }
-                else
-                {
+                } else {
                     //頭から探索
-                    FindUnreadId(-1, Tab);
+                    FindUnreadId( -1, Tab );
                 }
-            }
-            catch (KeyNotFoundException)
-            {
+            } catch ( KeyNotFoundException ) {
                 //頭から探索
-                FindUnreadId(-1, Tab);
+                FindUnreadId( -1, Tab );
             }
         }
 
-        private void FindUnreadId(int StartIdx, TabClass Tab)
-        {
-            if (Tab.AllCount == 0)
-            {
+
+        private void FindUnreadId(int StartIdx, TabClass Tab) {
+            if ( Tab.AllCount == 0 ) {
                 Tab.OldestUnreadId = -1;
                 Tab.UnreadCount = 0;
                 return;
@@ -1159,75 +1017,63 @@ namespace OpenTween
             var toIdx = 0;
             var stp = 1;
             Tab.OldestUnreadId = -1;
-            if (_sorter.Order == SortOrder.Ascending)
-            {
-                if (StartIdx == -1)
-                {
+            if ( _sorter.Order == SortOrder.Ascending ) {
+                if ( StartIdx == -1 ) {
                     StartIdx = 0;
-                }
-                else
-                {
+                } else {
                     //StartIdx++;
-                    if (StartIdx > Tab.AllCount - 1) StartIdx = Tab.AllCount - 1; //念のため
+                    if ( StartIdx > Tab.AllCount - 1 )
+                        StartIdx = Tab.AllCount - 1; //念のため
                 }
                 toIdx = Tab.AllCount - 1;
-                if (toIdx < 0) toIdx = 0; //念のため
+                if ( toIdx < 0 )
+                    toIdx = 0; //念のため
                 stp = 1;
-            }
-            else
-            {
-                if (StartIdx == -1)
-                {
+            } else {
+                if ( StartIdx == -1 ) {
                     StartIdx = Tab.AllCount - 1;
-                }
-                else
-                {
+                } else {
                     //StartIdx--;
                 }
-                if (StartIdx < 0) StartIdx = 0; //念のため
+                if ( StartIdx < 0 )
+                    StartIdx = 0; //念のため
                 toIdx = 0;
                 stp = -1;
             }
 
             Dictionary<long, PostClass> posts;
-            if (!Tab.IsInnerStorageTabType)
-            {
+            if ( !Tab.IsInnerStorageTabType ) {
                 posts = _statuses;
-            }
-            else
-            {
+            } else {
                 posts = Tab.Posts;
             }
 
-            for (int i = StartIdx; ; i+= stp)
-            {
-                var id = Tab.GetId(i);
-                if (id > -1 && !posts[id].IsRead)
-                {
+            for ( int i = StartIdx;; i+= stp ) {
+                var id = Tab.GetId( i );
+                if ( id > -1 && !posts[id].IsRead ) {
                     Tab.OldestUnreadId = id;
                     break;
                 }
 
-                if (i == toIdx) break;
+                if ( i == toIdx )
+                    break;
             }
         }
 
-        public int DistributePosts()
-        {
-            lock (LockObj)
-            {
+
+        public int DistributePosts() {
+            lock ( LockObj ) {
                 //戻り値は追加件数
                 //if (_addedIds == null) return 0;
                 //if (_addedIds.Count == 0) return 0;
 
-                if (_addedIds == null) _addedIds = new List<long>();
-                if (_notifyPosts == null) _notifyPosts = new List<PostClass>();
-                try
-                {
+                if ( _addedIds == null )
+                    _addedIds = new List<long>();
+                if ( _notifyPosts == null )
+                    _notifyPosts = new List<PostClass>();
+                try {
                     this.Distribute();    //タブに仮振分
-                }
-                catch (KeyNotFoundException)
-                {
+                } catch ( KeyNotFoundException ) {
                     //タブ変更により振分が失敗した場合
                 }
                 var retCnt = _addedIds.Count;
@@ -1238,29 +1084,25 @@ namespace OpenTween
             }
         }
 
+
         public int SubmitUpdate(ref string soundFile,
                                 ref PostClass[] notifyPosts,
                                 ref bool isMentionIncluded,
                                 ref bool isDeletePost,
-                                bool isUserStream)
-        {
+                                bool isUserStream) {
             //注：メインスレッドから呼ぶこと
-            lock (LockObj)
-            {
-                if (_notifyPosts == null)
-                {
+            lock ( LockObj ) {
+                if ( _notifyPosts == null ) {
                     soundFile = "";
                     notifyPosts = null;
                     return 0;
                 }
 
-                foreach (var tb in _tabs.Values)
-                {
-                    if (tb.IsInnerStorageTabType)
-                    {
+                foreach ( var tb in _tabs.Values ) {
+                    if ( tb.IsInnerStorageTabType ) {
                         _addCount += tb.GetTemporaryCount();
                     }
-                    tb.AddSubmit(ref isMentionIncluded);  //振分確定（各タブに反映）
+                    tb.AddSubmit( ref isMentionIncluded );  //振分確定（各タブに反映）
                 }
                 ////UserStreamで反映間隔10秒以下だったら、30秒ごとにソートする
                 ////10秒以上だったら毎回ソート
@@ -1277,17 +1119,14 @@ namespace OpenTween
                 //{
                 //    isUserStream = false;
                 //}
-                if (!isUserStream || this.SortMode != IdComparerClass.ComparerMode.Id)
-                {
+                if ( !isUserStream || this.SortMode != IdComparerClass.ComparerMode.Id ) {
                     this.SortPosts();
                 }
-                if (isUserStream)
-                {
+                if ( isUserStream ) {
                     isDeletePost = this._deletedIds.Count > 0;
-                    foreach (var id in this._deletedIds)
-                    {
+                    foreach ( var id in this._deletedIds ) {
                         //this.DeletePost(StatusId)
-                        this.RemovePost(id);
+                        this.RemovePost( id );
                     }
                     this._deletedIds.Clear();
                 }
@@ -1303,103 +1142,90 @@ namespace OpenTween
             }
         }
 
-        private void Distribute()
-        {
+
+        private void Distribute() {
             //各タブのフィルターと照合。合致したらタブにID追加
             //通知メッセージ用に、表示必要な発言リストと再生サウンドを返す
             //notifyPosts = new List<PostClass>();
-            var homeTab = GetTabByType(MyCommon.TabUsageType.Home);
-            var replyTab = GetTabByType(MyCommon.TabUsageType.Mentions);
-            var dmTab = GetTabByType(MyCommon.TabUsageType.DirectMessage);
-            var favTab = GetTabByType(MyCommon.TabUsageType.Favorites);
-            foreach (var id in _addedIds)
-            {
+            var homeTab = GetTabByType( MyCommon.TabUsageType.Home );
+            var replyTab = GetTabByType( MyCommon.TabUsageType.Mentions );
+            var dmTab = GetTabByType( MyCommon.TabUsageType.DirectMessage );
+            var favTab = GetTabByType( MyCommon.TabUsageType.Favorites );
+            foreach ( var id in _addedIds ) {
                 var post = _statuses[id];
                 var add = false;  //通知リスト追加フラグ
                 var mv = false;   //移動フラグ（Recent追加有無）
                 var rslt = MyCommon.HITRESULT.None;
                 post.IsExcludeReply = false;
-                foreach (var tn in _tabs.Keys)
-                {
-                    rslt = _tabs[tn].AddFiltered(post);
-                    if (rslt != MyCommon.HITRESULT.None && rslt != MyCommon.HITRESULT.Exclude)
-                    {
-                        if (rslt == MyCommon.HITRESULT.CopyAndMark) post.IsMark = true; //マークあり
-                        if (rslt == MyCommon.HITRESULT.Move)
-                        {
+                foreach ( var tn in _tabs.Keys ) {
+                    rslt = _tabs[tn].AddFiltered( post );
+                    if ( rslt != MyCommon.HITRESULT.None && rslt != MyCommon.HITRESULT.Exclude ) {
+                        if ( rslt == MyCommon.HITRESULT.CopyAndMark )
+                            post.IsMark = true; //マークあり
+                        if ( rslt == MyCommon.HITRESULT.Move ) {
                             mv = true; //移動
                             post.IsMark = false;
                         }
-                        if (_tabs[tn].Notify) add = true; //通知あり
-                        if (!string.IsNullOrEmpty(_tabs[tn].SoundFile) && string.IsNullOrEmpty(_soundFile))
-                        {
+                        if ( _tabs[tn].Notify )
+                            add = true; //通知あり
+                        if ( !string.IsNullOrEmpty( _tabs[tn].SoundFile ) && string.IsNullOrEmpty( _soundFile ) ) {
                             _soundFile = _tabs[tn].SoundFile; //wavファイル（未設定の場合のみ）
                         }
                         post.FilterHit = true;
-                    }
-                    else
-                    {
-                        if (rslt == MyCommon.HITRESULT.Exclude && _tabs[tn].TabType == MyCommon.TabUsageType.Mentions)
-                        {
+                    } else {
+                        if ( rslt == MyCommon.HITRESULT.Exclude && _tabs[tn].TabType == MyCommon.TabUsageType.Mentions ) {
                             post.IsExcludeReply = true;
                         }
                         post.FilterHit = false;
                     }
                 }
-                if (!mv)  //移動されなかったらRecentに追加
-                {
-                    homeTab.Add(post.StatusId, post.IsRead, true);
-                    if (!string.IsNullOrEmpty(homeTab.SoundFile) && string.IsNullOrEmpty(_soundFile)) _soundFile = homeTab.SoundFile;
-                    if (homeTab.Notify) add = true;
+                if ( !mv ) {  //移動されなかったらRecentに追加
+                    homeTab.Add( post.StatusId, post.IsRead, true );
+                    if ( !string.IsNullOrEmpty( homeTab.SoundFile ) && string.IsNullOrEmpty( _soundFile ) )
+                        _soundFile = homeTab.SoundFile;
+                    if ( homeTab.Notify )
+                        add = true;
                 }
-                if (post.IsReply && !post.IsExcludeReply)    //除外ルール適用のないReplyならReplyタブに追加
-                {
-                    replyTab.Add(post.StatusId, post.IsRead, true);
-                    if (!string.IsNullOrEmpty(replyTab.SoundFile)) _soundFile = replyTab.SoundFile;
-                    if (replyTab.Notify) add = true;
+                if ( post.IsReply && !post.IsExcludeReply ) {    //除外ルール適用のないReplyならReplyタブに追加
+                    replyTab.Add( post.StatusId, post.IsRead, true );
+                    if ( !string.IsNullOrEmpty( replyTab.SoundFile ) )
+                        _soundFile = replyTab.SoundFile;
+                    if ( replyTab.Notify )
+                        add = true;
                 }
-                if (post.IsFav)    //Fav済み発言だったらFavoritesタブに追加
-                {
-                    if (favTab.Contains(post.StatusId))
-                    {
+                if ( post.IsFav ) {    //Fav済み発言だったらFavoritesタブに追加
+                    if ( favTab.Contains( post.StatusId ) ) {
                         //取得済みなら非通知
                         //_soundFile = "";
                         add = false;
-                    }
-                    else
-                    {
-                        favTab.Add(post.StatusId, post.IsRead, true);
-                        if (!string.IsNullOrEmpty(favTab.SoundFile) && string.IsNullOrEmpty(_soundFile)) _soundFile = favTab.SoundFile;
-                        if (favTab.Notify) add = true;
+                    } else {
+                        favTab.Add( post.StatusId, post.IsRead, true );
+                        if ( !string.IsNullOrEmpty( favTab.SoundFile ) && string.IsNullOrEmpty( _soundFile ) )
+                            _soundFile = favTab.SoundFile;
+                        if ( favTab.Notify )
+                            add = true;
                     }
                 }
-                if (add) _notifyPosts.Add(post);
+                if ( add )
+                    _notifyPosts.Add( post );
             }
-            foreach (var tb in _tabs.Values)
-            {
-                if (tb.IsInnerStorageTabType)
-                {
-                    if (tb.Notify)
-                    {
-                        if (tb.GetTemporaryCount() > 0)
-                        {
-                            foreach (var post in tb.GetTemporaryPosts())
-                            {
+            foreach ( var tb in _tabs.Values ) {
+                if ( tb.IsInnerStorageTabType ) {
+                    if ( tb.Notify ) {
+                        if ( tb.GetTemporaryCount() > 0 ) {
+                            foreach ( var post in tb.GetTemporaryPosts() ) {
                                 var exist = false;
-                                foreach (var npost in _notifyPosts)
-                                {
-                                    if (npost.StatusId == post.StatusId)
-                                    {
+                                foreach ( var npost in _notifyPosts ) {
+                                    if ( npost.StatusId == post.StatusId ) {
                                         exist = true;
                                         break;
                                     }
                                 }
-                                if (!exist) _notifyPosts.Add(post);
+                                if ( !exist )
+                                    _notifyPosts.Add( post );
                             }
-                            if (!string.IsNullOrEmpty(tb.SoundFile))
-                            {
-                                if (tb.TabType == MyCommon.TabUsageType.DirectMessage || string.IsNullOrEmpty(_soundFile))
-                                {
+                            if ( !string.IsNullOrEmpty( tb.SoundFile ) ) {
+                                if ( tb.TabType == MyCommon.TabUsageType.DirectMessage || string.IsNullOrEmpty( _soundFile ) ) {
                                     _soundFile = tb.SoundFile;
                                 }
                             }
@@ -1409,90 +1235,74 @@ namespace OpenTween
             }
         }
 
-        public void AddPost(PostClass Item)
-        {
-            lock (LockObj)
-            {
-                if (string.IsNullOrEmpty(Item.RelTabName))
-                {
-                    if (!Item.IsDm)
-                    {
-                        if (_statuses.ContainsKey(Item.StatusId))
-                        {
-                            if (Item.IsFav)
-                            {
-                                if (Item.RetweetedId == 0)
-                                {
+
+        public void AddPost(PostClass Item) {
+            lock ( LockObj ) {
+                if ( string.IsNullOrEmpty( Item.RelTabName ) ) {
+                    if ( !Item.IsDm ) {
+                        if ( _statuses.ContainsKey( Item.StatusId ) ) {
+                            if ( Item.IsFav ) {
+                                if ( Item.RetweetedId == 0 ) {
                                     _statuses[Item.StatusId].IsFav = true;
-                                }
-                                else
-                                {
+                                } else {
                                     Item.IsFav = false;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 return;        //追加済みなら何もしない
                             }
-                        }
-                        else
-                        {
-                            if (Item.IsFav && Item.RetweetedId > 0) Item.IsFav = false;
+                        } else {
+                            if ( Item.IsFav && Item.RetweetedId > 0 )
+                                Item.IsFav = false;
                             //既に持っている公式RTは捨てる
-                            if (AppendSettingDialog.Instance.HideDuplicatedRetweets &&
+                            if ( AppendSettingDialog.Instance.HideDuplicatedRetweets &&
                                 !Item.IsMe &&
-                                this._retweets.ContainsKey(Item.RetweetedId) &&
-                                this._retweets[Item.RetweetedId].RetweetedCount > 0) return;
-                            if (BlockIds.Contains(Item.UserId)) return;
-                            _statuses.Add(Item.StatusId, Item);
+                                this._retweets.ContainsKey( Item.RetweetedId ) &&
+                                this._retweets[Item.RetweetedId].RetweetedCount > 0 )
+                                return;
+                            if ( BlockIds.Contains( Item.UserId ) )
+                                return;
+                            _statuses.Add( Item.StatusId, Item );
                         }
-                        if (Item.RetweetedId > 0)
-                        {
-                            this.AddRetweet(Item);
+                        if ( Item.RetweetedId > 0 ) {
+                            this.AddRetweet( Item );
                         }
-                        if (Item.IsFav && _retweets.ContainsKey(Item.StatusId))
-                        {
+                        if ( Item.IsFav && _retweets.ContainsKey( Item.StatusId ) ) {
                             return;    //Fav済みのRetweet元発言は追加しない
                         }
-                        if (_addedIds == null) _addedIds = new List<long>(); //タブ追加用IDコレクション準備
-                        _addedIds.Add(Item.StatusId);
-                    }
-                    else
-                    {
+                        if ( _addedIds == null )
+                            _addedIds = new List<long>(); //タブ追加用IDコレクション準備
+                        _addedIds.Add( Item.StatusId );
+                    } else {
                         //DM
-                        var tb = this.GetTabByType(MyCommon.TabUsageType.DirectMessage);
-                        if (tb.Contains(Item.StatusId)) return;
-                        tb.AddPostToInnerStorage(Item);
+                        var tb = this.GetTabByType( MyCommon.TabUsageType.DirectMessage );
+                        if ( tb.Contains( Item.StatusId ) )
+                            return;
+                        tb.AddPostToInnerStorage( Item );
                     }
-                }
-                else
-                {
+                } else {
                     //公式検索、リスト、関連発言の場合
                     TabClass tb;
-                    if (this.Tabs.ContainsKey(Item.RelTabName))
-                    {
+                    if ( this.Tabs.ContainsKey( Item.RelTabName ) ) {
                         tb = this.Tabs[Item.RelTabName];
-                    }
-                    else
-                    {
+                    } else {
                         return;
                     }
-                    if (tb == null) return;
-                    if (tb.Contains(Item.StatusId)) return;
+                    if ( tb == null )
+                        return;
+                    if ( tb.Contains( Item.StatusId ) )
+                        return;
                     //tb.Add(Item.StatusId, Item.IsRead, true);
-                    tb.AddPostToInnerStorage(Item);
+                    tb.AddPostToInnerStorage( Item );
                 }
             }
         }
 
-        private void AddRetweet(PostClass item)
-        {
+
+        private void AddRetweet(PostClass item) {
             //true:追加、False:保持済み
-            if (_retweets.ContainsKey(item.RetweetedId))
-            {
+            if ( _retweets.ContainsKey( item.RetweetedId ) ) {
                 _retweets[item.RetweetedId].RetweetedCount++;
-                if (_retweets[item.RetweetedId].RetweetedCount > 10)
-                {
+                if ( _retweets[item.RetweetedId].RetweetedCount > 10 ) {
                     _retweets[item.RetweetedId].RetweetedCount = 0;
                 }
                 return;
@@ -1532,136 +1342,118 @@ namespace OpenTween
             _retweets[item.RetweetedId].RetweetedCount++;
         }
 
-        public void SetReadAllTab(bool Read, string TabName, int Index)
-        {
+
+        public void SetReadAllTab(bool Read, string TabName, int Index) {
             //Read:true=既読へ　false=未読へ
             var tb = _tabs[TabName];
 
-            if (tb.UnreadManage == false) return; //未読管理していなければ終了
+            if ( tb.UnreadManage == false )
+                return; //未読管理していなければ終了
 
-            var Id = tb.GetId(Index);
-            if (Id < 0) return;
+            var Id = tb.GetId( Index );
+            if ( Id < 0 )
+                return;
             PostClass post;
-            if (!tb.IsInnerStorageTabType)
-            {
+            if ( !tb.IsInnerStorageTabType ) {
                 post = _statuses[Id];
-            }
-            else
-            {
+            } else {
                 post = tb.Posts[Id];
             }
 
-            if (post.IsRead == Read) return; //状態変更なければ終了
+            if ( post.IsRead == Read )
+                return; //状態変更なければ終了
 
             post.IsRead = Read;
 
-            lock (LockUnread)
-            {
-                if (Read)
-                {
+            lock ( LockUnread ) {
+                if ( Read ) {
                     tb.UnreadCount--;
-                    this.SetNextUnreadId(Id, tb);  //次の未読セット
+                    this.SetNextUnreadId( Id, tb );  //次の未読セット
                     //他タブの最古未読ＩＤはタブ切り替え時に。
-                    if (tb.IsInnerStorageTabType)
-                    {
+                    if ( tb.IsInnerStorageTabType ) {
                         //一般タブ
-                        if (_statuses.ContainsKey(Id) && !_statuses[Id].IsRead)
-                        {
-                            foreach (var key in _tabs.Keys)
-                            {
-                                if (_tabs[key].UnreadManage &&
-                                    _tabs[key].Contains(Id) &&
-                                    !_tabs[key].IsInnerStorageTabType)
-                                {
+                        if ( _statuses.ContainsKey( Id ) && !_statuses[Id].IsRead ) {
+                            foreach ( var key in _tabs.Keys ) {
+                                if ( _tabs[key].UnreadManage &&
+                                    _tabs[key].Contains( Id ) &&
+                                    !_tabs[key].IsInnerStorageTabType ) {
                                     _tabs[key].UnreadCount--;
-                                    if (_tabs[key].OldestUnreadId == Id) _tabs[key].OldestUnreadId = -1;
+                                    if ( _tabs[key].OldestUnreadId == Id )
+                                        _tabs[key].OldestUnreadId = -1;
                                 }
                             }
                             _statuses[Id].IsRead = true;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //一般タブ
-                        foreach (var key in _tabs.Keys)
-                        {
-                            if (key != TabName &&
+                        foreach ( var key in _tabs.Keys ) {
+                            if ( key != TabName &&
                                 _tabs[key].UnreadManage &&
-                                _tabs[key].Contains(Id) &&
-                                !_tabs[key].IsInnerStorageTabType)
-                            {
+                                _tabs[key].Contains( Id ) &&
+                                !_tabs[key].IsInnerStorageTabType ) {
                                 _tabs[key].UnreadCount--;
-                                if (_tabs[key].OldestUnreadId == Id) _tabs[key].OldestUnreadId = -1;
+                                if ( _tabs[key].OldestUnreadId == Id )
+                                    _tabs[key].OldestUnreadId = -1;
                             }
                         }
                     }
                     //内部保存タブ
-                    foreach (var key in _tabs.Keys)
-                    {
-                        if (key != TabName &&
-                            _tabs[key].Contains(Id) &&
+                    foreach ( var key in _tabs.Keys ) {
+                        if ( key != TabName &&
+                            _tabs[key].Contains( Id ) &&
                             _tabs[key].IsInnerStorageTabType &&
-                            !_tabs[key].Posts[Id].IsRead)
-                        {
-                            if (_tabs[key].UnreadManage)
-                            {
+                            !_tabs[key].Posts[Id].IsRead ) {
+                            if ( _tabs[key].UnreadManage ) {
                                 _tabs[key].UnreadCount--;
-                                if (_tabs[key].OldestUnreadId == Id) _tabs[key].OldestUnreadId = -1;
+                                if ( _tabs[key].OldestUnreadId == Id )
+                                    _tabs[key].OldestUnreadId = -1;
                             }
                             _tabs[key].Posts[Id].IsRead = true;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     tb.UnreadCount++;
                     //if (tb.OldestUnreadId > Id || tb.OldestUnreadId = -1) tb.OldestUnreadId = Id
-                    if (tb.OldestUnreadId > Id) tb.OldestUnreadId = Id;
-                    if (tb.IsInnerStorageTabType)
-                    {
+                    if ( tb.OldestUnreadId > Id )
+                        tb.OldestUnreadId = Id;
+                    if ( tb.IsInnerStorageTabType ) {
                         //一般タブ
-                        if (_statuses.ContainsKey(Id) && _statuses[Id].IsRead)
-                        {
-                            foreach (var key in _tabs.Keys)
-                            {
-                                if (_tabs[key].UnreadManage &&
-                                   _tabs[key].Contains(Id) &&
-                                   !_tabs[key].IsInnerStorageTabType)
+                        if ( _statuses.ContainsKey( Id ) && _statuses[Id].IsRead ) {
+                            foreach ( var key in _tabs.Keys ) {
+                                if ( _tabs[key].UnreadManage &&
+                                   _tabs[key].Contains( Id ) &&
+                                   !_tabs[key].IsInnerStorageTabType )
                                     _tabs[key].UnreadCount++;
                                 {
-                                    if (_tabs[key].OldestUnreadId > Id) _tabs[key].OldestUnreadId = Id;
+                                    if ( _tabs[key].OldestUnreadId > Id )
+                                        _tabs[key].OldestUnreadId = Id;
                                 }
                             }
                             _statuses[Id].IsRead = false;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //一般タブ
-                        foreach (var key in _tabs.Keys)
-                        {
-                            if (key != TabName &&
+                        foreach ( var key in _tabs.Keys ) {
+                            if ( key != TabName &&
                                _tabs[key].UnreadManage &&
-                               _tabs[key].Contains(Id) &&
-                               !_tabs[key].IsInnerStorageTabType)
-                            {
+                               _tabs[key].Contains( Id ) &&
+                               !_tabs[key].IsInnerStorageTabType ) {
                                 _tabs[key].UnreadCount++;
-                                if (_tabs[key].OldestUnreadId > Id) _tabs[key].OldestUnreadId = Id;
+                                if ( _tabs[key].OldestUnreadId > Id )
+                                    _tabs[key].OldestUnreadId = Id;
                             }
                         }
                     }
                     //内部保存タブ
-                    foreach (var key in _tabs.Keys)
-                    {
-                        if (key != TabName &&
-                            _tabs[key].Contains(Id) &&
+                    foreach ( var key in _tabs.Keys ) {
+                        if ( key != TabName &&
+                            _tabs[key].Contains( Id ) &&
                             _tabs[key].IsInnerStorageTabType &&
-                            _tabs[key].Posts[Id].IsRead)
-                        {
-                            if (_tabs[key].UnreadManage)
-                            {
+                            _tabs[key].Posts[Id].IsRead ) {
+                            if ( _tabs[key].UnreadManage ) {
                                 _tabs[key].UnreadCount++;
-                                if (_tabs[key].OldestUnreadId > Id) _tabs[key].OldestUnreadId = Id;
+                                if ( _tabs[key].OldestUnreadId > Id )
+                                    _tabs[key].OldestUnreadId = Id;
                             }
                             _tabs[key].Posts[Id].IsRead = false;
                         }
@@ -1671,94 +1463,88 @@ namespace OpenTween
         }
 
         // TODO: パフォーマンスを勘案して、戻すか決める
-        public void SetRead(bool Read, string TabName, int Index)
-        {
+        public void SetRead(bool Read, string TabName, int Index) {
             //Read:true=既読へ　false=未読へ
             var tb = _tabs[TabName];
 
-            if (tb.UnreadManage == false) return; //未読管理していなければ終了
+            if ( tb.UnreadManage == false )
+                return; //未読管理していなければ終了
 
-            var Id = tb.GetId(Index);
-            if (Id < 0) return;
+            var Id = tb.GetId( Index );
+            if ( Id < 0 )
+                return;
             PostClass post;
-            if (!tb.IsInnerStorageTabType)
-            {
+            if ( !tb.IsInnerStorageTabType ) {
                 post = _statuses[Id];
-            }
-            else
-            {
+            } else {
                 post = tb.Posts[Id];
             }
 
-            if (post.IsRead = Read) return; //状態変更なければ終了
+            if ( post.IsRead = Read )
+                return; //状態変更なければ終了
 
             post.IsRead = Read; //指定の状態に変更
 
-            lock (LockUnread)
-            {
-                if (Read)
-                {
+            lock ( LockUnread ) {
+                if ( Read ) {
                     tb.UnreadCount--;
-                    this.SetNextUnreadId(Id, tb);  //次の未読セット
+                    this.SetNextUnreadId( Id, tb );  //次の未読セット
                     //他タブの最古未読ＩＤはタブ切り替え時に。
-                    if (tb.IsInnerStorageTabType) return;
-                    foreach (var key in _tabs.Keys)
-                    {
-                        if (key != TabName &&
+                    if ( tb.IsInnerStorageTabType )
+                        return;
+                    foreach ( var key in _tabs.Keys ) {
+                        if ( key != TabName &&
                             _tabs[key].UnreadManage &&
-                            _tabs[key].Contains(Id) &&
-                            !_tabs[key].IsInnerStorageTabType)
-                        {
+                            _tabs[key].Contains( Id ) &&
+                            !_tabs[key].IsInnerStorageTabType ) {
                             _tabs[key].UnreadCount--;
-                            if (_tabs[key].OldestUnreadId == Id) _tabs[key].OldestUnreadId = -1;
+                            if ( _tabs[key].OldestUnreadId == Id )
+                                _tabs[key].OldestUnreadId = -1;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     tb.UnreadCount++;
                     //if (tb.OldestUnreadId > Id || tb.OldestUnreadId == -1) tb.OldestUnreadId = Id;
-                    if (tb.OldestUnreadId > Id) tb.OldestUnreadId = Id;
-                    if (tb.IsInnerStorageTabType) return;
-                    foreach (var key in _tabs.Keys)
-                    {
-                        if (key != TabName &&
+                    if ( tb.OldestUnreadId > Id )
+                        tb.OldestUnreadId = Id;
+                    if ( tb.IsInnerStorageTabType )
+                        return;
+                    foreach ( var key in _tabs.Keys ) {
+                        if ( key != TabName &&
                             _tabs[key].UnreadManage &&
-                            _tabs[key].Contains(Id) &&
-                            !_tabs[key].IsInnerStorageTabType)
-                        {
+                            _tabs[key].Contains( Id ) &&
+                            !_tabs[key].IsInnerStorageTabType ) {
                             _tabs[key].UnreadCount++;
-                            if (_tabs[key].OldestUnreadId > Id) _tabs[key].OldestUnreadId = Id;
+                            if ( _tabs[key].OldestUnreadId > Id )
+                                _tabs[key].OldestUnreadId = Id;
                         }
                     }
                 }
             }
         }
 
-        public void SetRead()
-        {
-            var tb = GetTabByType(MyCommon.TabUsageType.Home);
-            if (tb.UnreadManage == false) return;
 
-            lock (LockObj)
-            {
-                for (int i = 0; i < tb.AllCount - 1; i++)
-                {
-                    var id = tb.GetId(i);
-                    if (id < 0) return;
-                    if (!_statuses[id].IsReply &&
+        public void SetRead() {
+            var tb = GetTabByType( MyCommon.TabUsageType.Home );
+            if ( tb.UnreadManage == false )
+                return;
+
+            lock ( LockObj ) {
+                for ( int i = 0; i < tb.AllCount - 1; i++ ) {
+                    var id = tb.GetId( i );
+                    if ( id < 0 )
+                        return;
+                    if ( !_statuses[id].IsReply &&
                         !_statuses[id].IsRead &&
-                        !_statuses[id].FilterHit)
-                    {
+                        !_statuses[id].FilterHit ) {
                         _statuses[id].IsRead = true;
-                        this.SetNextUnreadId(id, tb);  //次の未読セット
-                        foreach (var key in _tabs.Keys)
-                        {
-                            if (_tabs[key].UnreadManage &&
-                                _tabs[key].Contains(id))
-                            {
+                        this.SetNextUnreadId( id, tb );  //次の未読セット
+                        foreach ( var key in _tabs.Keys ) {
+                            if ( _tabs[key].UnreadManage &&
+                                _tabs[key].Contains( id ) ) {
                                 _tabs[key].UnreadCount--;
-                                if (_tabs[key].OldestUnreadId == id) _tabs[key].OldestUnreadId = -1;
+                                if ( _tabs[key].OldestUnreadId == id )
+                                    _tabs[key].OldestUnreadId = -1;
                             }
                         }
                     }
@@ -1766,15 +1552,13 @@ namespace OpenTween
             }
         }
 
-        public PostClass this[long ID]
-        {
-            get
-            {
-                if (_statuses.ContainsKey(ID)) return _statuses[ID];
-                foreach (var tb in this.GetTabsInnerStorageType())
-                {
-                    if (tb.Contains(ID))
-                    {
+
+        public PostClass this [long ID] {
+            get {
+                if ( _statuses.ContainsKey( ID ) )
+                    return _statuses[ID];
+                foreach ( var tb in this.GetTabsInnerStorageType() ) {
+                    if ( tb.Contains( ID ) ) {
                         return tb.Posts[ID];
                     }
                 }
@@ -1782,49 +1566,38 @@ namespace OpenTween
             }
         }
 
-        public PostClass this[string TabName, int Index]
-        {
-            get
-            {
-                if (!_tabs.ContainsKey(TabName)) throw new ArgumentException("TabName=" + TabName + " is not contained.");
-                var id = _tabs[TabName].GetId(Index);
-                if (id < 0) throw new ArgumentException("Index can//t find. Index=" + Index.ToString() + "/TabName=" + TabName);
-                try
-                {
-                    if (_tabs[TabName].IsInnerStorageTabType)
-                    {
-                        return _tabs[TabName].Posts[_tabs[TabName].GetId(Index)];
+
+        public PostClass this [string TabName, int Index] {
+            get {
+                if ( !_tabs.ContainsKey( TabName ) )
+                    throw new ArgumentException( "TabName=" + TabName + " is not contained." );
+                var id = _tabs[TabName].GetId( Index );
+                if ( id < 0 )
+                    throw new ArgumentException( "Index can//t find. Index=" + Index.ToString() + "/TabName=" + TabName );
+                try {
+                    if ( _tabs[TabName].IsInnerStorageTabType ) {
+                        return _tabs[TabName].Posts[_tabs[TabName].GetId( Index )];
+                    } else {
+                        return _statuses[_tabs[TabName].GetId( Index )];
                     }
-                    else
-                    {
-                        return _statuses[_tabs[TabName].GetId(Index)];
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Index=" + Index.ToString() + "/TabName=" + TabName, ex);
+                } catch ( Exception ex ) {
+                    throw new Exception( "Index=" + Index.ToString() + "/TabName=" + TabName, ex );
                 }
             }
         }
 
-        public PostClass[] this[string TabName, int StartIndex, int EndIndex]
-        {
-            get
-            {
+
+        public PostClass[] this [string TabName, int StartIndex, int EndIndex] {
+            get {
                 var length = EndIndex - StartIndex + 1;
                 var posts = new PostClass[length];
-                if (_tabs[TabName].IsInnerStorageTabType)
-                {
-                    for (int i = 0; i < length; i++)
-                    {
-                        posts[i] = _tabs[TabName].Posts[_tabs[TabName].GetId(StartIndex + i)];
+                if ( _tabs[TabName].IsInnerStorageTabType ) {
+                    for ( int i = 0; i < length; i++ ) {
+                        posts[i] = _tabs[TabName].Posts[_tabs[TabName].GetId( StartIndex + i )];
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < length; i++)
-                    {
-                        posts[i] = _statuses[_tabs[TabName].GetId(StartIndex + i)];
+                } else {
+                    for ( int i = 0; i < length; i++ ) {
+                        posts[i] = _statuses[_tabs[TabName].GetId( StartIndex + i )];
                     }
                 }
                 return posts;
@@ -1842,77 +1615,59 @@ namespace OpenTween
         //    }
         //}
 
-        public bool ContainsKey(long Id)
-        {
+        public bool ContainsKey(long Id) {
             //DM,公式検索は非対応
-            lock (LockObj)
-            {
-                return _statuses.ContainsKey(Id);
+            lock ( LockObj ) {
+                return _statuses.ContainsKey( Id );
             }
         }
 
-        public bool ContainsKey(long Id, string TabName)
-        {
+
+        public bool ContainsKey(long Id, string TabName) {
             //DM,公式検索は対応版
-            lock (LockObj)
-            {
-                if (_tabs.ContainsKey(TabName))
-                {
-                    return _tabs[TabName].Contains(Id);
-                }
-                else
-                {
+            lock ( LockObj ) {
+                if ( _tabs.ContainsKey( TabName ) ) {
+                    return _tabs[TabName].Contains( Id );
+                } else {
                     return false;
                 }
             }
         }
 
-        public void SetUnreadManage(bool Manage)
-        {
-            if (Manage)
-            {
-                foreach (var key in _tabs.Keys)
-                {
+
+        public void SetUnreadManage(bool Manage) {
+            if ( Manage ) {
+                foreach ( var key in _tabs.Keys ) {
                     var tb = _tabs[key];
-                    if (tb.UnreadManage)
-                    {
-                        lock (LockUnread)
-                        {
+                    if ( tb.UnreadManage ) {
+                        lock ( LockUnread ) {
                             var cnt = 0;
                             var oldest = long.MaxValue;
                             Dictionary<long, PostClass> posts;
-                            if (!tb.IsInnerStorageTabType)
-                            {
+                            if ( !tb.IsInnerStorageTabType ) {
                                 posts = _statuses;
-                            }
-                            else
-                            {
+                            } else {
                                 posts = tb.Posts;
                             }
-                            foreach (var id in tb.BackupIds)
-                            {
-                                if (!posts[id].IsRead)
-                                {
+                            foreach ( var id in tb.BackupIds ) {
+                                if ( !posts[id].IsRead ) {
                                     cnt++;
-                                    if (oldest > id) oldest = id;
+                                    if ( oldest > id )
+                                        oldest = id;
                                 }
                             }
-                            if (oldest == long.MaxValue) oldest = -1;
+                            if ( oldest == long.MaxValue )
+                                oldest = -1;
                             tb.OldestUnreadId = oldest;
                             tb.UnreadCount = cnt;
                         }
                     }
                 }
-            }
-            else
-            {
-                foreach (var key in _tabs.Keys)
-                {
+            } else {
+                foreach ( var key in _tabs.Keys ) {
                     var tb = _tabs[key];
-                    if (tb.UnreadManage && tb.UnreadCount > 0)
-                    {
-                        lock (LockUnread)
-                        {
+                    if ( tb.UnreadManage && tb.UnreadCount > 0 ) {
+                        lock ( LockUnread ) {
                             tb.UnreadCount = 0;
                             tb.OldestUnreadId = -1;
                         }
@@ -1921,75 +1676,73 @@ namespace OpenTween
             }
         }
 
-        public void RenameTab(string Original, string NewName)
-        {
+
+        public void RenameTab(string Original, string NewName) {
             var tb = _tabs[Original];
-            _tabs.Remove(Original);
+            _tabs.Remove( Original );
             tb.TabName = NewName;
-            _tabs.Add(NewName, tb);
+            _tabs.Add( NewName, tb );
         }
 
-        public void FilterAll()
-        {
-            lock (LockObj)
-            {
-                var tbr = GetTabByType(MyCommon.TabUsageType.Home);
-                var replyTab = GetTabByType(MyCommon.TabUsageType.Mentions);
-                foreach (var tb in _tabs.Values.ToArray())
-                {
-                    if (tb.FilterModified)
-                    {
+
+        public void FilterAll() {
+            lock ( LockObj ) {
+                var tbr = GetTabByType( MyCommon.TabUsageType.Home );
+                var replyTab = GetTabByType( MyCommon.TabUsageType.Mentions );
+                foreach ( var tb in _tabs.Values.ToArray() ) {
+                    if ( tb.FilterModified ) {
                         tb.FilterModified = false;
                         var orgIds = tb.BackupIds;
                         tb.ClearIDs();
                         //////////////フィルター前のIDsを退避。どのタブにも含まれないidはrecentへ追加
                         //////////////moveフィルターにヒットした際、recentに該当あればrecentから削除
-                        foreach (var id in _statuses.Keys)
-                        {
+                        foreach ( var id in _statuses.Keys ) {
                             var post = _statuses[id];
-                            if (post.IsDm) continue;
+                            if ( post.IsDm )
+                                continue;
                             var rslt = MyCommon.HITRESULT.None;
-                            rslt = tb.AddFiltered(post);
-                            switch (rslt)
-                            {
+                            rslt = tb.AddFiltered( post );
+                            switch ( rslt ) {
                                 case MyCommon.HITRESULT.CopyAndMark:
-                                post.IsMark = true; //マークあり
-                                post.FilterHit = true;
-                                break;
+                                    post.IsMark = true; //マークあり
+                                    post.FilterHit = true;
+                                    break;
                                 case MyCommon.HITRESULT.Move:
-                                tbr.Remove(post.StatusId, post.IsRead);
-                                post.IsMark = false;
-                                post.FilterHit = true;
-                                break;
-                            case MyCommon.HITRESULT.Copy:
-                                post.IsMark = false;
-                                post.FilterHit = true;
-                                break;
-                            case MyCommon.HITRESULT.Exclude:
-                                if (tb.TabName == replyTab.TabName && post.IsReply) post.IsExcludeReply = true;
-                                if (post.IsFav) GetTabByType(MyCommon.TabUsageType.Favorites).Add(post.StatusId, post.IsRead, true);
-                                post.FilterHit = false;
-                                break;
-                            case MyCommon.HITRESULT.None:
-                                if (tb.TabName == replyTab.TabName && post.IsReply) replyTab.Add(post.StatusId, post.IsRead, true);
-                                if (post.IsFav) GetTabByType(MyCommon.TabUsageType.Favorites).Add(post.StatusId, post.IsRead, true);
-                                post.FilterHit = false;
-                                break;
+                                    tbr.Remove( post.StatusId, post.IsRead );
+                                    post.IsMark = false;
+                                    post.FilterHit = true;
+                                    break;
+                                case MyCommon.HITRESULT.Copy:
+                                    post.IsMark = false;
+                                    post.FilterHit = true;
+                                    break;
+                                case MyCommon.HITRESULT.Exclude:
+                                    if ( tb.TabName == replyTab.TabName && post.IsReply )
+                                        post.IsExcludeReply = true;
+                                    if ( post.IsFav )
+                                        GetTabByType( MyCommon.TabUsageType.Favorites ).Add( post.StatusId, post.IsRead, true );
+                                    post.FilterHit = false;
+                                    break;
+                                case MyCommon.HITRESULT.None:
+                                    if ( tb.TabName == replyTab.TabName && post.IsReply )
+                                        replyTab.Add( post.StatusId, post.IsRead, true );
+                                    if ( post.IsFav )
+                                        GetTabByType( MyCommon.TabUsageType.Favorites ).Add( post.StatusId, post.IsRead, true );
+                                    post.FilterHit = false;
+                                    break;
                             }
                         }
                         tb.AddSubmit();  //振分確定
-                        foreach (var id in orgIds)
-                        {
+                        foreach ( var id in orgIds ) {
                             var hit = false;
-                            foreach (var tbTemp in _tabs.Values.ToArray())
-                            {
-                                if (tbTemp.Contains(id))
-                                {
+                            foreach ( var tbTemp in _tabs.Values.ToArray() ) {
+                                if ( tbTemp.Contains( id ) ) {
                                     hit = true;
                                     break;
                                 }
                             }
-                            if (!hit) tbr.Add(id, _statuses[id].IsRead, false);
+                            if ( !hit )
+                                tbr.Add( id, _statuses[id].IsRead, false );
                         }
                     }
                 }
@@ -1997,60 +1750,56 @@ namespace OpenTween
             }
         }
 
-        public long[] GetId(string TabName, ListView.SelectedIndexCollection IndexCollection)
-        {
-            if (IndexCollection.Count == 0) return null;
+
+        public long[] GetId(string TabName, ListView.SelectedIndexCollection IndexCollection) {
+            if ( IndexCollection.Count == 0 )
+                return null;
 
             var tb = _tabs[TabName];
             var Ids = new long[IndexCollection.Count];
-            for (int i = 0; i < Ids.Length; i++)
-            {
-                Ids[i] = tb.GetId(IndexCollection[i]);
+            for ( int i = 0; i < Ids.Length; i++ ) {
+                Ids[i] = tb.GetId( IndexCollection[i] );
             }
             return Ids;
         }
 
-        public long GetId(string TabName, int Index)
-        {
-            return _tabs[TabName].GetId(Index);
+
+        public long GetId(string TabName, int Index) {
+            return _tabs[TabName].GetId( Index );
         }
 
-        public int[] IndexOf(string TabName, long[] Ids)
-        {
-            if (Ids == null) return null;
+
+        public int[] IndexOf(string TabName, long[] Ids) {
+            if ( Ids == null )
+                return null;
             var idx = new int[Ids.Length];
             var tb = _tabs[TabName];
-            for (int i = 0; i < Ids.Length; i++)
-            {
-                idx[i] = tb.IndexOf(Ids[i]);
+            for ( int i = 0; i < Ids.Length; i++ ) {
+                idx[i] = tb.IndexOf( Ids[i] );
             }
             return idx;
         }
 
-        public int IndexOf(string TabName, long Id)
-        {
-            return _tabs[TabName].IndexOf(Id);
+
+        public int IndexOf(string TabName, long Id) {
+            return _tabs[TabName].IndexOf( Id );
         }
 
-        public void ClearTabIds(string TabName)
-        {
+
+        public void ClearTabIds(string TabName) {
             //不要なPostを削除
-            lock (LockObj)
-            {
-                if (!_tabs[TabName].IsInnerStorageTabType)
-                {
-                    foreach (var Id in _tabs[TabName].BackupIds)
-                    {
+            lock ( LockObj ) {
+                if ( !_tabs[TabName].IsInnerStorageTabType ) {
+                    foreach ( var Id in _tabs[TabName].BackupIds ) {
                         var Hit = false;
-                        foreach (var tb in _tabs.Values)
-                        {
-                            if (tb.Contains(Id))
-                            {
+                        foreach ( var tb in _tabs.Values ) {
+                            if ( tb.Contains( Id ) ) {
                                 Hit = true;
                                 break;
                             }
                         }
-                        if (!Hit) _statuses.Remove(Id);
+                        if ( !Hit )
+                            _statuses.Remove( Id );
                     }
                 }
 
@@ -2059,38 +1808,31 @@ namespace OpenTween
             }
         }
 
-        public void SetTabUnreadManage(string TabName, bool Manage)
-        {
+
+        public void SetTabUnreadManage(string TabName, bool Manage) {
             var tb = _tabs[TabName];
-            lock (LockUnread)
-            {
-                if (Manage)
-                {
+            lock ( LockUnread ) {
+                if ( Manage ) {
                     var cnt = 0;
                     var oldest = long.MaxValue;
                     Dictionary<long, PostClass> posts;
-                    if (!tb.IsInnerStorageTabType)
-                    {
+                    if ( !tb.IsInnerStorageTabType ) {
                         posts = _statuses;
-                    }
-                    else
-                    {
+                    } else {
                         posts = tb.Posts;
                     }
-                    foreach (var id in tb.BackupIds)
-                    {
-                        if (!posts[id].IsRead)
-                        {
+                    foreach ( var id in tb.BackupIds ) {
+                        if ( !posts[id].IsRead ) {
                             cnt++;
-                            if (oldest > id) oldest = id;
+                            if ( oldest > id )
+                                oldest = id;
                         }
                     }
-                    if (oldest == long.MaxValue) oldest = -1;
+                    if ( oldest == long.MaxValue )
+                        oldest = -1;
                     tb.OldestUnreadId = oldest;
                     tb.UnreadCount = cnt;
-                }
-                else
-                {
+                } else {
                     tb.OldestUnreadId = -1;
                     tb.UnreadCount = 0;
                 }
@@ -2098,156 +1840,133 @@ namespace OpenTween
             tb.UnreadManage = Manage;
         }
 
-        public void RefreshOwl(List<long> follower)
-        {
-            lock (LockObj)
-            {
-                if (follower.Count > 0)
-                {
-                    foreach (var post in _statuses.Values)
-                    {
+
+        public void RefreshOwl(List<long> follower) {
+            lock ( LockObj ) {
+                if ( follower.Count > 0 ) {
+                    foreach ( var post in _statuses.Values ) {
                         //if (post.UserId = 0 || post.IsDm) Continue For
-                        if (post.IsMe)
-                        {
+                        if ( post.IsMe ) {
                             post.IsOwl = false;
-                        }
-                        else
-                        {
-                            post.IsOwl = !follower.Contains(post.UserId);
+                        } else {
+                            post.IsOwl = !follower.Contains( post.UserId );
                         }
                     }
-                }
-                else
-                {
-                    foreach (var id in _statuses.Keys)
-                    {
+                } else {
+                    foreach ( var id in _statuses.Keys ) {
                         _statuses[id].IsOwl = false;
                     }
                 }
             }
         }
 
-        public TabClass GetTabByType(MyCommon.TabUsageType tabType)
-        {
+
+        public TabClass GetTabByType(MyCommon.TabUsageType tabType) {
             //Home,Mentions,DM,Favは1つに制限する
             //その他のタイプを指定されたら、最初に合致したものを返す
             //合致しなければnullを返す
-            lock (LockObj)
-            {
-                foreach (var tb in _tabs.Values)
-                {
-                    if (tb != null && tb.TabType == tabType) return tb;
+            lock ( LockObj ) {
+                foreach ( var tb in _tabs.Values ) {
+                    if ( tb != null && tb.TabType == tabType )
+                        return tb;
                 }
                 return null;
             }
         }
 
-        public List<TabClass> GetTabsByType(MyCommon.TabUsageType tabType)
-        {
+
+        public List<TabClass> GetTabsByType(MyCommon.TabUsageType tabType) {
             //合致したタブをListで返す
             //合致しなければ空のListを返す
-            lock (LockObj)
-            {
+            lock ( LockObj ) {
                 var tbs = new List<TabClass>();
-                foreach (var tb in _tabs.Values)
-                {
-                    if ((tabType & tb.TabType) == tb.TabType) tbs.Add(tb);
+                foreach ( var tb in _tabs.Values ) {
+                    if ( ( tabType & tb.TabType ) == tb.TabType )
+                        tbs.Add( tb );
                 }
                 return tbs;
             }
         }
 
-        public List<TabClass> GetTabsInnerStorageType()
-        {
+
+        public List<TabClass> GetTabsInnerStorageType() {
             //合致したタブをListで返す
             //合致しなければ空のListを返す
-            lock (LockObj)
-            {
+            lock ( LockObj ) {
                 var tbs = new List<TabClass>();
-                foreach (var tb in _tabs.Values)
-                {
-                    if (tb.IsInnerStorageTabType) tbs.Add(tb);
+                foreach ( var tb in _tabs.Values ) {
+                    if ( tb.IsInnerStorageTabType )
+                        tbs.Add( tb );
                 }
                 return tbs;
             }
         }
 
-        public TabClass GetTabByName(string tabName)
-        {
-            lock (LockObj)
-            {
-                if (_tabs.ContainsKey(tabName)) return _tabs[tabName];
+
+        public TabClass GetTabByName(string tabName) {
+            lock ( LockObj ) {
+                if ( _tabs.ContainsKey( tabName ) )
+                    return _tabs[tabName];
                 return null;
             }
         }
 
         // デフォルトタブの判定処理
-        public bool IsDefaultTab(string tabName)
-        {
-            if (tabName != null &&
-               _tabs.ContainsKey(tabName) &&
-               (_tabs[tabName].TabType == MyCommon.TabUsageType.Home ||
+        public bool IsDefaultTab(string tabName) {
+            if ( tabName != null &&
+               _tabs.ContainsKey( tabName ) &&
+               ( _tabs[tabName].TabType == MyCommon.TabUsageType.Home ||
                _tabs[tabName].TabType == MyCommon.TabUsageType.Mentions ||
                _tabs[tabName].TabType == MyCommon.TabUsageType.DirectMessage ||
-               _tabs[tabName].TabType == MyCommon.TabUsageType.Favorites))
-            {
+               _tabs[tabName].TabType == MyCommon.TabUsageType.Favorites ) ) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
         //振り分け可能タブの判定処理
-        public bool IsDistributableTab(string tabName)
-        {
+        public bool IsDistributableTab(string tabName) {
             return tabName != null &&
-                this._tabs.ContainsKey(tabName) &&
-                (_tabs[tabName].TabType == MyCommon.TabUsageType.Mentions ||
-                 _tabs[tabName].TabType == MyCommon.TabUsageType.UserDefined);
+                this._tabs.ContainsKey( tabName ) &&
+                ( _tabs[tabName].TabType == MyCommon.TabUsageType.Mentions ||
+                 _tabs[tabName].TabType == MyCommon.TabUsageType.UserDefined );
         }
 
-        public string GetUniqueTabName()
-        {
-            var tabNameTemp = "MyTab" + (_tabs.Count + 1).ToString();
-            for (int i = 2; i <= 100; i++)
-            {
-                if (_tabs.ContainsKey(tabNameTemp))
-                {
-                    tabNameTemp = "MyTab" + (_tabs.Count + i).ToString();
-                }
-                else
-                {
+
+        public string GetUniqueTabName() {
+            var tabNameTemp = "MyTab" + ( _tabs.Count + 1 ).ToString();
+            for ( int i = 2; i <= 100; i++ ) {
+                if ( _tabs.ContainsKey( tabNameTemp ) ) {
+                    tabNameTemp = "MyTab" + ( _tabs.Count + i ).ToString();
+                } else {
                     break;
                 }
             }
             return tabNameTemp;
         }
 
-        public Dictionary<long, PostClass> Posts
-        {
-            get
-            {
+
+        public Dictionary<long, PostClass> Posts {
+            get {
                 return _statuses;
             }
         }
     }
 
+
     [Serializable]
-    public sealed class TabClass
-    {
+    public sealed class TabClass {
         private bool _unreadManage = false;
         private List<FiltersClass> _filters;
         private int _unreadCount = 0;
         private List<long> _ids;
         private List<TemporaryId> _tmpIds = new List<TemporaryId>();
         private MyCommon.TabUsageType _tabType = MyCommon.TabUsageType.Undefined;
-
         [NonSerialized]
         private IdComparerClass _sorter = new IdComparerClass();
-
         private readonly object _lockObj = new object();
+
 
         public string User { get; set; }
 
@@ -2257,75 +1976,72 @@ namespace OpenTween
         private string _searchWords = "";
         private string _nextPageQuery = "";
 
-        public string SearchLang
-        {
-            get
-            {
+
+        public string SearchLang {
+            get {
                 return _searchLang;
             }
-            set
-            {
+            set {
                 SinceId = 0;
                 _searchLang = value;
             }
         }
-        public string SearchWords
-        {
-            get
-            {
+
+
+        public string SearchWords {
+            get {
                 return _searchWords;
             }
-            set
-            {
+            set {
                 SinceId = 0;
                 _searchWords = value.Trim();
             }
         }
 
-        public string NextPageQuery
-        {
-            get
-            {
+
+        public string NextPageQuery {
+            get {
                 return _nextPageQuery;
             }
-            set
-            {
+            set {
                 _nextPageQuery = value;
             }
         }
 
-        public int GetSearchPage(int count)
-        {
-            return ((_ids.Count / count) + 1);
+
+        public int GetSearchPage(int count) {
+            return ( ( _ids.Count / count ) + 1 );
         }
+
+
         private Dictionary<string, string> _beforeQuery = new Dictionary<string, string>();
-        public void SaveQuery(bool more)
-        {
+
+
+        public void SaveQuery(bool more) {
             var qry = new Dictionary<string, string>();
-            if (string.IsNullOrEmpty(_searchWords))
-            {
+            if ( string.IsNullOrEmpty( _searchWords ) ) {
                 _beforeQuery = qry;
                 return;
             }
-            qry.Add("q", _searchWords);
-            if (!string.IsNullOrEmpty(_searchLang)) qry.Add("lang", _searchLang);
+            qry.Add( "q", _searchWords );
+            if ( !string.IsNullOrEmpty( _searchLang ) )
+                qry.Add( "lang", _searchLang );
             _beforeQuery = qry;
         }
 
-        public bool IsQueryChanged()
-        {
-            var qry = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(_searchWords))
-            {
-                qry.Add("q", _searchWords);
-                if (!string.IsNullOrEmpty(_searchLang)) qry.Add("lang", _searchLang);
-            }
-            if (qry.Count != _beforeQuery.Count) return true;
 
-            foreach (var kvp in qry)
-            {
-                if (!_beforeQuery.ContainsKey(kvp.Key) || _beforeQuery[kvp.Key] != kvp.Value)
-                {
+        public bool IsQueryChanged() {
+            var qry = new Dictionary<string, string>();
+            if ( !string.IsNullOrEmpty( _searchWords ) ) {
+                qry.Add( "q", _searchWords );
+                if ( !string.IsNullOrEmpty( _searchLang ) )
+                    qry.Add( "lang", _searchLang );
+            }
+            if ( qry.Count != _beforeQuery.Count )
+                return true;
+
+            foreach ( var kvp in qry ) {
+                if ( !_beforeQuery.ContainsKey( kvp.Key ) || _beforeQuery[kvp.Key] != kvp.Value ) {
                     return true;
                 }
             }
@@ -2336,14 +2052,13 @@ namespace OpenTween
 #region "リスト"
         [NonSerialized]
         private ListElement _listInfo;
-        public ListElement ListInfo
-        {
-            get
-            {
+
+
+        public ListElement ListInfo {
+            get {
                 return _listInfo;
             }
-            set
-            {
+            set {
                 _listInfo = value;
             }
         }
@@ -2352,45 +2067,46 @@ namespace OpenTween
         [XmlIgnore]
         public PostClass RelationTargetPost { get; set; }
 
+
         [XmlIgnore]
         public long OldestId = long.MaxValue;
+
 
         [XmlIgnore]
         public long SinceId { get; set; }
 
+
         [XmlIgnore]
         public Dictionary<long, PostClass> Posts { get; set; }
 
-        public PostClass[] GetTemporaryPosts()
-        {
+
+        public PostClass[] GetTemporaryPosts() {
             var tempPosts = new List<PostClass>();
-            if (_tmpIds.Count == 0) return tempPosts.ToArray();
-            foreach (var tempId in _tmpIds)
-            {
-                tempPosts.Add(Posts[tempId.Id]);
+            if ( _tmpIds.Count == 0 )
+                return tempPosts.ToArray();
+            foreach ( var tempId in _tmpIds ) {
+                tempPosts.Add( Posts[tempId.Id] );
             }
             return tempPosts.ToArray();
         }
 
-        public int GetTemporaryCount()
-        {
+
+        public int GetTemporaryCount() {
             return _tmpIds.Count;
         }
 
-        private struct TemporaryId
-        {
+        private struct TemporaryId {
             public long Id;
             public bool Read;
 
-            public TemporaryId(long argId, bool argRead)
-            {
+
+            public TemporaryId(long argId, bool argRead) {
                 Id = argId;
                 Read = argRead;
             }
         }
 
-        public TabClass()
-        {
+        public TabClass() {
             Posts = new Dictionary<long, PostClass>();
             SoundFile = "";
             OldestUnreadId = -1;
@@ -2405,8 +2121,8 @@ namespace OpenTween
             _listInfo = null;
         }
 
-        public TabClass(string TabName, MyCommon.TabUsageType TabType, ListElement list)
-        {
+
+        public TabClass(string TabName, MyCommon.TabUsageType TabType, ListElement list) {
             Posts = new Dictionary<long, PostClass>();
             SoundFile = "";
             OldestUnreadId = -1;
@@ -2419,96 +2135,80 @@ namespace OpenTween
             this.OldestUnreadId = -1;
             _tabType = TabType;
             this.ListInfo = list;
-            if (this.IsInnerStorageTabType)
-            {
+            if ( this.IsInnerStorageTabType ) {
                 _sorter.posts = Posts;
-            }
-            else
-            {
+            } else {
                 _sorter.posts = TabInformations.GetInstance().Posts;
             }
         }
 
-        public void Sort()
-        {
-            if (_sorter.Mode == IdComparerClass.ComparerMode.Id)
-            {
-                _ids.Sort(_sorter.CmpMethod());
+
+        public void Sort() {
+            if ( _sorter.Mode == IdComparerClass.ComparerMode.Id ) {
+                _ids.Sort( _sorter.CmpMethod() );
                 return;
             }
             long[] ar = null;
-            if (_sorter.Order == SortOrder.Ascending)
-            {
-                switch (_sorter.Mode)
-                {
+            if ( _sorter.Order == SortOrder.Ascending ) {
+                switch ( _sorter.Mode ) {
                     case IdComparerClass.ComparerMode.Data:
-                        ar = _ids.OrderBy(n => _sorter.posts[n].TextFromApi).ToArray();
+                        ar = _ids.OrderBy( n => _sorter.posts[n].TextFromApi ).ToArray();
                         break;
                     case IdComparerClass.ComparerMode.Name:
-                        ar = _ids.OrderBy(n => _sorter.posts[n].ScreenName).ToArray();
+                        ar = _ids.OrderBy( n => _sorter.posts[n].ScreenName ).ToArray();
                         break;
                     case IdComparerClass.ComparerMode.Nickname:
-                        ar = _ids.OrderBy(n => _sorter.posts[n].Nickname).ToArray();
+                        ar = _ids.OrderBy( n => _sorter.posts[n].Nickname ).ToArray();
                         break;
                     case IdComparerClass.ComparerMode.Source:
-                        ar = _ids.OrderBy(n => _sorter.posts[n].Source).ToArray();
+                        ar = _ids.OrderBy( n => _sorter.posts[n].Source ).ToArray();
+                        break;
+                }
+            } else {
+                switch ( _sorter.Mode ) {
+                    case IdComparerClass.ComparerMode.Data:
+                        ar = _ids.OrderByDescending( n => _sorter.posts[n].TextFromApi ).ToArray();
+                        break;
+                    case IdComparerClass.ComparerMode.Name:
+                        ar = _ids.OrderByDescending( n => _sorter.posts[n].ScreenName ).ToArray();
+                        break;
+                    case IdComparerClass.ComparerMode.Nickname:
+                        ar = _ids.OrderByDescending( n => _sorter.posts[n].Nickname ).ToArray();
+                        break;
+                    case IdComparerClass.ComparerMode.Source:
+                        ar = _ids.OrderByDescending( n => _sorter.posts[n].Source ).ToArray();
                         break;
                 }
             }
-            else
-            {
-                switch (_sorter.Mode)
-                {
-                    case IdComparerClass.ComparerMode.Data:
-                        ar = _ids.OrderByDescending(n => _sorter.posts[n].TextFromApi).ToArray();
-                        break;
-                    case IdComparerClass.ComparerMode.Name:
-                        ar = _ids.OrderByDescending(n => _sorter.posts[n].ScreenName).ToArray();
-                        break;
-                    case IdComparerClass.ComparerMode.Nickname:
-                        ar = _ids.OrderByDescending(n => _sorter.posts[n].Nickname).ToArray();
-                        break;
-                    case IdComparerClass.ComparerMode.Source:
-                        ar = _ids.OrderByDescending(n => _sorter.posts[n].Source).ToArray();
-                        break;
-                }
-            }
-            _ids = new List<long>(ar);
+            _ids = new List<long>( ar );
         }
 
-        public IdComparerClass Sorter
-        {
-            get
-            {
+
+        public IdComparerClass Sorter {
+            get {
                 return _sorter;
             }
         }
 
         //無条件に追加
-        private void Add(long ID, bool Read)
-        {
-            if (this._ids.Contains(ID)) return;
+        private void Add(long ID, bool Read) {
+            if ( this._ids.Contains( ID ) )
+                return;
 
-            if (this.Sorter.Mode == IdComparerClass.ComparerMode.Id)
-            {
-                if (this.Sorter.Order == SortOrder.Ascending)
-                {
-                    this._ids.Add(ID);
+            if ( this.Sorter.Mode == IdComparerClass.ComparerMode.Id ) {
+                if ( this.Sorter.Order == SortOrder.Ascending ) {
+                    this._ids.Add( ID );
+                } else {
+                    this._ids.Insert( 0, ID );
                 }
-                else
-                {
-                    this._ids.Insert(0, ID);
-                }
-            }
-            else
-            {
-                this._ids.Add(ID);
+            } else {
+                this._ids.Add( ID );
             }
 
-            if (!Read && this._unreadManage)
-            {
+            if ( !Read && this._unreadManage ) {
                 this._unreadCount++;
-                if (ID < this.OldestUnreadId) this.OldestUnreadId = ID;
+                if ( ID < this.OldestUnreadId )
+                    this.OldestUnreadId = ID;
                 //if (this.OldestUnreadId == -1)
                 //{
                 //    this.OldestUnreadId = ID;
@@ -2520,37 +2220,31 @@ namespace OpenTween
             }
         }
 
-        public void Add(long ID, bool Read, bool Temporary)
-        {
-            if (!Temporary)
-            {
-                this.Add(ID, Read);
-            }
-            else
-            {
-                _tmpIds.Add(new TemporaryId(ID, Read));
+
+        public void Add(long ID, bool Read, bool Temporary) {
+            if ( !Temporary ) {
+                this.Add( ID, Read );
+            } else {
+                _tmpIds.Add( new TemporaryId( ID, Read ) );
             }
         }
 
         //フィルタに合致したら追加
-        public MyCommon.HITRESULT AddFiltered(PostClass post)
-        {
-            if (this.IsInnerStorageTabType) return MyCommon.HITRESULT.None;
+        public MyCommon.HITRESULT AddFiltered(PostClass post) {
+            if ( this.IsInnerStorageTabType )
+                return MyCommon.HITRESULT.None;
 
             var rslt = MyCommon.HITRESULT.None;
             //全フィルタ評価（優先順位あり）
-            lock (this._lockObj)
-            {
-                foreach (var ft in _filters)
-                {
-                    try
-                    {
-                        switch (ft.IsHit(post))   //フィルタクラスでヒット判定
-                        {
+            lock ( this._lockObj ) {
+                foreach ( var ft in _filters ) {
+                    try {
+                        switch ( ft.IsHit( post ) ) {   //フィルタクラスでヒット判定
                             case MyCommon.HITRESULT.None:
                                 break;
                             case MyCommon.HITRESULT.Copy:
-                                if (rslt != MyCommon.HITRESULT.CopyAndMark) rslt = MyCommon.HITRESULT.Copy;
+                                if ( rslt != MyCommon.HITRESULT.CopyAndMark )
+                                    rslt = MyCommon.HITRESULT.Copy;
                                 break;
                             case MyCommon.HITRESULT.CopyAndMark:
                                 rslt = MyCommon.HITRESULT.CopyAndMark;
@@ -2562,11 +2256,9 @@ namespace OpenTween
                                 rslt = MyCommon.HITRESULT.Exclude;
                                 goto exit_for;
                         }
-                    }
-                    catch (NullReferenceException)
-                    {
+                    } catch ( NullReferenceException ) {
                         //IsHitでNullRef出る場合あり。暫定対応
-                        MyCommon.TraceOut("IsHitでNullRef: " + ft.ToString());
+                        MyCommon.TraceOut( "IsHitでNullRef: " + ft.ToString() );
                         rslt = MyCommon.HITRESULT.None;
                     }
                 }
@@ -2574,137 +2266,136 @@ namespace OpenTween
                 ;
             }
 
-            if (rslt != MyCommon.HITRESULT.None && rslt != MyCommon.HITRESULT.Exclude)
-            {
-                _tmpIds.Add(new TemporaryId(post.StatusId, post.IsRead));
+            if ( rslt != MyCommon.HITRESULT.None && rslt != MyCommon.HITRESULT.Exclude ) {
+                _tmpIds.Add( new TemporaryId( post.StatusId, post.IsRead ) );
             }
 
             return rslt; //マーク付けは呼び出し元で行うこと
         }
 
         //検索結果の追加
-        public void AddPostToInnerStorage(PostClass Post)
-        {
-            if (Posts.ContainsKey(Post.StatusId)) return;
-            Posts.Add(Post.StatusId, Post);
-            _tmpIds.Add(new TemporaryId(Post.StatusId, Post.IsRead));
+        public void AddPostToInnerStorage(PostClass Post) {
+            if ( Posts.ContainsKey( Post.StatusId ) )
+                return;
+            Posts.Add( Post.StatusId, Post );
+            _tmpIds.Add( new TemporaryId( Post.StatusId, Post.IsRead ) );
         }
 
-        public void AddSubmit(ref bool isMentionIncluded)
-        {
-            if (_tmpIds.Count == 0) return;
-            _tmpIds.Sort((x, y) => x.Id.CompareTo(y.Id));
-            foreach (var tId in _tmpIds)
-            {
-                if (this.TabType == MyCommon.TabUsageType.Mentions && TabInformations.GetInstance()[tId.Id].IsReply) isMentionIncluded = true;
-                this.Add(tId.Id, tId.Read);
+
+        public void AddSubmit(ref bool isMentionIncluded) {
+            if ( _tmpIds.Count == 0 )
+                return;
+            _tmpIds.Sort( (x, y) => x.Id.CompareTo( y.Id ) );
+            foreach ( var tId in _tmpIds ) {
+                if ( this.TabType == MyCommon.TabUsageType.Mentions && TabInformations.GetInstance()[tId.Id].IsReply )
+                    isMentionIncluded = true;
+                this.Add( tId.Id, tId.Read );
             }
             _tmpIds.Clear();
         }
 
-        public void AddSubmit()
-        {
+
+        public void AddSubmit() {
             bool mention = false;
-            AddSubmit(ref mention);
+            AddSubmit( ref mention );
         }
 
-        public void Remove(long Id)
-        {
-            if (!this._ids.Contains(Id)) return;
-            this._ids.Remove(Id);
-            if (this.IsInnerStorageTabType) Posts.Remove(Id);
+
+        public void Remove(long Id) {
+            if ( !this._ids.Contains( Id ) )
+                return;
+            this._ids.Remove( Id );
+            if ( this.IsInnerStorageTabType )
+                Posts.Remove( Id );
         }
 
-        public void Remove(long Id, bool Read)
-        {
-            if (!this._ids.Contains(Id)) return;
 
-            if (!Read && this._unreadManage)
-            {
+        public void Remove(long Id, bool Read) {
+            if ( !this._ids.Contains( Id ) )
+                return;
+
+            if ( !Read && this._unreadManage ) {
                 this._unreadCount--;
                 this.OldestUnreadId = -1;
             }
 
-            this._ids.Remove(Id);
-            if (this.IsInnerStorageTabType) Posts.Remove(Id);
+            this._ids.Remove( Id );
+            if ( this.IsInnerStorageTabType )
+                Posts.Remove( Id );
         }
 
-        public bool UnreadManage
-        {
-            get
-            {
+
+        public bool UnreadManage {
+            get {
                 return _unreadManage;
             }
-            set
-            {
+            set {
                 this._unreadManage = value;
-                if (!value)
-                {
+                if ( !value ) {
                     this.OldestUnreadId = -1;
                     this._unreadCount = 0;
                 }
             }
         }
 
+
         public bool Notify { get; set; }
 
+
         public string SoundFile { get; set; }
+
 
         [XmlIgnore]
         public long OldestUnreadId { get; set; }
 
+
         [XmlIgnore]
-        public int UnreadCount
-        {
-            get
-            {
+        public int UnreadCount {
+            get {
                 return this.UnreadManage && AppendSettingDialog.Instance.UnreadManage ? _unreadCount : 0;
             }
-            set
-            {
-                if (value < 0) value = 0;
+            set {
+                if ( value < 0 )
+                    value = 0;
                 _unreadCount = value;
             }
         }
 
-        public int AllCount
-        {
-            get
-            {
+
+        public int AllCount {
+            get {
                 return this._ids.Count;
             }
         }
 
-        public FiltersClass[] GetFilters()
-        {
-            lock (this._lockObj)
-            {
+
+        public FiltersClass[] GetFilters() {
+            lock ( this._lockObj ) {
                 return _filters.ToArray();
             }
         }
 
-        public void RemoveFilter(FiltersClass filter)
-        {
-            lock (this._lockObj)
-            {
-                _filters.Remove(filter);
+
+        public void RemoveFilter(FiltersClass filter) {
+            lock ( this._lockObj ) {
+                _filters.Remove( filter );
                 this.FilterModified = true;
             }
         }
 
-        public bool AddFilter(FiltersClass filter)
-        {
-            lock (this._lockObj)
-            {
-                if (_filters.Contains(filter)) return false;
-                _filters.Add(filter);
+
+        public bool AddFilter(FiltersClass filter) {
+            lock ( this._lockObj ) {
+                if ( _filters.Contains( filter ) )
+                    return false;
+                _filters.Add( filter );
                 this.FilterModified = true;
                 return true;
             }
         }
 
-        public void EditFilter(FiltersClass original, FiltersClass modified)
-        {
+
+        public void EditFilter(FiltersClass original, FiltersClass modified) {
             original.BodyFilter = modified.BodyFilter;
             original.NameFilter = modified.NameFilter;
             original.SearchBoth = modified.SearchBoth;
@@ -2728,128 +2419,111 @@ namespace OpenTween
             this.FilterModified = true;
         }
 
+
         [XmlIgnore]
-        public List<FiltersClass> Filters
-        {
-            get
-            {
-                lock (this._lockObj)
-                {
+        public List<FiltersClass> Filters {
+            get {
+                lock ( this._lockObj ) {
                     return _filters;
                 }
             }
-            set
-            {
-                lock (this._lockObj)
-                {
+            set {
+                lock ( this._lockObj ) {
                     _filters = value;
                 }
             }
         }
 
-        public FiltersClass[] FilterArray
-        {
-            get
-            {
-                lock (this._lockObj)
-                {
+
+        public FiltersClass[] FilterArray {
+            get {
+                lock ( this._lockObj ) {
                     return _filters.ToArray();
                 }
             }
-            set
-            {
-                lock (this._lockObj)
-                {
-                    foreach (var filters in value)
-                    {
-                        _filters.Add(filters);
+            set {
+                lock ( this._lockObj ) {
+                    foreach ( var filters in value ) {
+                        _filters.Add( filters );
                     }
                 }
             }
         }
-        public bool Contains(long ID)
-        {
-            return _ids.Contains(ID);
+
+
+        public bool Contains(long ID) {
+            return _ids.Contains( ID );
         }
 
-        public void ClearIDs()
-        {
+
+        public void ClearIDs() {
             _ids.Clear();
             _tmpIds.Clear();
             _unreadCount = 0;
             this.OldestUnreadId = -1;
-            if (Posts != null)
-            {
+            if ( Posts != null ) {
                 Posts.Clear();
             }
         }
 
-        public long GetId(int Index)
-        {
+
+        public long GetId(int Index) {
             return Index < _ids.Count ? _ids[Index] : -1;
         }
 
-        public int IndexOf(long ID)
-        {
-            return _ids.IndexOf(ID);
+
+        public int IndexOf(long ID) {
+            return _ids.IndexOf( ID );
         }
+
 
         [XmlIgnore]
         public bool FilterModified { get; set; }
 
-        public long[] BackupIds
-        {
-            get
-            {
+
+        public long[] BackupIds {
+            get {
                 return _ids.ToArray();
             }
         }
 
+
         public string TabName { get; set; }
 
-        public MyCommon.TabUsageType TabType
-        {
-            get
-            {
+
+        public MyCommon.TabUsageType TabType {
+            get {
                 return _tabType;
             }
-            set
-            {
+            set {
                 _tabType = value;
-                if (this.IsInnerStorageTabType)
-                {
+                if ( this.IsInnerStorageTabType ) {
                     _sorter.posts = Posts;
-                }
-                else
-                {
+                } else {
                     _sorter.posts = TabInformations.GetInstance().Posts;
                 }
             }
         }
 
-        public bool IsInnerStorageTabType
-        {
-            get
-            {
-                if (_tabType == MyCommon.TabUsageType.PublicSearch ||
+
+        public bool IsInnerStorageTabType {
+            get {
+                if ( _tabType == MyCommon.TabUsageType.PublicSearch ||
                     _tabType == MyCommon.TabUsageType.DirectMessage ||
                     _tabType == MyCommon.TabUsageType.Lists ||
                     _tabType == MyCommon.TabUsageType.UserTimeline ||
-                    _tabType == MyCommon.TabUsageType.Related)
-                {
+                    _tabType == MyCommon.TabUsageType.Related ) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
         }
     }
 
+
     [Serializable]
-    public sealed class FiltersClass : System.IEquatable<FiltersClass>
-    {
+    public sealed class FiltersClass : System.IEquatable<FiltersClass> {
         private string _name = "";
         private List<string> _body = new List<string>();
         private bool _searchBoth = true;
@@ -2871,791 +2545,639 @@ namespace OpenTween
         private bool _useLambda = false;
         private bool _exuseLambda = false;
 
-        public FiltersClass() {}
+
+        public FiltersClass() {
+        }
 
         //フィルタ一覧に表示する文言生成
-        private string MakeSummary()
-        {
+        private string MakeSummary() {
             var fs = new StringBuilder();
-            if (!string.IsNullOrEmpty(_name) || _body.Count > 0 || _isRt || !string.IsNullOrEmpty(_source))
-            {
-                if (_searchBoth)
-                {
-                    if (!string.IsNullOrEmpty(_name))
-                    {
-                        fs.AppendFormat(Properties.Resources.SetFiltersText1, _name);
-                    }
-                    else
-                    {
-                        fs.Append(Properties.Resources.SetFiltersText2);
+            if ( !string.IsNullOrEmpty( _name ) || _body.Count > 0 || _isRt || !string.IsNullOrEmpty( _source ) ) {
+                if ( _searchBoth ) {
+                    if ( !string.IsNullOrEmpty( _name ) ) {
+                        fs.AppendFormat( Properties.Resources.SetFiltersText1, _name );
+                    } else {
+                        fs.Append( Properties.Resources.SetFiltersText2 );
                     }
                 }
-                if (_body.Count > 0)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText3);
-                    foreach (var bf in _body)
-                    {
-                        fs.Append(bf);
-                        fs.Append(" ");
+                if ( _body.Count > 0 ) {
+                    fs.Append( Properties.Resources.SetFiltersText3 );
+                    foreach ( var bf in _body ) {
+                        fs.Append( bf );
+                        fs.Append( " " );
                     }
                     fs.Length--;
-                    fs.Append(Properties.Resources.SetFiltersText4);
+                    fs.Append( Properties.Resources.SetFiltersText4 );
                 }
-                fs.Append("(");
-                if (_searchBoth)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText5);
+                fs.Append( "(" );
+                if ( _searchBoth ) {
+                    fs.Append( Properties.Resources.SetFiltersText5 );
+                } else {
+                    fs.Append( Properties.Resources.SetFiltersText6 );
                 }
-                else
-                {
-                    fs.Append(Properties.Resources.SetFiltersText6);
+                if ( _useRegex ) {
+                    fs.Append( Properties.Resources.SetFiltersText7 );
                 }
-                if (_useRegex)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText7);
+                if ( _searchUrl ) {
+                    fs.Append( Properties.Resources.SetFiltersText8 );
                 }
-                if (_searchUrl)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText8);
+                if ( _caseSensitive ) {
+                    fs.Append( Properties.Resources.SetFiltersText13 );
                 }
-                if (_caseSensitive)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText13);
+                if ( _isRt ) {
+                    fs.Append( "RT/" );
                 }
-                if (_isRt)
-                {
-                    fs.Append("RT/");
+                if ( _useLambda ) {
+                    fs.Append( "LambdaExp/" );
                 }
-                if (_useLambda)
-                {
-                    fs.Append("LambdaExp/");
-                }
-                if (!string.IsNullOrEmpty(_source))
-                {
-                    fs.AppendFormat("Src…{0}/", _source);
+                if ( !string.IsNullOrEmpty( _source ) ) {
+                    fs.AppendFormat( "Src…{0}/", _source );
                 }
                 fs.Length--;
-                fs.Append(")");
+                fs.Append( ")" );
             }
-            if (!string.IsNullOrEmpty(_exname) || _exbody.Count > 0 || _isExRt || !string.IsNullOrEmpty(_exSource))
-            {
+            if ( !string.IsNullOrEmpty( _exname ) || _exbody.Count > 0 || _isExRt || !string.IsNullOrEmpty( _exSource ) ) {
                 //除外
-                fs.Append(Properties.Resources.SetFiltersText12);
-                if (_exsearchBoth)
-                {
-                    if (!string.IsNullOrEmpty(_exname))
-                    {
-                        fs.AppendFormat(Properties.Resources.SetFiltersText1, _exname);
-                    }
-                    else
-                    {
-                        fs.Append(Properties.Resources.SetFiltersText2);
+                fs.Append( Properties.Resources.SetFiltersText12 );
+                if ( _exsearchBoth ) {
+                    if ( !string.IsNullOrEmpty( _exname ) ) {
+                        fs.AppendFormat( Properties.Resources.SetFiltersText1, _exname );
+                    } else {
+                        fs.Append( Properties.Resources.SetFiltersText2 );
                     }
                 }
-                if (_exbody.Count > 0)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText3);
-                    foreach (var bf in _exbody)
-                    {
-                        fs.Append(bf);
-                        fs.Append(" ");
+                if ( _exbody.Count > 0 ) {
+                    fs.Append( Properties.Resources.SetFiltersText3 );
+                    foreach ( var bf in _exbody ) {
+                        fs.Append( bf );
+                        fs.Append( " " );
                     }
                     fs.Length--;
-                    fs.Append(Properties.Resources.SetFiltersText4);
+                    fs.Append( Properties.Resources.SetFiltersText4 );
                 }
-                fs.Append("(");
-                if (_exsearchBoth)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText5);
+                fs.Append( "(" );
+                if ( _exsearchBoth ) {
+                    fs.Append( Properties.Resources.SetFiltersText5 );
+                } else {
+                    fs.Append( Properties.Resources.SetFiltersText6 );
                 }
-                else
-                {
-                    fs.Append(Properties.Resources.SetFiltersText6);
+                if ( _exuseRegex ) {
+                    fs.Append( Properties.Resources.SetFiltersText7 );
                 }
-                if (_exuseRegex)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText7);
+                if ( _exsearchUrl ) {
+                    fs.Append( Properties.Resources.SetFiltersText8 );
                 }
-                if (_exsearchUrl)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText8);
+                if ( _excaseSensitive ) {
+                    fs.Append( Properties.Resources.SetFiltersText13 );
                 }
-                if (_excaseSensitive)
-                {
-                    fs.Append(Properties.Resources.SetFiltersText13);
+                if ( _isExRt ) {
+                    fs.Append( "RT/" );
                 }
-                if (_isExRt)
-                {
-                    fs.Append("RT/");
+                if ( _exuseLambda ) {
+                    fs.Append( "LambdaExp/" );
                 }
-                if (_exuseLambda)
-                {
-                    fs.Append("LambdaExp/");
-                }
-                if (!string.IsNullOrEmpty(_exSource))
-                {
-                    fs.AppendFormat("Src…{0}/", _exSource);
+                if ( !string.IsNullOrEmpty( _exSource ) ) {
+                    fs.AppendFormat( "Src…{0}/", _exSource );
                 }
                 fs.Length--;
-                fs.Append(")");
+                fs.Append( ")" );
             }
 
-            fs.Append("(");
-            if (_moveFrom)
-            {
-                fs.Append(Properties.Resources.SetFiltersText9);
+            fs.Append( "(" );
+            if ( _moveFrom ) {
+                fs.Append( Properties.Resources.SetFiltersText9 );
+            } else {
+                fs.Append( Properties.Resources.SetFiltersText11 );
             }
-            else
-            {
-                fs.Append(Properties.Resources.SetFiltersText11);
-            }
-            if (!_moveFrom && _setMark)
-            {
-                fs.Append(Properties.Resources.SetFiltersText10);
-            }
-            else if (!_moveFrom)
-            {
+            if ( !_moveFrom && _setMark ) {
+                fs.Append( Properties.Resources.SetFiltersText10 );
+            } else if ( !_moveFrom ) {
                 fs.Length--;
             }
 
-            fs.Append(")");
+            fs.Append( ")" );
 
             return fs.ToString();
         }
 
-        public string NameFilter
-        {
-            get
-            {
+
+        public string NameFilter {
+            get {
                 return _name;
             }
-            set
-            {
+            set {
                 _name = value;
             }
         }
 
-        public string ExNameFilter
-        {
-            get
-            {
+
+        public string ExNameFilter {
+            get {
                 return _exname;
             }
-            set
-            {
+            set {
                 _exname = value;
             }
         }
 
+
         [XmlIgnore]
-        public List<string> BodyFilter
-        {
-            get
-            {
+        public List<string> BodyFilter {
+            get {
                 return _body;
             }
-            set
-            {
+            set {
                 _body = value;
             }
         }
 
-        public string[] BodyFilterArray
-        {
-            get
-            {
+
+        public string[] BodyFilterArray {
+            get {
                 return _body.ToArray();
             }
-            set
-            {
+            set {
                 _body = new List<string>();
-                foreach (var filter in value)
-                {
-                    _body.Add(filter);
+                foreach ( var filter in value ) {
+                    _body.Add( filter );
                 }
             }
         }
 
+
         [XmlIgnore]
-        public List<string> ExBodyFilter
-        {
-            get
-            {
+        public List<string> ExBodyFilter {
+            get {
                 return _exbody;
             }
-            set
-            {
+            set {
                 _exbody = value;
             }
         }
 
-        public string[] ExBodyFilterArray
-        {
-            get
-            {
+
+        public string[] ExBodyFilterArray {
+            get {
                 return _exbody.ToArray();
             }
-            set
-            {
+            set {
                 _exbody = new List<string>();
-                foreach (var filter in value)
-                {
-                    _exbody.Add(filter);
+                foreach ( var filter in value ) {
+                    _exbody.Add( filter );
                 }
             }
         }
 
-        public bool SearchBoth
-        {
-            get
-            {
+
+        public bool SearchBoth {
+            get {
                 return _searchBoth;
             }
-            set
-            {
+            set {
                 _searchBoth = value;
             }
         }
 
-        public bool ExSearchBoth
-        {
-            get
-            {
+
+        public bool ExSearchBoth {
+            get {
                 return _exsearchBoth;
             }
-            set
-            {
+            set {
                 _exsearchBoth = value;
             }
         }
 
-        public bool MoveFrom
-        {
-            get
-            {
+
+        public bool MoveFrom {
+            get {
                 return _moveFrom;
             }
-            set
-            {
+            set {
                 _moveFrom = value;
             }
         }
 
-        public bool SetMark
-        {
-            get
-            {
+
+        public bool SetMark {
+            get {
                 return _setMark;
             }
-            set
-            {
+            set {
                 _setMark = value;
             }
         }
 
-        public bool SearchUrl
-        {
-            get
-            {
+
+        public bool SearchUrl {
+            get {
                 return _searchUrl;
             }
-            set
-            {
+            set {
                 _searchUrl = value;
             }
         }
 
-        public bool ExSearchUrl
-        {
-            get
-            {
+
+        public bool ExSearchUrl {
+            get {
                 return _exsearchUrl;
             }
-            set
-            {
+            set {
                 _exsearchUrl = value;
             }
         }
 
-        public bool CaseSensitive
-        {
-            get
-            {
+
+        public bool CaseSensitive {
+            get {
                 return _caseSensitive;
             }
-            set
-            {
+            set {
                 _caseSensitive = value;
             }
         }
 
-        public bool ExCaseSensitive
-        {
-            get
-            {
+
+        public bool ExCaseSensitive {
+            get {
                 return _excaseSensitive;
             }
-            set
-            {
+            set {
                 _excaseSensitive = value;
             }
         }
 
-        public bool UseLambda
-        {
-            get
-            {
+
+        public bool UseLambda {
+            get {
                 return _useLambda;
             }
-            set
-            {
+            set {
                 _useLambda = value;
             }
         }
 
-        public bool ExUseLambda
-        {
-            get
-            {
+
+        public bool ExUseLambda {
+            get {
                 return _exuseLambda;
             }
-            set
-            {
+            set {
                 _exuseLambda = value;
             }
         }
 
-        public bool UseRegex
-        {
-            get
-            {
+
+        public bool UseRegex {
+            get {
                 return _useRegex;
             }
-            set
-            {
+            set {
                 _useRegex = value;
             }
         }
 
-        public bool ExUseRegex
-        {
-            get
-            {
+
+        public bool ExUseRegex {
+            get {
                 return _exuseRegex;
             }
-            set
-            {
+            set {
                 _exuseRegex = value;
             }
         }
 
-        public bool IsRt
-        {
-            get
-            {
+
+        public bool IsRt {
+            get {
                 return _isRt;
             }
-            set
-            {
+            set {
                 _isRt = value;
             }
         }
 
-        public bool IsExRt
-        {
-            get
-            {
+
+        public bool IsExRt {
+            get {
                 return _isExRt;
             }
-            set
-            {
+            set {
                 _isExRt = value;
             }
         }
 
-        public string Source
-        {
-            get
-            {
+
+        public string Source {
+            get {
                 return _source;
             }
-            set
-            {
+            set {
                 _source = value;
             }
         }
 
-        public string ExSource
-        {
-            get
-            {
+
+        public string ExSource {
+            get {
                 return _exSource;
             }
-            set
-            {
+            set {
                 _exSource = value;
             }
         }
 
-        public override string ToString()
-        {
+
+        public override string ToString() {
             return MakeSummary();
         }
 
-        public bool ExecuteLambdaExpression(string expr, PostClass post)
-        {
+
+        public bool ExecuteLambdaExpression(string expr, PostClass post) {
             return false;
             // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
         }
 
-        public bool ExecuteExLambdaExpression(string expr, PostClass post)
-        {
+
+        public bool ExecuteExLambdaExpression(string expr, PostClass post) {
             return false;
             // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
         }
 
-        public MyCommon.HITRESULT IsHit(PostClass post)
-        {
+
+        public MyCommon.HITRESULT IsHit(PostClass post) {
             var bHit = true;
             string tBody;
             string tSource;
-            if (_searchUrl)
-            {
+            if ( _searchUrl ) {
                 tBody = post.Text;
                 tSource = post.SourceHtml;
-            }
-            else
-            {
+            } else {
                 tBody = post.TextFromApi;
                 tSource = post.Source;
             }
             //検索オプション
             System.StringComparison compOpt;
             System.Text.RegularExpressions.RegexOptions rgOpt;
-            if (_caseSensitive)
-            {
+            if ( _caseSensitive ) {
                 compOpt = StringComparison.Ordinal;
                 rgOpt = RegexOptions.None;
-            }
-            else
-            {
+            } else {
                 compOpt = StringComparison.OrdinalIgnoreCase;
                 rgOpt = RegexOptions.IgnoreCase;
             }
-            if (_searchBoth)
-            {
-                if (string.IsNullOrEmpty(_name) ||
-                    (!_useRegex &&
-                     (post.ScreenName.Equals(_name, compOpt) ||
-                      post.RetweetedBy.Equals(_name, compOpt)
+            if ( _searchBoth ) {
+                if ( string.IsNullOrEmpty( _name ) ||
+                    ( !_useRegex &&
+                     ( post.ScreenName.Equals( _name, compOpt ) ||
+                      post.RetweetedBy.Equals( _name, compOpt )
                      )
                     ) ||
-                    (_useRegex &&
-                     (Regex.IsMatch(post.ScreenName, _name, rgOpt) ||
-                      (!string.IsNullOrEmpty(post.RetweetedBy) && Regex.IsMatch(post.RetweetedBy, _name, rgOpt))
+                    ( _useRegex &&
+                     ( Regex.IsMatch( post.ScreenName, _name, rgOpt ) ||
+                      ( !string.IsNullOrEmpty( post.RetweetedBy ) && Regex.IsMatch( post.RetweetedBy, _name, rgOpt ) )
                      )
-                    ))
-                {
-                    if (_useLambda)
-                    {
-                        if (!ExecuteLambdaExpression(_body[0], post)) bHit = false;
-                    }
-                    else
-                    {
-                        foreach (var fs in _body)
-                        {
-                            if (_useRegex)
-                            {
-                                if (!Regex.IsMatch(tBody, fs, rgOpt)) bHit = false;
-                            }
-                            else
-                            {
-                                if (_caseSensitive)
-                                {
-                                    if (!tBody.Contains(fs)) bHit = false;
-                                }
-                                else
-                                {
-                                    if (!tBody.ToLower().Contains(fs.ToLower())) bHit = false;
+                    ) ) {
+                    if ( _useLambda ) {
+                        if ( !ExecuteLambdaExpression( _body[0], post ) )
+                            bHit = false;
+                    } else {
+                        foreach ( var fs in _body ) {
+                            if ( _useRegex ) {
+                                if ( !Regex.IsMatch( tBody, fs, rgOpt ) )
+                                    bHit = false;
+                            } else {
+                                if ( _caseSensitive ) {
+                                    if ( !tBody.Contains( fs ) )
+                                        bHit = false;
+                                } else {
+                                    if ( !tBody.ToLower().Contains( fs.ToLower() ) )
+                                        bHit = false;
                                 }
                             }
-                            if (!bHit) break;
+                            if ( !bHit )
+                                break;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     bHit = false;
                 }
-            }
-            else
-            {
-                if (_useLambda)
-                {
-                    if (!ExecuteLambdaExpression(_body[0], post)) bHit = false;
-                }
-                else
-                {
-                    foreach (var fs in _body)
-                    {
-                        if (_useRegex)
-                        {
-                            if (!(Regex.IsMatch(post.ScreenName, fs, rgOpt) ||
-                                 (!string.IsNullOrEmpty(post.RetweetedBy) && Regex.IsMatch(post.RetweetedBy, fs, rgOpt)) ||
-                                 Regex.IsMatch(tBody, fs, rgOpt))) bHit = false;
-                        }
-                        else
-                        {
-                            if (_caseSensitive)
-                            {
-                                if (!(post.ScreenName.Contains(fs) ||
-                                    post.RetweetedBy.Contains(fs) ||
-                                    tBody.Contains(fs))) bHit = false;
-                            }
-                            else
-                            {
-                                if (!(post.ScreenName.ToLower().Contains(fs.ToLower()) ||
-                                    post.RetweetedBy.ToLower().Contains(fs.ToLower()) ||
-                                    tBody.ToLower().Contains(fs.ToLower()))) bHit = false;
+            } else {
+                if ( _useLambda ) {
+                    if ( !ExecuteLambdaExpression( _body[0], post ) )
+                        bHit = false;
+                } else {
+                    foreach ( var fs in _body ) {
+                        if ( _useRegex ) {
+                            if ( !( Regex.IsMatch( post.ScreenName, fs, rgOpt ) ||
+                                 ( !string.IsNullOrEmpty( post.RetweetedBy ) && Regex.IsMatch( post.RetweetedBy, fs, rgOpt ) ) ||
+                                 Regex.IsMatch( tBody, fs, rgOpt ) ) )
+                                bHit = false;
+                        } else {
+                            if ( _caseSensitive ) {
+                                if ( !( post.ScreenName.Contains( fs ) ||
+                                    post.RetweetedBy.Contains( fs ) ||
+                                    tBody.Contains( fs ) ) )
+                                    bHit = false;
+                            } else {
+                                if ( !( post.ScreenName.ToLower().Contains( fs.ToLower() ) ||
+                                    post.RetweetedBy.ToLower().Contains( fs.ToLower() ) ||
+                                    tBody.ToLower().Contains( fs.ToLower() ) ) )
+                                    bHit = false;
                             }
                         }
-                        if (!bHit) break;
+                        if ( !bHit )
+                            break;
                     }
                 }
             }
-            if (_isRt)
-            {
-                if (post.RetweetedId == 0) bHit = false;
+            if ( _isRt ) {
+                if ( post.RetweetedId == 0 )
+                    bHit = false;
             }
-            if (!string.IsNullOrEmpty(_source))
-            {
-                if (_useRegex)
-                {
-                    if (!Regex.IsMatch(tSource, _source, rgOpt)) bHit = false;
-                }
-                else
-                {
-                    if (!tSource.Equals(_source, compOpt)) bHit = false;
+            if ( !string.IsNullOrEmpty( _source ) ) {
+                if ( _useRegex ) {
+                    if ( !Regex.IsMatch( tSource, _source, rgOpt ) )
+                        bHit = false;
+                } else {
+                    if ( !tSource.Equals( _source, compOpt ) )
+                        bHit = false;
                 }
             }
-            if (bHit)
-            {
+            if ( bHit ) {
                 //除外判定
-                if (_exsearchUrl)
-                {
+                if ( _exsearchUrl ) {
                     tBody = post.Text;
                     tSource = post.SourceHtml;
-                }
-                else
-                {
+                } else {
                     tBody = post.TextFromApi;
                     tSource = post.Source;
                 }
 
                 var exFlag = false;
-                if (!string.IsNullOrEmpty(_exname) || _exbody.Count > 0)
-                {
-                    if (_excaseSensitive)
-                    {
+                if ( !string.IsNullOrEmpty( _exname ) || _exbody.Count > 0 ) {
+                    if ( _excaseSensitive ) {
                         compOpt = StringComparison.Ordinal;
                         rgOpt = RegexOptions.None;
-                    }
-                    else
-                    {
+                    } else {
                         compOpt = StringComparison.OrdinalIgnoreCase;
                         rgOpt = RegexOptions.IgnoreCase;
                     }
-                    if (_exsearchBoth)
-                    {
-                        if (string.IsNullOrEmpty(_exname) ||
-                            (!_exuseRegex &&
-                             (post.ScreenName.Equals(_exname, compOpt) ||
-                              post.RetweetedBy.Equals(_exname, compOpt)
+                    if ( _exsearchBoth ) {
+                        if ( string.IsNullOrEmpty( _exname ) ||
+                            ( !_exuseRegex &&
+                             ( post.ScreenName.Equals( _exname, compOpt ) ||
+                              post.RetweetedBy.Equals( _exname, compOpt )
                              )
                             ) ||
-                            (_exuseRegex &&
-                                (Regex.IsMatch(post.ScreenName, _exname, rgOpt) ||
-                                 (!string.IsNullOrEmpty(post.RetweetedBy) && Regex.IsMatch(post.RetweetedBy, _exname, rgOpt))
+                            ( _exuseRegex &&
+                                ( Regex.IsMatch( post.ScreenName, _exname, rgOpt ) ||
+                                 ( !string.IsNullOrEmpty( post.RetweetedBy ) && Regex.IsMatch( post.RetweetedBy, _exname, rgOpt ) )
                                 )
-                            ))
-                        {
-                            if (_exbody.Count > 0)
-                            {
-                                if (_exuseLambda)
-                                {
-                                    if (ExecuteExLambdaExpression(_exbody[0], post)) exFlag = true;
-                                }
-                                else
-                                {
-                                    foreach (var fs in _exbody)
-                                    {
-                                        if (_exuseRegex)
-                                        {
-                                            if (Regex.IsMatch(tBody, fs, rgOpt)) exFlag = true;
-                                        }
-                                        else
-                                        {
-                                            if (_excaseSensitive)
-                                            {
-                                                if (tBody.Contains(fs)) exFlag = true;
-                                            }
-                                            else
-                                            {
-                                                if (tBody.ToLower().Contains(fs.ToLower())) exFlag = true;
+                            ) ) {
+                            if ( _exbody.Count > 0 ) {
+                                if ( _exuseLambda ) {
+                                    if ( ExecuteExLambdaExpression( _exbody[0], post ) )
+                                        exFlag = true;
+                                } else {
+                                    foreach ( var fs in _exbody ) {
+                                        if ( _exuseRegex ) {
+                                            if ( Regex.IsMatch( tBody, fs, rgOpt ) )
+                                                exFlag = true;
+                                        } else {
+                                            if ( _excaseSensitive ) {
+                                                if ( tBody.Contains( fs ) )
+                                                    exFlag = true;
+                                            } else {
+                                                if ( tBody.ToLower().Contains( fs.ToLower() ) )
+                                                    exFlag = true;
                                             }
                                         }
-                                        if (exFlag) break;
+                                        if ( exFlag )
+                                            break;
                                     }
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 exFlag = true;
                             }
                         }
-                    }
-                    else
-                    {
-                        if (_exuseLambda)
-                        {
-                            if (ExecuteExLambdaExpression(_exbody[0], post)) exFlag = true;
-                        }
-                        else
-                        {
-                            foreach (var fs in _exbody)
-                            {
-                                if (_exuseRegex)
-                                {
-                                    if (Regex.IsMatch(post.ScreenName, fs, rgOpt) ||
-                                       (!string.IsNullOrEmpty(post.RetweetedBy) && Regex.IsMatch(post.RetweetedBy, fs, rgOpt)) ||
-                                       Regex.IsMatch(tBody, fs, rgOpt)) exFlag = true;
-                                }
-                                else
-                                {
-                                    if (_excaseSensitive)
-                                    {
-                                        if (post.ScreenName.Contains(fs) ||
-                                           post.RetweetedBy.Contains(fs) ||
-                                           tBody.Contains(fs)) exFlag = true;
-                                    }
-                                    else
-                                    {
-                                        if (post.ScreenName.ToLower().Contains(fs.ToLower()) ||
-                                           post.RetweetedBy.ToLower().Contains(fs.ToLower()) ||
-                                           tBody.ToLower().Contains(fs.ToLower())) exFlag = true;
+                    } else {
+                        if ( _exuseLambda ) {
+                            if ( ExecuteExLambdaExpression( _exbody[0], post ) )
+                                exFlag = true;
+                        } else {
+                            foreach ( var fs in _exbody ) {
+                                if ( _exuseRegex ) {
+                                    if ( Regex.IsMatch( post.ScreenName, fs, rgOpt ) ||
+                                       ( !string.IsNullOrEmpty( post.RetweetedBy ) && Regex.IsMatch( post.RetweetedBy, fs, rgOpt ) ) ||
+                                       Regex.IsMatch( tBody, fs, rgOpt ) )
+                                        exFlag = true;
+                                } else {
+                                    if ( _excaseSensitive ) {
+                                        if ( post.ScreenName.Contains( fs ) ||
+                                           post.RetweetedBy.Contains( fs ) ||
+                                           tBody.Contains( fs ) )
+                                            exFlag = true;
+                                    } else {
+                                        if ( post.ScreenName.ToLower().Contains( fs.ToLower() ) ||
+                                           post.RetweetedBy.ToLower().Contains( fs.ToLower() ) ||
+                                           tBody.ToLower().Contains( fs.ToLower() ) )
+                                            exFlag = true;
                                     }
                                 }
-                                if (exFlag) break;
+                                if ( exFlag )
+                                    break;
                             }
                         }
                     }
                 }
-                if (_isExRt)
-                {
-                    if (post.RetweetedId > 0) exFlag = true;
+                if ( _isExRt ) {
+                    if ( post.RetweetedId > 0 )
+                        exFlag = true;
                 }
-                if (!string.IsNullOrEmpty(_exSource))
-                {
-                    if (_exuseRegex)
-                    {
-                        if (Regex.IsMatch(tSource, _exSource, rgOpt)) exFlag = true;
-                    }
-                    else
-                    {
-                        if (tSource.Equals(_exSource, compOpt)) exFlag = true;
+                if ( !string.IsNullOrEmpty( _exSource ) ) {
+                    if ( _exuseRegex ) {
+                        if ( Regex.IsMatch( tSource, _exSource, rgOpt ) )
+                            exFlag = true;
+                    } else {
+                        if ( tSource.Equals( _exSource, compOpt ) )
+                            exFlag = true;
                     }
                 }
 
-                if (string.IsNullOrEmpty(_name) && _body.Count == 0 && !_isRt && string.IsNullOrEmpty(_source))
-                {
+                if ( string.IsNullOrEmpty( _name ) && _body.Count == 0 && !_isRt && string.IsNullOrEmpty( _source ) ) {
                     bHit = false;
                 }
-                if (bHit)
-                {
-                    if (!exFlag)
-                    {
-                        if (_moveFrom)
-                        {
+                if ( bHit ) {
+                    if ( !exFlag ) {
+                        if ( _moveFrom ) {
                             return MyCommon.HITRESULT.Move;
-                        }
-                        else
-                        {
-                            if (_setMark)
-                            {
+                        } else {
+                            if ( _setMark ) {
                                 return MyCommon.HITRESULT.CopyAndMark;
                             }
                             return MyCommon.HITRESULT.Copy;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         return MyCommon.HITRESULT.Exclude;
                     }
-                }
-                else
-                {
-                    if (exFlag)
-                    {
+                } else {
+                    if ( exFlag ) {
                         return MyCommon.HITRESULT.Exclude;
-                    }
-                    else
-                    {
+                    } else {
                         return MyCommon.HITRESULT.None;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 return MyCommon.HITRESULT.None;
             }
         }
 
-        public bool Equals(FiltersClass other)
-        {
-            if (this.BodyFilter.Count != other.BodyFilter.Count) return false;
-            if (this.ExBodyFilter.Count != other.ExBodyFilter.Count) return false;
-            for (int i = 0; i < this.BodyFilter.Count; i++)
-            {
-                if (this.BodyFilter[i] != other.BodyFilter[i]) return false;
+
+        public bool Equals(FiltersClass other) {
+            if ( this.BodyFilter.Count != other.BodyFilter.Count )
+                return false;
+            if ( this.ExBodyFilter.Count != other.ExBodyFilter.Count )
+                return false;
+            for ( int i = 0; i < this.BodyFilter.Count; i++ ) {
+                if ( this.BodyFilter[i] != other.BodyFilter[i] )
+                    return false;
             }
-            for (int i = 0; i < this.ExBodyFilter.Count; i++)
-            {
-                if (this.ExBodyFilter[i] != other.ExBodyFilter[i]) return false;
+            for ( int i = 0; i < this.ExBodyFilter.Count; i++ ) {
+                if ( this.ExBodyFilter[i] != other.ExBodyFilter[i] )
+                    return false;
             }
 
-            return (this.MoveFrom == other.MoveFrom) &
-                   (this.SetMark == other.SetMark) &
-                   (this.NameFilter == other.NameFilter) &
-                   (this.SearchBoth == other.SearchBoth) &
-                   (this.SearchUrl == other.SearchUrl) &
-                   (this.UseRegex == other.UseRegex) &
-                   (this.ExNameFilter == other.ExNameFilter) &
-                   (this.ExSearchBoth == other.ExSearchBoth) &
-                   (this.ExSearchUrl == other.ExSearchUrl) &
-                   (this.ExUseRegex == other.ExUseRegex) &
-                   (this.IsRt == other.IsRt) &
-                   (this.Source == other.Source) &
-                   (this.IsExRt == other.IsExRt) &
-                   (this.ExSource == other.ExSource) &
-                   (this.UseLambda == other.UseLambda) &
-                   (this.ExUseLambda == other.ExUseLambda);
+            return ( this.MoveFrom == other.MoveFrom ) &
+                   ( this.SetMark == other.SetMark ) &
+                   ( this.NameFilter == other.NameFilter ) &
+                   ( this.SearchBoth == other.SearchBoth ) &
+                   ( this.SearchUrl == other.SearchUrl ) &
+                   ( this.UseRegex == other.UseRegex ) &
+                   ( this.ExNameFilter == other.ExNameFilter ) &
+                   ( this.ExSearchBoth == other.ExSearchBoth ) &
+                   ( this.ExSearchUrl == other.ExSearchUrl ) &
+                   ( this.ExUseRegex == other.ExUseRegex ) &
+                   ( this.IsRt == other.IsRt ) &
+                   ( this.Source == other.Source ) &
+                   ( this.IsExRt == other.IsExRt ) &
+                   ( this.ExSource == other.ExSource ) &
+                   ( this.UseLambda == other.UseLambda ) &
+                   ( this.ExUseLambda == other.ExUseLambda );
         }
 
-        public FiltersClass CopyTo(FiltersClass destination)
-        {
-            if (this.BodyFilter.Count > 0)
-            {
-                foreach (var flt in this.BodyFilter)
-                {
-                    destination.BodyFilter.Add(string.Copy(flt));
+
+        public FiltersClass CopyTo(FiltersClass destination) {
+            if ( this.BodyFilter.Count > 0 ) {
+                foreach ( var flt in this.BodyFilter ) {
+                    destination.BodyFilter.Add( string.Copy( flt ) );
                 }
             }
 
-            if (this.ExBodyFilter.Count > 0)
-            {
-                foreach (var flt in this.ExBodyFilter)
-                {
-                    destination.ExBodyFilter.Add(string.Copy(flt));
+            if ( this.ExBodyFilter.Count > 0 ) {
+                foreach ( var flt in this.ExBodyFilter ) {
+                    destination.ExBodyFilter.Add( string.Copy( flt ) );
                 }
             }
 
@@ -3678,14 +3200,15 @@ namespace OpenTween
             return destination;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null || this.GetType() != obj.GetType()) return false;
-            return this.Equals((FiltersClass)obj);
+
+        public override bool Equals(object obj) {
+            if ( obj == null || this.GetType() != obj.GetType() )
+                return false;
+            return this.Equals( (FiltersClass)obj );
         }
 
-        public override int GetHashCode()
-        {
+
+        public override int GetHashCode() {
             return this.MoveFrom.GetHashCode() ^
                    this.SetMark.GetHashCode() ^
                    this.BodyFilter.GetHashCode() ^
@@ -3708,13 +3231,11 @@ namespace OpenTween
     }
 
     //ソート比較クラス：ID比較のみ
-    public sealed class IdComparerClass : IComparer<long>
-    {
+    public sealed class IdComparerClass : IComparer<long> {
         /// <summary>
         /// 比較する方法
         /// </summary>
-        public enum ComparerMode
-        {
+        public enum ComparerMode {
             Id,
             Data,
             Name,
@@ -3730,32 +3251,26 @@ namespace OpenTween
         /// <summary>
         /// 昇順か降順か Setの際は同時に比較関数の切り替えを行う
         /// </summary>
-        public SortOrder Order
-        {
-            get
-            {
+        public SortOrder Order {
+            get {
                 return _order;
             }
-            set
-            {
+            set {
                 _order = value;
-                SetCmpMethod(_mode, _order);
+                SetCmpMethod( _mode, _order );
             }
         }
 
         /// <summary>
         /// 並び替えの方法 Setの際は同時に比較関数の切り替えを行う
         /// </summary>
-        public ComparerMode Mode
-        {
-            get
-            {
+        public ComparerMode Mode {
+            get {
                 return _mode;
             }
-            set
-            {
+            set {
                 _mode = value;
-                SetCmpMethod(_mode, _order);
+                SetCmpMethod( _mode, _order );
             }
         }
 
@@ -3766,73 +3281,64 @@ namespace OpenTween
         /// <param name="ord">昇順か降順か</param>
         /// <param name="cmod">並び替えの方法</param>
 
-        public IdComparerClass()
-        {
+        public IdComparerClass() {
             _order = SortOrder.Ascending;
             _mode = ComparerMode.Id;
-            SetCmpMethod(_mode, _order);
+            SetCmpMethod( _mode, _order );
         }
 
-        public Dictionary<long, PostClass> posts
-        {
-            set
-            {
+
+        public Dictionary<long, PostClass> posts {
+            set {
                 _statuses = value;
             }
-            get
-            {
+            get {
                 return _statuses;
             }
         }
 
         // 指定したソートモードとソートオーダーに従い使用する比較関数のアドレスを返す
-        public Comparison<long> CmpMethod(ComparerMode _sortmode, SortOrder _sortorder)
-        {
+        public Comparison<long> CmpMethod(ComparerMode _sortmode, SortOrder _sortorder) {
             //get
             {
                 Comparison<long> _method = null;
-                if (_sortorder == SortOrder.Ascending)
-                {
+                if ( _sortorder == SortOrder.Ascending ) {
                     // 昇順
-                    switch (_sortmode)
-                    {
-                    case ComparerMode.Data:
-                        _method = Compare_ModeData_Ascending;
-                        break;
-                    case ComparerMode.Id:
-                        _method = Compare_ModeId_Ascending;
-                        break;
-                    case ComparerMode.Name:
-                        _method = Compare_ModeName_Ascending;
-                        break;
-                    case ComparerMode.Nickname:
-                        _method = Compare_ModeNickName_Ascending;
-                        break;
-                    case ComparerMode.Source:
-                        _method = Compare_ModeSource_Ascending;
-                        break;
+                    switch ( _sortmode ) {
+                        case ComparerMode.Data:
+                            _method = Compare_ModeData_Ascending;
+                            break;
+                        case ComparerMode.Id:
+                            _method = Compare_ModeId_Ascending;
+                            break;
+                        case ComparerMode.Name:
+                            _method = Compare_ModeName_Ascending;
+                            break;
+                        case ComparerMode.Nickname:
+                            _method = Compare_ModeNickName_Ascending;
+                            break;
+                        case ComparerMode.Source:
+                            _method = Compare_ModeSource_Ascending;
+                            break;
                     }
-                }
-                else
-                {
+                } else {
                     // 降順
-                    switch (_sortmode)
-                    {
-                    case ComparerMode.Data:
-                        _method = Compare_ModeData_Descending;
-                        break;
-                    case ComparerMode.Id:
-                        _method = Compare_ModeId_Descending;
-                        break;
-                    case ComparerMode.Name:
-                        _method = Compare_ModeName_Descending;
-                        break;
-                    case ComparerMode.Nickname:
-                        _method = Compare_ModeNickName_Descending;
-                        break;
-                    case ComparerMode.Source:
-                        _method = Compare_ModeSource_Descending;
-                        break;
+                    switch ( _sortmode ) {
+                        case ComparerMode.Data:
+                            _method = Compare_ModeData_Descending;
+                            break;
+                        case ComparerMode.Id:
+                            _method = Compare_ModeId_Descending;
+                            break;
+                        case ComparerMode.Name:
+                            _method = Compare_ModeName_Descending;
+                            break;
+                        case ComparerMode.Nickname:
+                            _method = Compare_ModeNickName_Descending;
+                            break;
+                        case ComparerMode.Source:
+                            _method = Compare_ModeSource_Descending;
+                            break;
                     }
                 }
                 return _method;
@@ -3841,8 +3347,7 @@ namespace OpenTween
 
         // ソートモードとソートオーダーに従い使用する比較関数のアドレスを返す
         // (overload 現在の使用中の比較関数のアドレスを返す)
-        public Comparison<long> CmpMethod()
-        {
+        public Comparison<long> CmpMethod() {
             //get
             {
                 return _CmpMethod;
@@ -3850,92 +3355,88 @@ namespace OpenTween
         }
 
         // ソートモードとソートオーダーに従い比較関数のアドレスを切り替え
-        private void SetCmpMethod(ComparerMode mode, SortOrder order)
-        {
-            _CmpMethod = this.CmpMethod(mode, order);
+        private void SetCmpMethod(ComparerMode mode, SortOrder order) {
+            _CmpMethod = this.CmpMethod( mode, order );
         }
 
         //xがyより小さいときはマイナスの数、大きいときはプラスの数、
         //同じときは0を返す (こちらは未使用 一応比較関数群呼び出しの形のまま残しておく)
-        int IComparer<long>.Compare(long x, long y)
-        {
-            return _CmpMethod(x, y);
+        int IComparer<long>.Compare(long x, long y) {
+            return _CmpMethod( x, y );
         }
 
         // 比較用関数群 いずれもステータスIDの順序を考慮する
         // 本文比較　昇順
-        public int Compare_ModeData_Ascending(long x, long y)
-        {
-            var result = string.Compare(_statuses[x].TextFromApi, _statuses[y].TextFromApi);
-            if (result == 0) result = x.CompareTo(y);
+        public int Compare_ModeData_Ascending(long x, long y) {
+            var result = string.Compare( _statuses[x].TextFromApi, _statuses[y].TextFromApi );
+            if ( result == 0 )
+                result = x.CompareTo( y );
             return result;
         }
 
         // 本文比較　降順
-        public int Compare_ModeData_Descending(long x, long y)
-        {
-            var result = string.Compare(_statuses[y].TextFromApi, _statuses[x].TextFromApi);
-            if (result == 0) result = y.CompareTo(x);
+        public int Compare_ModeData_Descending(long x, long y) {
+            var result = string.Compare( _statuses[y].TextFromApi, _statuses[x].TextFromApi );
+            if ( result == 0 )
+                result = y.CompareTo( x );
             return result;
         }
 
         // ステータスID比較　昇順
-        public int Compare_ModeId_Ascending(long x, long y)
-        {
-            return x.CompareTo(y);
+        public int Compare_ModeId_Ascending(long x, long y) {
+            return x.CompareTo( y );
         }
 
         // ステータスID比較　降順
-        public int Compare_ModeId_Descending(long x, long y)
-        {
-            return y.CompareTo(x);
+        public int Compare_ModeId_Descending(long x, long y) {
+            return y.CompareTo( x );
         }
 
         // 表示名比較　昇順
-        public int Compare_ModeName_Ascending(long x, long y)
-        {
-            var result = string.Compare(_statuses[x].ScreenName, _statuses[y].ScreenName);
-            if (result == 0) result = x.CompareTo(y);
+        public int Compare_ModeName_Ascending(long x, long y) {
+            var result = string.Compare( _statuses[x].ScreenName, _statuses[y].ScreenName );
+            if ( result == 0 )
+                result = x.CompareTo( y );
             return result;
         }
 
         // 表示名比較　降順
-        public int Compare_ModeName_Descending(long x, long y)
-        {
-            var result = string.Compare(_statuses[y].ScreenName, _statuses[x].ScreenName);
-            if (result == 0) result = y.CompareTo(x);
+        public int Compare_ModeName_Descending(long x, long y) {
+            var result = string.Compare( _statuses[y].ScreenName, _statuses[x].ScreenName );
+            if ( result == 0 )
+                result = y.CompareTo( x );
             return result;
         }
 
         // ユーザー名比較　昇順
-        public int Compare_ModeNickName_Ascending(long x, long y)
-        {
-            var result = string.Compare(_statuses[x].Nickname, _statuses[y].Nickname);
-            if (result == 0) result = x.CompareTo(y);
+        public int Compare_ModeNickName_Ascending(long x, long y) {
+            var result = string.Compare( _statuses[x].Nickname, _statuses[y].Nickname );
+            if ( result == 0 )
+                result = x.CompareTo( y );
             return result;
         }
 
         // ユーザー名比較　降順
-        public int Compare_ModeNickName_Descending(long x, long y)
-        {
-            var result = string.Compare(_statuses[y].Nickname, _statuses[x].Nickname);
-            if (result == 0) result = y.CompareTo(x);
+        public int Compare_ModeNickName_Descending(long x, long y) {
+            var result = string.Compare( _statuses[y].Nickname, _statuses[x].Nickname );
+            if ( result == 0 )
+                result = y.CompareTo( x );
             return result;
         }
 
         // Source比較　昇順
-        public int Compare_ModeSource_Ascending(long x, long y)
-        {
-            var result = string.Compare(_statuses[x].Source, _statuses[y].Source);
-            if (result == 0) result = x.CompareTo(y);
+        public int Compare_ModeSource_Ascending(long x, long y) {
+            var result = string.Compare( _statuses[x].Source, _statuses[y].Source );
+            if ( result == 0 )
+                result = x.CompareTo( y );
             return result;
         }
 
         // Source比較　降順
-        public int Compare_ModeSource_Descending(long x, long y)
-        {
-            var result = string.Compare(_statuses[y].Source, _statuses[x].Source);
-            if (result == 0) result = y.CompareTo(x);
+        public int Compare_ModeSource_Descending(long x, long y) {
+            var result = string.Compare( _statuses[y].Source, _statuses[x].Source );
+            if ( result == 0 )
+                result = y.CompareTo( x );
             return result;
         }
     }

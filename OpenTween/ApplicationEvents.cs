@@ -24,7 +24,6 @@
 // with this program. If not, see <http://www.gnu.org/licenses/>, or write to
 // the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 // Boston, MA 02110-1301, USA.
-
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -33,24 +32,22 @@ using System.Threading;
 using System.Globalization;
 using System.Reflection;
 
-namespace OpenTween
-{
-    internal class MyApplication
-    {
+
+namespace OpenTween {
+
+
+    internal class MyApplication {
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static int Main()
-        {
+        static int Main() {
             CheckSettingFilePath();
             InitCulture();
 
-            string pt = Application.ExecutablePath.Replace("\\", "/") + "/" + Application.ProductName;
-            using (Mutex mt = new Mutex(false, pt))
-            {
-                if (!mt.WaitOne(0, false))
-                {
+            string pt = Application.ExecutablePath.Replace( "\\", "/" ) + "/" + Application.ProductName;
+            using ( Mutex mt = new Mutex(false, pt) ) {
+                if ( !mt.WaitOne( 0, false ) ) {
                     ShowPreviousWindow();
                     return 1;
                 }
@@ -58,8 +55,8 @@ namespace OpenTween
                 Application.ThreadException += MyApplication_UnhandledException;
 
                 Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new TweenMain());
+                Application.SetCompatibleTextRenderingDefault( false );
+                Application.Run( new TweenMain() );
 
                 mt.ReleaseMutex();
 
@@ -67,69 +64,56 @@ namespace OpenTween
             }
         }
 
-        private static void ShowPreviousWindow()
-        {
+
+        private static void ShowPreviousWindow() {
             // 実行中の同じアプリケーションのウィンドウ・ハンドルの取得
             var prevProcess = Win32Api.GetPreviousProcess();
-            if (prevProcess != null && prevProcess.MainWindowHandle == IntPtr.Zero)
-            {
+            if ( prevProcess != null && prevProcess.MainWindowHandle == IntPtr.Zero ) {
                 // 起動中のアプリケーションを最前面に表示
-                Win32Api.WakeupWindow(prevProcess.MainWindowHandle);
-            }
-            else
-            {
-                if (prevProcess != null)
-                {
+                Win32Api.WakeupWindow( prevProcess.MainWindowHandle );
+            } else {
+                if ( prevProcess != null ) {
                     //プロセス特定は出来たが、ウィンドウハンドルが取得できなかった（アイコン化されている）
                     //タスクトレイアイコンのクリックをエミュレート
                     //注：アイコン特定はTooltipの文字列で行うため、多重起動時は先に見つけた物がアクティブになる
-                    var rslt = Win32Api.ClickTasktrayIcon(Application.ProductName);
-                    if (!rslt)
-                    {
+                    var rslt = Win32Api.ClickTasktrayIcon( Application.ProductName );
+                    if ( !rslt ) {
                         // 警告を表示（見つからない、またはその他の原因で失敗）
-                        MessageBox.Show(Properties.Resources.StartupText1, Properties.Resources.StartupText2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show( Properties.Resources.StartupText1, Properties.Resources.StartupText2, MessageBoxButtons.OK, MessageBoxIcon.Information );
                     }
-                }
-                else
-                {
+                } else {
                     // 警告を表示（プロセス見つからない場合）
-                    MessageBox.Show(Properties.Resources.StartupText1, Properties.Resources.StartupText2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show( Properties.Resources.StartupText1, Properties.Resources.StartupText2, MessageBoxButtons.OK, MessageBoxIcon.Information );
                 }
             }
         }
 
-        private static void MyApplication_UnhandledException(object sender, ThreadExceptionEventArgs e)
-        {
+
+        private static void MyApplication_UnhandledException(object sender, ThreadExceptionEventArgs e) {
             //GDI+のエラー原因を特定したい
-            if (e.Exception.Message != "A generic error occurred in GDI+." &&
-               e.Exception.Message != "GDI+ で汎用エラーが発生しました。")
-            {
-                if (MyCommon.ExceptionOut(e.Exception))
-                {
+            if ( e.Exception.Message != "A generic error occurred in GDI+." &&
+               e.Exception.Message != "GDI+ で汎用エラーが発生しました。" ) {
+                if ( MyCommon.ExceptionOut( e.Exception ) ) {
                     Application.Exit();
                 }
             }
         }
 
-        private static bool IsEqualCurrentCulture(string CultureName)
-        {
-            return Thread.CurrentThread.CurrentUICulture.Name.StartsWith(CultureName);
+
+        private static bool IsEqualCurrentCulture(string CultureName) {
+            return Thread.CurrentThread.CurrentUICulture.Name.StartsWith( CultureName );
         }
 
-        public static string CultureCode
-        {
-            get
-            {
-                if (MyCommon.cultureStr == null)
-                {
+
+        public static string CultureCode {
+            get {
+                if ( MyCommon.cultureStr == null ) {
                     var cfgCommon = SettingCommon.Load();
                     MyCommon.cultureStr = cfgCommon.Language;
-                    if (MyCommon.cultureStr == "OS")
-                    {
-                        if (!IsEqualCurrentCulture("ja") &&
-                           !IsEqualCurrentCulture("en") &&
-                           !IsEqualCurrentCulture("zh-CN"))
-                        {
+                    if ( MyCommon.cultureStr == "OS" ) {
+                        if ( !IsEqualCurrentCulture( "ja" ) &&
+                           !IsEqualCurrentCulture( "en" ) &&
+                           !IsEqualCurrentCulture( "zh-CN" ) ) {
                             MyCommon.cultureStr = "en";
                         }
                     }
@@ -138,35 +122,28 @@ namespace OpenTween
             }
         }
 
-        public static void InitCulture(string code)
-        {
-            try
-            {
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(code);
-            }
-            catch (Exception)
-            {
-            }
-        }
-        public static void InitCulture()
-        {
-            try
-            {
-                if (CultureCode != "OS") Thread.CurrentThread.CurrentUICulture = new CultureInfo(CultureCode);
-            }
-            catch (Exception)
-            {
+
+        public static void InitCulture(string code) {
+            try {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo( code );
+            } catch ( Exception ) {
             }
         }
 
-        private static void CheckSettingFilePath()
-        {
-            if (File.Exists(Path.Combine(Application.StartupPath, "roaming")))
-            {
-                MyCommon.settingPath = MySpecialPath.UserAppDataPath();
+
+        public static void InitCulture() {
+            try {
+                if ( CultureCode != "OS" )
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo( CultureCode );
+            } catch ( Exception ) {
             }
-            else
-            {
+        }
+
+
+        private static void CheckSettingFilePath() {
+            if ( File.Exists( Path.Combine( Application.StartupPath, "roaming" ) ) ) {
+                MyCommon.settingPath = MySpecialPath.UserAppDataPath();
+            } else {
                 MyCommon.settingPath = Application.StartupPath;
             }
         }
