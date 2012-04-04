@@ -1,3 +1,28 @@
+commit aa6b894a779f381a7e3775c146471699970059ca
+Author: ned rihine <ned.rihine@gmail.com>
+Date:   Wed Apr 4 11:35:31 2012 +0900
+
+    ChangeLog の追加、警告の出ている変数をいいかんじの名前に変更しました。
+
+ .gitignore                             |   33 +-
+ ChangeLog                              |21724 ++++++++++++++++++++++++++++++++
+ OpenTween.sln                          |    3 +
+ OpenTween/AppendSettingDialog.cs       |    8 +-
+ OpenTween/AuthBrowser.cs               |    4 +-
+ OpenTween/Connection/HttpConnection.cs |   14 +-
+ OpenTween/Connection/HttpVarious.cs    |    2 +-
+ OpenTween/FilterDialog.cs              |   80 +-
+ OpenTween/Google.cs                    |   18 +-
+ OpenTween/Growl.cs                     |    4 +-
+ OpenTween/ShowUserInfo.cs              |    2 +-
+ OpenTween/StatusDictionary.cs          |    2 +-
+ OpenTween/Thumbnail.cs                 |  478 +-
+ OpenTween/Tween.cs                     |   18 +-
+ OpenTween/Twitter.cs                   |  386 +-
+ OpenTween/UserInfo.cs                  |    6 +-
+ OpenTween/Win32Api.cs                  |   32 +-
+ 17 files changed, 22274 insertions(+), 540 deletions(-)
+
 commit 5a4c14027e32cab8c13c7e17379ca8e7e729eb98
 Author: ned rihine <ned.rihine@gmail.com>
 Date:   Wed Apr 4 00:28:43 2012 +0900

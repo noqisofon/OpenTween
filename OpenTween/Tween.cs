@@ -430,14 +430,22 @@ namespace OpenTween
         }
 
 
-        private void LoadIcon(ref Icon IconInstance, string FileName)
+        private void LoadIcon(ref Icon icon, string file_name)
         {
-            string dir = Application.StartupPath;
-            if ( File.Exists( Path.Combine( dir, FileName ) ) )
+            string starting_path = Application.StartupPath;
+            string file_path;
+            
+            if ( Path.DirectorySeparatorChar != '/' ) {
+                if ( file_name.IndexOf( '\\' ) >= 0 )
+                    file_name = file_name.Replace( '\\', '/' );
+            }
+            file_path = Path.Combine( starting_path, file_name );
+            
+            if ( File.Exists( file_path ) )
             {
                 try
                 {
-                    IconInstance = new Icon( Path.Combine( dir, FileName ) );
+                    icon = new Icon( file_path );
                 } catch ( Exception )
                 {
                 }
