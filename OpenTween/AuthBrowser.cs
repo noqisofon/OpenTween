@@ -49,7 +49,7 @@ namespace OpenTween
         public bool Auth { get; set; }
 
 
-        private InternetSecurityManager SecurityManager;
+        private InternetSecurityManager securityManager;
 
 
         private void AuthWebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -68,7 +68,7 @@ namespace OpenTween
 
         private void AuthBrowser_Load(object sender, EventArgs e)
         {
-            this.SecurityManager = new InternetSecurityManager (this.AuthWebBrowser);
+            this.securityManager = new InternetSecurityManager (this.AuthWebBrowser);
 
             this.AuthWebBrowser.Navigate( new Uri (UrlString) );
             if ( !Auth ) {

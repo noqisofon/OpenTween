@@ -654,7 +654,7 @@ namespace OpenTween
 
         private void UpdateProfileImage_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string res = "";
+            string res;
             TwitterDataModel.User user = null;
 
             if ( e.Result == null ) {

@@ -92,7 +92,7 @@ namespace OpenTween
         ///<returns>引数で指定された内容を反映したHttpWebRequestオブジェクト</returns>
         protected HttpWebRequest CreateRequest(string method,
                                                Uri requestUri,
-                                               Dictionary<string, string> param,
+                                               IDictionary<string, string> param,
                                                bool withCookie)
         {
             if ( !isInitialize )
@@ -147,7 +147,7 @@ namespace OpenTween
         ///<returns>引数で指定された内容を反映したHttpWebRequestオブジェクト</returns>
         protected HttpWebRequest CreateRequest(string method,
                                                Uri requestUri,
-                                               Dictionary<string, string> param,
+                                               IDictionary<string, string> param,
                                                List<KeyValuePair<String, FileInfo>> binaryFileInfo,
                                                bool withCookie)
         {
@@ -296,7 +296,7 @@ namespace OpenTween
         ///<returns>HTTP応答のステータスコード</returns>
         protected HttpStatusCode GetResponse(HttpWebRequest webRequest,
                                              Stream contentStream,
-                                             Dictionary<string, string> headerInfo,
+                                             IDictionary<string, string> headerInfo,
                                              bool withCookie)
         {
             try {
@@ -349,7 +349,7 @@ namespace OpenTween
         ///<returns>HTTP応答のステータスコード</returns>
         protected HttpStatusCode GetResponse(HttpWebRequest webRequest,
                                              out string contentText,
-                                             Dictionary<string, string> headerInfo,
+                                             IDictionary<string, string> headerInfo,
                                              bool withCookie)
         {
             try {
@@ -391,7 +391,7 @@ namespace OpenTween
         ///<param name="withCookie">通信にcookieを使用する</param>
         ///<returns>HTTP応答のステータスコード</returns>
         protected HttpStatusCode GetResponse(HttpWebRequest webRequest,
-                                             Dictionary<string, string> headerInfo,
+                                             IDictionary<string, string> headerInfo,
                                              bool withCookie)
         {
             try {
@@ -428,7 +428,7 @@ namespace OpenTween
         ///<returns>HTTP応答のステータスコード</returns>
         protected HttpStatusCode GetResponse(HttpWebRequest webRequest,
                                              out Bitmap contentBitmap,
-                                             Dictionary<string, string> headerInfo,
+                                             IDictionary<string, string> headerInfo,
                                              bool withCookie)
         {
             try {
@@ -502,7 +502,7 @@ namespace OpenTween
         ///<param name="webResponse">HTTP応答</param>
         ///<param name="headerInfo">[IN/OUT]キーにヘッダ名を指定したデータ空のコレクション。取得した値をデータにセットして戻す</param>
         private void GetHeaderInfo(HttpWebResponse webResponse,
-                                   Dictionary<string, string> headerInfo)
+                                   IDictionary<string, string> headerInfo)
         {
             if ( headerInfo == null )
                 return;

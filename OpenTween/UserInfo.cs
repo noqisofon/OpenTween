@@ -45,7 +45,7 @@ namespace OpenTween
             this.Location = user.Location;
             this.Description = user.Description;
             try {
-                this.ImageUrl = new Uri (user.ProfileImageUrl);
+                this.ImageUrl = new Uri( user.ProfileImageUrl );
             } catch ( Exception ) {
                 this.ImageUrl = null;
             }
@@ -75,11 +75,11 @@ namespace OpenTween
         public int FriendsCount = 0;
         public int FollowersCount = 0;
         public int FavoriteCount = 0;
-        public DateTime CreatedAt = new DateTime ();
+        public DateTime CreatedAt = new DateTime();
         public int StatusesCount = 0;
         public bool Verified = false;
         public string RecentPost = "";
-        public DateTime PostCreatedAt = new DateTime ();
+        public DateTime PostCreatedAt = new DateTime();
         public string PostSource = "";        // html形式　"<a href="http://sourceforge.jp/projects/tween/wiki/FrontPage" rel="nofollow">Tween</a>"
         public bool isFollowing = false;
         public bool isFollowed = false;

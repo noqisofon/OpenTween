@@ -204,9 +204,9 @@ namespace OpenTween
 
         public bool Translate(string srclng, string dstlng, string source, ref string destination, ref string ErrMsg)
         {
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var apiurl = TranslateEndPoint;
-            var headers = new Dictionary<string, string> ();
+            var headers = new Dictionary<string, string>();
             headers.Add( "v", "1.0" );
 
             ErrMsg = "";
@@ -220,7 +220,7 @@ namespace OpenTween
 
             var content = "";
             if ( http.GetData( apiurl, headers, out content ) ) {
-                var serializer = new DataContractJsonSerializer (typeof(TranslateResponse));
+                var serializer = new DataContractJsonSerializer( typeof(TranslateResponse) );
                 TranslateResponse res;
 
                 try {
@@ -246,15 +246,15 @@ namespace OpenTween
 
         public string LanguageDetect(string source)
         {
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var apiurl = LanguageDetectEndPoint;
-            var headers = new Dictionary<string, string> ();
+            var headers = new Dictionary<string, string>();
             headers.Add( "User-Agent", MyCommon.GetUserAgentString() );
             headers.Add( "v", "1.0" );
             headers.Add( "q", source );
             var content = "";
             if ( http.GetData( apiurl, headers, out content ) ) {
-                var serializer = new DataContractJsonSerializer (typeof(LanguageDetectResponse));
+                var serializer = new DataContractJsonSerializer( typeof(LanguageDetectResponse) );
                 try {
                     var res = MyCommon.CreateDataFromJson<LanguageDetectResponse>( content );
                     return res.ResponseData.Language;
@@ -268,7 +268,7 @@ namespace OpenTween
 
         public string GetLanguageEnumFromIndex(int index)
         {
-            return LanguageTable [index];
+            return LanguageTable[index];
         }
 
 
@@ -298,9 +298,9 @@ namespace OpenTween
 
         public string Shorten(string source)
         {
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var apiurl = "https://www.googleapis.com/urlshortener/v1/url";
-            var headers = new Dictionary<string, string> ();
+            var headers = new Dictionary<string, string>();
             headers.Add( "User-Agent", MyCommon.GetUserAgentString() );
             headers.Add( "Content-Type", "application/json" );
 

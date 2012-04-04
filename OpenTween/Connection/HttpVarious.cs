@@ -46,7 +46,7 @@ namespace OpenTween
                 req.Timeout = 5000;
                 req.AllowAutoRedirect = false;
                 string data;
-                Dictionary<string, string> head = new Dictionary<string, string> ();
+                IDictionary<string, string> head = new Dictionary<string, string> ();
                 HttpStatusCode ret = GetResponse( req, out data, head, false );
                 if ( head.ContainsKey( "Location" ) ) {
                     return head ["Location"];

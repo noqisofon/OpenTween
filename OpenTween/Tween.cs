@@ -1200,10 +1200,14 @@ namespace OpenTween
             ShortUrl.IsForceResolve = SettingDialog.ShortUrlForceResolve;
 
             //発言詳細部アイコンをリストアイコンにサイズ変更
-            int sz = _iconSz;
+            int icon_size;
             if ( _iconSz == 0 )
             {
-                sz = 16;
+                icon_size = 16;
+            }
+            else 
+            {
+                icon_size = _iconSz;
             }
 
             tw.DetailIcon = TIconDic;
@@ -7519,12 +7523,12 @@ namespace OpenTween
             string inReplyToTabName;
             long inReplyToId = _curPost.InReplyToStatusId;
             string inReplyToUser = _curPost.InReplyToUser;
-            Dictionary<long, PostClass> curTabPosts;
+            IDictionary<long, PostClass> currentTabPosts;
 
             if ( _statuses.Tabs[_curTab.Text].IsInnerStorageTabType )
-                curTabPosts = curTabClass.Posts;
+                currentTabPosts = curTabClass.Posts;
             else
-                curTabPosts = _statuses.Posts;
+                currentTabPosts = _statuses.Posts;
 
             var inReplyToPosts = from tab in _statuses.Tabs.Values
                                  orderby tab != curTabClass
@@ -7588,7 +7592,7 @@ namespace OpenTween
                 return;
 
             TabClass curTabClass = _statuses.Tabs[_curTab.Text];
-            Dictionary<long, PostClass> curTabPosts = curTabClass.IsInnerStorageTabType ? curTabClass.Posts : _statuses.Posts;
+            IDictionary<long, PostClass> currentTabPosts = curTabClass.IsInnerStorageTabType ? curTabClass.Posts : _statuses.Posts;
 
             if ( parallel )
             {
@@ -8232,7 +8236,7 @@ namespace OpenTween
         {
             if ( SettingDialog.TabMouseLock )
                 return;
-            Point cpos = new Point( e.X, e.Y );
+            //Point current_pos = new Point( e.X, e.Y );
             if ( e.Button == MouseButtons.Left )
             {
                 for ( int i = 0; i < ListTab.TabPages.Count; i++ )

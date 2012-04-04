@@ -41,15 +41,15 @@ namespace OpenTween
 
     public class Thumbnail
     {
-        private object lckPrev = new object ();
+        private object lckPrev = new object();
         private PreviewData _prev;
         private class PreviewData : IDisposable
         {
             public long statusId;
             public List<KeyValuePair<string, string>> urls;
-            public List<KeyValuePair<string, Image>> pics = new List<KeyValuePair<string, Image>> ();
-            public List<KeyValuePair<string, string>> tooltipText = new List<KeyValuePair<string, string>> ();
-            public List<KeyValuePair<string, ImageCreatorDelegate>> imageCreators = new List<KeyValuePair<string, ImageCreatorDelegate>> ();
+            public List<KeyValuePair<string, Image>> pics = new List<KeyValuePair<string, Image>>();
+            public List<KeyValuePair<string, string>> tooltipText = new List<KeyValuePair<string, string>>();
+            public List<KeyValuePair<string, ImageCreatorDelegate>> imageCreators = new List<KeyValuePair<string, ImageCreatorDelegate>>();
 
 
             public PreviewData(long id, List<KeyValuePair<string, string>> urlList, List<KeyValuePair<string, ImageCreatorDelegate>> imageCreatorList)
@@ -144,38 +144,38 @@ namespace OpenTween
             Owner.PreviewPicture.DoubleClick += PreviewPicture_DoubleClick;
 
             ThumbnailServices = new[] {
-                new ThumbnailService ("ImgUr", ImgUr_GetUrl, ImgUr_CreateImage),
-                new ThumbnailService ("DirectLink", DirectLink_GetUrl, DirectLink_CreateImage),
-                new ThumbnailService ("TwitPic", TwitPic_GetUrl, TwitPic_CreateImage),
-                new ThumbnailService ("yfrog", yfrog_GetUrl, yfrog_CreateImage),
-                new ThumbnailService ("Plixi(TweetPhoto)", Plixi_GetUrl, Plixi_CreateImage),
-                new ThumbnailService ("MobyPicture", MobyPicture_GetUrl, MobyPicture_CreateImage),
-                new ThumbnailService ("携帯百景", MovaPic_GetUrl, MovaPic_CreateImage),
-                new ThumbnailService ("はてなフォトライフ", Hatena_GetUrl, Hatena_CreateImage),
-                new ThumbnailService ("PhotoShare/bctiny", PhotoShare_GetUrl, PhotoShare_CreateImage),
-                new ThumbnailService ("img.ly", imgly_GetUrl, imgly_CreateImage),
-                new ThumbnailService ("brightkite", brightkite_GetUrl, brightkite_CreateImage),
-                new ThumbnailService ("Twitgoo", Twitgoo_GetUrl, Twitgoo_CreateImage),
-                new ThumbnailService ("youtube", youtube_GetUrl, youtube_CreateImage),
-                new ThumbnailService ("ニコニコ動画", nicovideo_GetUrl, nicovideo_CreateImage),
-                new ThumbnailService ("ニコニコ静画", nicoseiga_GetUrl, nicoseiga_CreateImage),
-                new ThumbnailService ("Pixiv", Pixiv_GetUrl, Pixiv_CreateImage),
-                new ThumbnailService ("flickr", flickr_GetUrl, flickr_CreateImage),
-                new ThumbnailService ("フォト蔵", Photozou_GetUrl, Photozou_CreateImage),
-                new ThumbnailService ("TwitVideo", TwitVideo_GetUrl, TwitVideo_CreateImage),
-                new ThumbnailService ("Piapro", Piapro_GetUrl, Piapro_CreateImage),
-                new ThumbnailService ("Tumblr", Tumblr_GetUrl, Tumblr_CreateImage),
-                new ThumbnailService ("ついっぷるフォト", TwipplePhoto_GetUrl, TwipplePhoto_CreateImage),
-                new ThumbnailService ("mypix/shamoji", mypix_GetUrl, mypix_CreateImage),
-                new ThumbnailService ("ow.ly", Owly_GetUrl, Owly_CreateImage),
-                new ThumbnailService ("vimeo", Vimeo_GetUrl, Vimeo_CreateImage),
-                new ThumbnailService ("cloudfiles", CloudFiles_GetUrl, CloudFiles_CreateImage),
-                new ThumbnailService ("instagram", instagram_GetUrl, instagram_CreateImage),
-                new ThumbnailService ("pikubo", pikubo_GetUrl, pikubo_CreateImage),
-                new ThumbnailService ("PicPlz", PicPlz_GetUrl, PicPlz_CreateImage),
-                new ThumbnailService ("FourSquare", Foursquare_GetUrl, Foursquare_CreateImage),
-                new ThumbnailService ("TINAMI", Tinami_GetUrl, Tinami_CreateImage),
-                new ThumbnailService ("Twimg", Twimg_GetUrl, Twimg_CreateImage),
+                new ThumbnailService( "ImgUr", ImgUr_GetUrl, ImgUr_CreateImage ),
+                new ThumbnailService( "DirectLink", DirectLink_GetUrl, DirectLink_CreateImage ),
+                new ThumbnailService( "TwitPic", TwitPic_GetUrl, TwitPic_CreateImage ),
+                new ThumbnailService( "yfrog", yfrog_GetUrl, yfrog_CreateImage ),
+                new ThumbnailService( "Plixi(TweetPhoto)", Plixi_GetUrl, Plixi_CreateImage ),
+                new ThumbnailService( "MobyPicture", MobyPicture_GetUrl, MobyPicture_CreateImage ),
+                new ThumbnailService( "携帯百景", MovaPic_GetUrl, MovaPic_CreateImage ),
+                new ThumbnailService( "はてなフォトライフ", Hatena_GetUrl, Hatena_CreateImage ),
+                new ThumbnailService( "PhotoShare/bctiny", PhotoShare_GetUrl, PhotoShare_CreateImage ),
+                new ThumbnailService( "img.ly", imgly_GetUrl, imgly_CreateImage ),
+                new ThumbnailService( "brightkite", brightkite_GetUrl, brightkite_CreateImage ),
+                new ThumbnailService( "Twitgoo", Twitgoo_GetUrl, Twitgoo_CreateImage ),
+                new ThumbnailService( "youtube", youtube_GetUrl, youtube_CreateImage ),
+                new ThumbnailService( "ニコニコ動画", nicovideo_GetUrl, nicovideo_CreateImage ),
+                new ThumbnailService( "ニコニコ静画", nicoseiga_GetUrl, nicoseiga_CreateImage ),
+                new ThumbnailService( "Pixiv", Pixiv_GetUrl, Pixiv_CreateImage ),
+                new ThumbnailService( "flickr", flickr_GetUrl, flickr_CreateImage ),
+                new ThumbnailService( "フォト蔵", Photozou_GetUrl, Photozou_CreateImage ),
+                new ThumbnailService( "TwitVideo", TwitVideo_GetUrl, TwitVideo_CreateImage ),
+                new ThumbnailService( "Piapro", Piapro_GetUrl, Piapro_CreateImage ),
+                new ThumbnailService( "Tumblr", Tumblr_GetUrl, Tumblr_CreateImage ),
+                new ThumbnailService( "ついっぷるフォト", TwipplePhoto_GetUrl, TwipplePhoto_CreateImage ),
+                new ThumbnailService( "mypix/shamoji", mypix_GetUrl, mypix_CreateImage ),
+                new ThumbnailService( "ow.ly", Owly_GetUrl, Owly_CreateImage ),
+                new ThumbnailService( "vimeo", Vimeo_GetUrl, Vimeo_CreateImage ),
+                new ThumbnailService( "cloudfiles", CloudFiles_GetUrl, CloudFiles_CreateImage ),
+                new ThumbnailService( "instagram", instagram_GetUrl, instagram_CreateImage ),
+                new ThumbnailService( "pikubo", pikubo_GetUrl, pikubo_CreateImage ),
+                new ThumbnailService( "PicPlz", PicPlz_GetUrl, PicPlz_CreateImage ),
+                new ThumbnailService( "FourSquare", Foursquare_GetUrl, Foursquare_CreateImage ),
+                new ThumbnailService( "TINAMI", Tinami_GetUrl, Tinami_CreateImage ),
+                new ThumbnailService( "Twimg", Twimg_GetUrl, Twimg_CreateImage ),
             };
         }
 
@@ -227,17 +227,17 @@ namespace OpenTween
                 }
             }
 
-            var imglist = new List<KeyValuePair<string, string>> ();
-            var dlg = new List<KeyValuePair<string, ImageCreatorDelegate>> ();
+            var imglist = new List<KeyValuePair<string, string>>();
+            var dlg = new List<KeyValuePair<string, ImageCreatorDelegate>>();
 
             foreach ( var url in links ) {
                 foreach ( var svc in ThumbnailServices ) {
-                    var args = new GetUrlArgs ();
+                    var args = new GetUrlArgs();
                     args.url = url;
                     args.imglist = imglist;
                     if ( svc.urlCreator( args ) ) {
                         // URLに対応したサムネイル作成処理デリゲートをリストに登録
-                        dlg.Add( new KeyValuePair<string, ImageCreatorDelegate> (url, svc.imageCreator) );
+                        dlg.Add( new KeyValuePair<string, ImageCreatorDelegate>( url, svc.imageCreator ) );
                         break;
                     }
                 }
@@ -245,26 +245,26 @@ namespace OpenTween
             if ( media != null ) {
                 foreach ( var m in media ) {
                     foreach ( var svc in ThumbnailServices ) {
-                        var args = new GetUrlArgs ();
+                        var args = new GetUrlArgs();
                         args.url = m.Key;
                         args.extended = m.Value;
                         args.imglist = imglist;
                         if ( svc.urlCreator( args ) ) {
                             // URLに対応したサムネイル作成処理デリゲートをリストに登録
-                            dlg.Add( new KeyValuePair<string, ImageCreatorDelegate> (m.Key, svc.imageCreator) );
+                            dlg.Add( new KeyValuePair<string, ImageCreatorDelegate>( m.Key, svc.imageCreator ) );
                             break;
                         }
                     }
                 }
             }
             if ( geo != null ) {
-                var args = new GetUrlArgs ();
+                var args = new GetUrlArgs();
                 args.url = "";
                 args.imglist = imglist;
                 args.geoInfo = new Google.GlobalLocation{ Latitude = geo.Lat, Longitude = geo.Lng };
                 if ( TwitterGeo_GetUrl( args ) ) {
                     // URLに対応したサムネイル作成処理デリゲートをリストに登録
-                    dlg.Add( new KeyValuePair<string, ImageCreatorDelegate> (args.url, new ImageCreatorDelegate (TwitterGeo_CreateImage)) );
+                    dlg.Add( new KeyValuePair<string, ImageCreatorDelegate>( args.url, new ImageCreatorDelegate( TwitterGeo_CreateImage ) ) );
                 }
             }
             if ( imglist.Count == 0 ) {
@@ -276,10 +276,10 @@ namespace OpenTween
 
             ThumbnailProgressChanged( 0 );
             BackgroundWorker bgw;
-            bgw = new BackgroundWorker ();
+            bgw = new BackgroundWorker();
             bgw.DoWork += bgw_DoWork;
             bgw.RunWorkerCompleted += bgw_Completed;
-            bgw.RunWorkerAsync( new PreviewData (id, imglist, dlg) );
+            bgw.RunWorkerAsync( new PreviewData( id, imglist, dlg ) );
 
         }
 
@@ -307,12 +307,12 @@ namespace OpenTween
             arg.AdditionalErrorMessage = "";
 
             foreach ( var url in arg.urls ) {
-                var args = new CreateImageArgs ();
+                var args = new CreateImageArgs();
                 args.url = url;
                 args.pics = arg.pics;
                 args.tooltipText = arg.tooltipText;
                 args.errmsg = "";
-                if ( !arg.imageCreators [arg.urls.IndexOf( url )].Value( args ) ) {
+                if ( !arg.imageCreators[arg.urls.IndexOf( url )].Value( args ) ) {
                     arg.AdditionalErrorMessage = args.errmsg;
                     arg.IsError = true;
                 }
@@ -355,9 +355,9 @@ namespace OpenTween
                         Owner.PreviewScrollBar.Enabled = false;
                     }
                     Owner.PreviewScrollBar.Value = 0;
-                    Owner.PreviewPicture.Image = _prev.pics [0].Value;
-                    if ( !string.IsNullOrEmpty( _prev.tooltipText [0].Value ) ) {
-                        Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, _prev.tooltipText [0].Value );
+                    Owner.PreviewPicture.Image = _prev.pics[0].Value;
+                    if ( !string.IsNullOrEmpty( _prev.tooltipText[0].Value ) ) {
+                        Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, _prev.tooltipText[0].Value );
                     } else {
                         Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, "" );
                     }
@@ -375,10 +375,10 @@ namespace OpenTween
         {
             if ( forward ) {
                 Owner.PreviewScrollBar.Value = Math.Min( Owner.PreviewScrollBar.Value + 1, Owner.PreviewScrollBar.Maximum );
-                PreviewScrollBar_Scroll( Owner.PreviewScrollBar, new ScrollEventArgs (ScrollEventType.SmallIncrement, Owner.PreviewScrollBar.Value) );
+                PreviewScrollBar_Scroll( Owner.PreviewScrollBar, new ScrollEventArgs( ScrollEventType.SmallIncrement, Owner.PreviewScrollBar.Value ) );
             } else {
                 Owner.PreviewScrollBar.Value = Math.Max( Owner.PreviewScrollBar.Value - 1, Owner.PreviewScrollBar.Minimum );
-                PreviewScrollBar_Scroll( Owner.PreviewScrollBar, new ScrollEventArgs (ScrollEventType.SmallDecrement, Owner.PreviewScrollBar.Value) );
+                PreviewScrollBar_Scroll( Owner.PreviewScrollBar, new ScrollEventArgs( ScrollEventType.SmallDecrement, Owner.PreviewScrollBar.Value ) );
             }
         }
 
@@ -388,10 +388,10 @@ namespace OpenTween
             lock ( lckPrev ) {
                 if ( _prev != null && _curPost != null && _prev.statusId == _curPost.StatusId ) {
                     if ( _prev.pics.Count > e.NewValue ) {
-                        Owner.PreviewPicture.Image = _prev.pics [e.NewValue].Value;
-                        if ( !string.IsNullOrEmpty( _prev.tooltipText [e.NewValue].Value ) ) {
+                        Owner.PreviewPicture.Image = _prev.pics[e.NewValue].Value;
+                        if ( !string.IsNullOrEmpty( _prev.tooltipText[e.NewValue].Value ) ) {
                             Owner.ToolTip1.Hide( Owner.PreviewPicture );
-                            Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, _prev.tooltipText [e.NewValue].Value );
+                            Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, _prev.tooltipText[e.NewValue].Value );
                         } else {
                             Owner.ToolTip1.SetToolTip( Owner.PreviewPicture, "" );
                             Owner.ToolTip1.Hide( Owner.PreviewPicture );
@@ -418,7 +418,7 @@ namespace OpenTween
         {
             if ( _prev != null ) {
                 if ( Owner.PreviewScrollBar.Value < _prev.pics.Count ) {
-                    Owner.OpenUriAsync( _prev.pics [Owner.PreviewScrollBar.Value].Key );
+                    Owner.OpenUriAsync( _prev.pics[Owner.PreviewScrollBar.Value].Key );
                     //if (AppendSettingDialog.Instance.OpenPicBuiltinBrowser)
                     //{
                     //    using (var ab = new AuthBrowser())
@@ -506,7 +506,7 @@ namespace OpenTween
             var mc = Regex.Match( string.IsNullOrEmpty( args.extended ) ? args.url : args.extended,
                                           @"^http://imgur\.com/(\w+)\.jpg$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://i.imgur.com/${1}l.jpg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://i.imgur.com/${1}l.jpg" ) ) );
                 return true;
             } else {
                 return false;
@@ -528,12 +528,12 @@ namespace OpenTween
 
         private bool ImgUr_CreateImage(CreateImageArgs args)
         {
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 #endregion
@@ -543,7 +543,7 @@ namespace OpenTween
         {
             //画像拡張子で終わるURL（直リンク）
             if ( IsDirectLink( string.IsNullOrEmpty( args.extended ) ? args.url : args.extended ) ) {
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, string.IsNullOrEmpty( args.extended ) ? args.url : args.extended) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, string.IsNullOrEmpty( args.extended ) ? args.url : args.extended ) );
                 return true;
             } else {
                 return false;
@@ -564,11 +564,11 @@ namespace OpenTween
 
         private bool DirectLink_CreateImage(CreateImageArgs args)
         {
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null )
                 return false;
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 #endregion
@@ -591,7 +591,7 @@ namespace OpenTween
                                  @"^http://(www\.)?twitpic\.com/(?<photoId>\w+)(/full/?)?$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://twitpic.com/show/thumb/${photoId}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://twitpic.com/show/thumb/${photoId}" ) ) );
                 return true;
             } else {
                 return false;
@@ -613,13 +613,13 @@ namespace OpenTween
         private bool TwitPic_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -643,7 +643,7 @@ namespace OpenTween
                                  @"^http://yfrog\.com/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, (string.IsNullOrEmpty( args.extended ) ? args.url : args.extended) + ".th.jpg") );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, (string.IsNullOrEmpty( args.extended ) ? args.url : args.extended) + ".th.jpg" ) );
                 return true;
             } else {
                 return false;
@@ -665,13 +665,13 @@ namespace OpenTween
         private bool yfrog_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -696,7 +696,7 @@ namespace OpenTween
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
                 const string comp = "http://api.plixi.com/api/tpapi.svc/imagefromurl?size=thumbnail&url=";
-                args.imglist.Add( new KeyValuePair<String, String> (args.url, comp + (String.IsNullOrEmpty( args.extended ) ? args.url : args.extended)) );
+                args.imglist.Add( new KeyValuePair<String, String>( args.url, comp + (String.IsNullOrEmpty( args.extended ) ? args.url : args.extended) ) );
                 return true;
             } else {
                 return false;
@@ -730,13 +730,13 @@ namespace OpenTween
             } else {
                 referer = args.url.Key;
             }
-            var img = (new HttpVarious ()).GetImage( args.url.Value, referer, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, referer, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -760,7 +760,7 @@ namespace OpenTween
                                  @"^http://moby\.to/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://mobypicture.com/?${1}:small" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://mobypicture.com/?${1}:small" ) ) );
                 return true;
             } else {
                 return false;
@@ -782,13 +782,13 @@ namespace OpenTween
         private bool MobyPicture_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -812,7 +812,7 @@ namespace OpenTween
                                  @"^http://movapic\.com/pic/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://image.movapic.com/pic/s_${1}.jpeg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://image.movapic.com/pic/s_${1}.jpeg" ) ) );
                 return true;
             } else {
                 return false;
@@ -834,13 +834,13 @@ namespace OpenTween
         private bool MovaPic_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -864,7 +864,7 @@ namespace OpenTween
                                  @"^http://f\.hatena\.ne\.jp/(([a-z])[a-z0-9_-]{1,30}[a-z0-9])/((\d{8})\d+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://img.f.hatena.ne.jp/images/fotolife/${2}/${1}/${4}/${3}_120.jpg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://img.f.hatena.ne.jp/images/fotolife/${2}/${1}/${4}/${3}_120.jpg" ) ) );
                 return true;
             } else {
                 return false;
@@ -886,13 +886,13 @@ namespace OpenTween
         private bool Hatena_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -916,7 +916,7 @@ namespace OpenTween
                                  @"^http://(?:www\.)?bcphotoshare\.com/photos/\d+/(\d+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://images.bcphotoshare.com/storages/${1}/thumb180.jpg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://images.bcphotoshare.com/storages/${1}/thumb180.jpg" ) ) );
                 return true;
             }
             // 短縮URL
@@ -924,7 +924,7 @@ namespace OpenTween
                              @"^http://bctiny\.com/p(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 try {
-                    args.imglist.Add( new KeyValuePair<string, string> (args.url, "http://images.bcphotoshare.com/storages/" + RadixConvert.ToInt32( mc.Result( "${1}" ), 36 ).ToString() + "/thumb180.jpg") );
+                    args.imglist.Add( new KeyValuePair<string, string>( args.url, "http://images.bcphotoshare.com/storages/" + RadixConvert.ToInt32( mc.Result( "${1}" ), 36 ).ToString() + "/thumb180.jpg" ) );
                     return true;
                 } catch ( ArgumentOutOfRangeException ) {
                 }
@@ -947,13 +947,13 @@ namespace OpenTween
         private bool PhotoShare_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -977,7 +977,7 @@ namespace OpenTween
                                  @"^http://img\.ly/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://img.ly/show/thumb/${1}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://img.ly/show/thumb/${1}" ) ) );
                 return true;
             } else {
                 return false;
@@ -999,13 +999,13 @@ namespace OpenTween
         private bool imgly_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -1029,7 +1029,7 @@ namespace OpenTween
                                  @"^http://brightkite\.com/objects/((\w{2})(\w{2})\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://cdn.brightkite.com/${2}/${3}/${1}-feed.jpg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://cdn.brightkite.com/${2}/${3}/${1}-feed.jpg" ) ) );
                 return true;
             } else {
                 return false;
@@ -1051,13 +1051,13 @@ namespace OpenTween
         private bool brightkite_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -1080,7 +1080,7 @@ namespace OpenTween
             var mc = Regex.Match( String.IsNullOrEmpty( args.extended ) ? args.url : args.extended, @"^http://twitgoo\.com/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://twitgoo.com/${1}/mini" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://twitgoo.com/${1}/mini" ) ) );
                 return true;
             } else {
                 return false;
@@ -1102,13 +1102,13 @@ namespace OpenTween
         private bool Twitgoo_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -1133,7 +1133,7 @@ namespace OpenTween
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
                 //args.imglist.Add(new KeyValuePair<string, string>(args.url, mc.Result("http://i.ytimg.com/vi/${1}/default.jpg")))
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "${0}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "${0}" ) ) );
                 return true;
             }
             mc = Regex.Match( string.IsNullOrEmpty( args.extended ) ? args.url : args.extended,
@@ -1141,7 +1141,7 @@ namespace OpenTween
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
                 //args.imglist.Add(new KeyValuePair<string, string>(args.url, mc.Result("http://i.ytimg.com/vi/${1}/default.jpg")))
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "${0}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "${0}" ) ) );
                 return true;
             }
             return false;
@@ -1174,21 +1174,21 @@ namespace OpenTween
             } else {
                 return false;
             }
-            var videourl = (new HttpVarious ()).GetRedirectTo( args.url.Value );
+            var videourl = (new HttpVarious()).GetRedirectTo( args.url.Value );
             var mc = Regex.Match( videourl, @"^http://(?:(www\.youtube\.com)|(youtu\.be))/(watch\?v=)?(?<videoid>([\w\-]+))", RegexOptions.IgnoreCase );
             if ( videourl.StartsWith( "http://www.youtube.com/index?ytsession=" ) ) {
                 videourl = args.url.Value;
                 mc = Regex.Match( videourl, @"^http://(?:(www\.youtube\.com)|(youtu\.be))/(watch\?v=)?(?<videoid>([\w\-]+))", RegexOptions.IgnoreCase );
             }
             if ( mc.Success ) {
-                var apiurl = "http://gdata.youtube.com/feeds/api/videos/" + mc.Groups ["videoid"].Value;
+                var apiurl = "http://gdata.youtube.com/feeds/api/videos/" + mc.Groups["videoid"].Value;
                 var src = "";
-                if ( (new HttpVarious ()).GetData( apiurl, null, out src, 5000 ) ) {
-                    var sb = new StringBuilder ();
-                    var xdoc = new XmlDocument ();
+                if ( (new HttpVarious()).GetData( apiurl, null, out src, 5000 ) ) {
+                    var sb = new StringBuilder();
+                    var xdoc = new XmlDocument();
                     try {
                         xdoc.LoadXml( src );
-                        var nsmgr = new XmlNamespaceManager (xdoc.NameTable);
+                        var nsmgr = new XmlNamespaceManager( xdoc.NameTable );
                         nsmgr.AddNamespace( "root", "http://www.w3.org/2005/Atom" );
                         nsmgr.AddNamespace( "app", "http://purl.org/atom/app#" );
                         nsmgr.AddNamespace( "media", "http://search.yahoo.com/mrss/" );
@@ -1197,7 +1197,7 @@ namespace OpenTween
                         var xentry = (XmlElement)xentryNode;
                         var tmp = "";
                         try {
-                            tmp = xentry ["media:title"].InnerText;
+                            tmp = xentry["media:title"].InnerText;
                             if ( !string.IsNullOrEmpty( tmp ) ) {
                                 sb.Append( Properties.Resources.YouTubeInfoText1 );
                                 sb.Append( tmp );
@@ -1208,7 +1208,7 @@ namespace OpenTween
 
                         try {
                             var sec = 0;
-                            if ( int.TryParse( xentry ["yt:duration"].Attributes ["seconds"].Value, out sec ) ) {
+                            if ( int.TryParse( xentry["yt:duration"].Attributes["seconds"].Value, out sec ) ) {
                                 sb.Append( Properties.Resources.YouTubeInfoText2 );
                                 sb.AppendFormat( "{0:d}:{1:d2}", sec / 60, sec % 60 );
                                 sb.AppendLine();
@@ -1217,9 +1217,9 @@ namespace OpenTween
                         }
 
                         try {
-                            var tmpdate = new DateTime ();
+                            var tmpdate = new DateTime();
                             xentry = (XmlElement)xdoc.DocumentElement.SelectSingleNode( "/root:entry", nsmgr );
-                            if ( DateTime.TryParse( xentry ["published"].InnerText, out tmpdate ) ) {
+                            if ( DateTime.TryParse( xentry["published"].InnerText, out tmpdate ) ) {
                                 sb.Append( Properties.Resources.YouTubeInfoText3 );
                                 sb.Append( tmpdate );
                                 sb.AppendLine();
@@ -1230,7 +1230,7 @@ namespace OpenTween
                         try {
                             var count = 0;
                             xentry = (XmlElement)xdoc.DocumentElement.SelectSingleNode( "/root:entry", nsmgr );
-                            tmp = xentry ["yt:statistics"].Attributes ["viewCount"].Value;
+                            tmp = xentry["yt:statistics"].Attributes["viewCount"].Value;
                             if ( int.TryParse( tmp, out count ) ) {
                                 sb.Append( Properties.Resources.YouTubeInfoText4 );
                                 sb.Append( tmp );
@@ -1242,9 +1242,9 @@ namespace OpenTween
                         try {
                             xentry = (XmlElement)xdoc.DocumentElement.SelectSingleNode( "/root:entry/app:control", nsmgr );
                             if ( xentry != null ) {
-                                sb.Append( xentry ["yt:state"].Attributes ["name"].Value );
+                                sb.Append( xentry["yt:state"].Attributes["name"].Value );
                                 sb.Append( ":" );
-                                sb.Append( xentry ["yt:state"].InnerText );
+                                sb.Append( xentry["yt:state"].InnerText );
                                 sb.AppendLine();
                             }
                         } catch ( Exception ) {
@@ -1266,12 +1266,12 @@ namespace OpenTween
                     }
 
                     if ( !string.IsNullOrEmpty( imgurl ) ) {
-                        var http = new HttpVarious ();
+                        var http = new HttpVarious();
                         var _img = http.GetImage( imgurl, videourl, 10000, out args.errmsg );
                         if ( _img == null )
                             return false;
-                        args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                        args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, sb.ToString().Trim()) );
+                        args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                        args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, sb.ToString().Trim() ) );
                         return true;
                     }
                 }
@@ -1300,7 +1300,7 @@ namespace OpenTween
                                  @"^http://(?:(www|ext)\.nicovideo\.jp/watch|nico\.ms)/(?:sm|nm)?([0-9]+)(\?.+)?$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1322,17 +1322,17 @@ namespace OpenTween
         private bool nicovideo_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^http://(?:(www|ext)\.nicovideo\.jp/watch|nico\.ms)/(?<id>(?:sm|nm)?([0-9]+))(\?.+)?$", RegexOptions.IgnoreCase );
-            var apiurl = "http://www.nicovideo.jp/api/getthumbinfo/" + mc.Groups ["id"].Value;
+            var apiurl = "http://www.nicovideo.jp/api/getthumbinfo/" + mc.Groups["id"].Value;
             var src = "";
             var imgurl = "";
-            if ( (new HttpVarious ()).GetData( apiurl, null, out src, 0, out args.errmsg, MyCommon.GetUserAgentString() ) ) {
-                var sb = new StringBuilder ();
-                var xdoc = new XmlDocument ();
+            if ( (new HttpVarious()).GetData( apiurl, null, out src, 0, out args.errmsg, MyCommon.GetUserAgentString() ) ) {
+                var sb = new StringBuilder();
+                var xdoc = new XmlDocument();
                 try {
                     xdoc.LoadXml( src );
-                    var status = xdoc.SelectSingleNode( "/nicovideo_thumb_response" ).Attributes ["status"].Value;
+                    var status = xdoc.SelectSingleNode( "/nicovideo_thumb_response" ).Attributes["status"].Value;
                     if ( status == "ok" ) {
                         imgurl = xdoc.SelectSingleNode( "/nicovideo_thumb_response/thumb/thumbnail_url" ).InnerText;
 
@@ -1362,7 +1362,7 @@ namespace OpenTween
                         }
 
                         try {
-                            var tm = new DateTime ();
+                            var tm = new DateTime();
                             tmp = xdoc.SelectSingleNode( "/nicovideo_thumb_response/thumb/first_retrieve" ).InnerText;
                             if ( DateTime.TryParse( tmp, out tm ) ) {
                                 sb.Append( Properties.Resources.NiconicoInfoText3 );
@@ -1422,8 +1422,8 @@ namespace OpenTween
                     var _img = http.GetImage( imgurl, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, sb.ToString().Trim()) );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, sb.ToString().Trim() ) );
                     return true;
                 }
             }
@@ -1450,7 +1450,7 @@ namespace OpenTween
                                  @"^http://(?:seiga\.nicovideo\.jp/seiga/|nico\.ms/)im\d+" );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1472,14 +1472,14 @@ namespace OpenTween
         private bool nicoseiga_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^http://(?:seiga\.nicovideo\.jp/seiga/|nico\.ms/)im(?<id>\d+)" );
             if ( mc.Success ) {
-                var _img = http.GetImage( "http://lohas.nicoseiga.jp/thumb/" + mc.Groups ["id"].Value + "q?", args.url.Key, 0, out args.errmsg );
+                var _img = http.GetImage( "http://lohas.nicoseiga.jp/thumb/" + mc.Groups["id"].Value + "q?", args.url.Key, 0, out args.errmsg );
                 if ( _img == null )
                     return false;
-                args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                 return true;
             }
             return false;
@@ -1510,7 +1510,7 @@ namespace OpenTween
                                  @"^http://www\.pixiv\.net/(member_illust|index)\.php\?mode=(medium|big)&(amp;)?illust_id=(?<illustId>[0-9]+)(&(amp;)?tag=(?<tag>.+)?)*$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url.Replace( "amp;", "" ), mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url.Replace( "amp;", "" ), mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1535,19 +1535,19 @@ namespace OpenTween
             var src = "";
             //illustIDをキャプチャ
             var mc = Regex.Match( args.url.Value, @"^http://www\.pixiv\.net/(member_illust|index)\.php\?mode=(medium|big)&(amp;)?illust_id=(?<illustId>[0-9]+)(&(amp;)?tag=(?<tag>.+)?)*$", RegexOptions.IgnoreCase );
-            if ( mc.Groups ["tag"].Value == "R-18" || mc.Groups ["tag"].Value == "R-18G" ) {
+            if ( mc.Groups["tag"].Value == "R-18" || mc.Groups["tag"].Value == "R-18G" ) {
                 args.errmsg = "NotSupported";
                 return false;
             } else {
-                var http = new HttpVarious ();
-                if ( http.GetData( Regex.Replace( mc.Groups [0].Value, "amp;", "" ), null, out src, 0, out args.errmsg, "" ) ) {
+                var http = new HttpVarious();
+                if ( http.GetData( Regex.Replace( mc.Groups[0].Value, "amp;", "" ), null, out src, 0, out args.errmsg, "" ) ) {
                     var _mc = Regex.Match( src, mc.Result( @"http://img([0-9]+)\.pixiv\.net/img/.+/${illustId}_[ms]\.([a-zA-Z]+)" ) );
                     if ( _mc.Success ) {
                         var _img = http.GetImage( _mc.Value, args.url.Value, 0, out args.errmsg );
                         if ( _img == null )
                             return false;
-                        args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                        args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                        args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                        args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                         return true;
                     } else if ( Regex.Match( src, "<span class=//error//>ログインしてください</span>" ).Success ) {
                         args.errmsg = "NotSupported";
@@ -1579,7 +1579,7 @@ namespace OpenTween
                                  "^http://www.flickr.com/", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, string.IsNullOrEmpty( args.extended ) ? args.url : args.extended) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, string.IsNullOrEmpty( args.extended ) ? args.url : args.extended ) );
                 return true;
             } else {
                 return false;
@@ -1608,16 +1608,16 @@ namespace OpenTween
 
             var src = "";
             var mc = Regex.Match( args.url.Value, "^http://www.flickr.com/", RegexOptions.IgnoreCase );
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             if ( http.GetData( args.url.Value, null, out src, 0, out args.errmsg, "" ) ) {
                 var _mc = Regex.Matches( src, mc.Result( @"http://farm[0-9]+\.static\.flickr\.com/[0-9]+/.+?\.([a-zA-Z]+)" ) );
                 //二つ以上キャプチャした場合先頭の一つだけ 一つだけの場合はユーザーアイコンしか取れなかった
                 if ( _mc.Count > 1 ) {
-                    var _img = http.GetImage( _mc [1].Value, args.url.Value, 0, out args.errmsg );
+                    var _img = http.GetImage( _mc[1].Value, args.url.Value, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                     return true;
                 } else {
                     args.errmsg = "Pattern NotFound";
@@ -1646,7 +1646,7 @@ namespace OpenTween
                                  @"^http://photozou\.jp/photo/show/(?<userId>[0-9]+)/(?<photoId>[0-9]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1668,13 +1668,13 @@ namespace OpenTween
         private bool Photozou_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^http://photozou\.jp/photo/show/(?<userId>[0-9]+)/(?<photoId>[0-9]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 var src = "";
                 var show_info = mc.Result( "http://api.photozou.jp/rest/photo_info?photo_id=${photoId}" );
                 if ( http.GetData( show_info, null, out src, 0, out args.errmsg, "" ) ) {
-                    var xdoc = new XmlDocument ();
+                    var xdoc = new XmlDocument();
                     var thumbnail_url = "";
                     try {
                         xdoc.LoadXml( src );
@@ -1688,8 +1688,8 @@ namespace OpenTween
                     var _img = http.GetImage( thumbnail_url, args.url.Key );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                     return true;
                 }
             }
@@ -1716,7 +1716,7 @@ namespace OpenTween
                                  @"^http://twitvideo\.jp/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://twitvideo.jp/img/thumb/${1}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://twitvideo.jp/img/thumb/${1}" ) ) );
                 return true;
             } else {
                 return false;
@@ -1738,13 +1738,13 @@ namespace OpenTween
         private bool TwitVideo_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -1768,7 +1768,7 @@ namespace OpenTween
                                  @"^http://piapro\.jp/(?:content/[0-9a-z]+|t/[0-9a-zA-Z_\-]+)$" );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1790,7 +1790,7 @@ namespace OpenTween
         private bool Piapro_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^http://piapro\.jp/(?:content/[0-9a-z]+|t/[0-9a-zA-Z_\-]+)$" );
             if ( mc.Success ) {
                 var src = "";
@@ -1798,13 +1798,13 @@ namespace OpenTween
                     var _mc = Regex.Match( src, "<meta property=\"og:image\" content=\"(?<big_img>http://c1\\.piapro\\.jp/timg/[0-9a-z]+_\\d{14}_0500_0500\\.(?:jpg|png|gif)?)\" />" );
                     if ( _mc.Success ) {
                         //各画像には120x120のサムネイルがある（多分）ので、URLを置き換える。元々ページに埋め込まれている画像は500x500
-                        var r = new System.Text.RegularExpressions.Regex (@"_\d{4}_\d{4}");
-                        var min_img_url = r.Replace( _mc.Groups ["big_img"].Value, "_0120_0120" );
+                        var r = new System.Text.RegularExpressions.Regex( @"_\d{4}_\d{4}" );
+                        var min_img_url = r.Replace( _mc.Groups["big_img"].Value, "_0120_0120" );
                         var _img = http.GetImage( min_img_url, args.url.Key, 0, out args.errmsg );
                         if ( _img == null )
                             return false;
-                        args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                        args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                        args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                        args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                         return true;
                     } else {
                         args.errmsg = "Pattern NotFound";
@@ -1834,7 +1834,7 @@ namespace OpenTween
                                  @"^http://(.+\.)?tumblr\.com/.+/?", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1856,7 +1856,7 @@ namespace OpenTween
         private bool Tumblr_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var TargetUrl = args.url.Value;
             var tmp = http.GetRedirectTo( TargetUrl );
             while ( !TargetUrl.Equals(tmp) ) {
@@ -1864,15 +1864,15 @@ namespace OpenTween
                 tmp = http.GetRedirectTo( TargetUrl );
             }
             var mc = Regex.Match( TargetUrl, @"(?<base>http://.+?\.tumblr\.com/)post/(?<postID>[0-9]+)(/(?<subject>.+?)/)?", RegexOptions.IgnoreCase );
-            var apiurl = mc.Groups ["base"].Value + "api/read?id=" + mc.Groups ["postID"].Value;
+            var apiurl = mc.Groups["base"].Value + "api/read?id=" + mc.Groups["postID"].Value;
             var src = "";
             string imgurl = null;
             if ( http.GetData( apiurl, null, out src, 0, out args.errmsg, "" ) ) {
-                var xdoc = new XmlDocument ();
+                var xdoc = new XmlDocument();
                 try {
                     xdoc.LoadXml( src );
 
-                    var type = xdoc.SelectSingleNode( "/tumblr/posts/post" ).Attributes ["type"].Value;
+                    var type = xdoc.SelectSingleNode( "/tumblr/posts/post" ).Attributes["type"].Value;
                     if ( type == "photo" ) {
                         imgurl = xdoc.SelectSingleNode( "/tumblr/posts/post/photo-url" ).InnerText;
                     } else {
@@ -1887,8 +1887,8 @@ namespace OpenTween
                     var _img = http.GetImage( imgurl, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                     return true;
                 }
             }
@@ -1915,7 +1915,7 @@ namespace OpenTween
                                  @"^http://p\.twipple\.jp/(?<contentId>[0-9a-z]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -1937,20 +1937,20 @@ namespace OpenTween
         private bool TwipplePhoto_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, "^http://p.twipple.jp/(?<contentId>[0-9a-z]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 var src = "";
                 if ( http.GetData( args.url.Key, null, out src, 0, out args.errmsg, "" ) ) {
                     var thumbnail_url = "";
-                    var ContentId = mc.Groups ["contentId"].Value;
-                    var DataDir = new StringBuilder ();
+                    var ContentId = mc.Groups["contentId"].Value;
+                    var DataDir = new StringBuilder();
 
                     // DataDir作成
                     DataDir.Append( "data" );
                     for ( int i = 0; i < ContentId.Length; i++ ) {
                         DataDir.Append( "/" );
-                        DataDir.Append( ContentId [i] );
+                        DataDir.Append( ContentId[i] );
                     }
 
                     // サムネイルURL抽出
@@ -1961,8 +1961,8 @@ namespace OpenTween
                     var _img = http.GetImage( thumbnail_url, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                     return true;
                 }
             }
@@ -1989,7 +1989,7 @@ namespace OpenTween
                                  @"^http://(www\.mypix\.jp|www\.shamoji\.info)/app\.php/picture/(?<contentId>[0-9a-z]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value + "/thumb.jpg") );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value + "/thumb.jpg" ) );
                 return true;
             } else {
                 return false;
@@ -2011,13 +2011,13 @@ namespace OpenTween
         private bool mypix_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -2041,7 +2041,7 @@ namespace OpenTween
                                     @"^http://ow\.ly/i/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://static.ow.ly/photos/thumb/${1}.jpg" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://static.ow.ly/photos/thumb/${1}.jpg" ) ) );
                 return true;
             } else {
                 return false;
@@ -2063,13 +2063,13 @@ namespace OpenTween
         private bool Owly_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -2093,7 +2093,7 @@ namespace OpenTween
                                  @"^http://vimeo\.com/[0-9]+", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -2115,14 +2115,14 @@ namespace OpenTween
         private bool Vimeo_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"http://vimeo\.com/(?<postID>[0-9]+)", RegexOptions.IgnoreCase );
-            var apiurl = "http://vimeo.com/api/v2/video/" + mc.Groups ["postID"].Value + ".xml";
+            var apiurl = "http://vimeo.com/api/v2/video/" + mc.Groups["postID"].Value + ".xml";
             var src = "";
             string imgurl = null;
             if ( http.GetData( apiurl, null, out src, 0, out args.errmsg, "" ) ) {
-                var xdoc = new XmlDocument ();
-                var sb = new StringBuilder ();
+                var xdoc = new XmlDocument();
+                var sb = new StringBuilder();
                 try {
                     xdoc.LoadXml( src );
                     try {
@@ -2135,7 +2135,7 @@ namespace OpenTween
                     } catch ( Exception ) {
                     }
                     try {
-                        var tmpdate = new DateTime ();
+                        var tmpdate = new DateTime();
                         if ( DateTime.TryParse( xdoc.SelectSingleNode( "videos/video/upload_date" ).InnerText, out tmpdate ) ) {
                             sb.Append( Properties.Resources.VimeoInfoText2 );
                             sb.Append( tmpdate );
@@ -2194,8 +2194,8 @@ namespace OpenTween
                     var _img = http.GetImage( imgurl, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, sb.ToString().Trim()) );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, sb.ToString().Trim() ) );
                     return true;
                 }
             }
@@ -2222,7 +2222,7 @@ namespace OpenTween
                                  @"^http://c[0-9]+\.cdn[0-9]+\.cloudfiles\.rackspacecloud\.com/[a-z_0-9]+", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -2244,13 +2244,13 @@ namespace OpenTween
         private bool CloudFiles_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 #endregion
@@ -2273,7 +2273,7 @@ namespace OpenTween
                                  "^http://instagr.am/p/.+/", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             } else {
                 return false;
@@ -2297,15 +2297,15 @@ namespace OpenTween
             // TODO: サムネイル画像読み込み処理を記述します
 
             var src = "";
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             if ( http.GetData( args.url.Value, null, out src, 0, out args.errmsg, "" ) ) {
                 var mc = Regex.Match( src, "<meta property=\"og:image\" content=\"(?<url>.+)\" ?/>" );
                 if ( mc.Success ) {
-                    var _img = http.GetImage( mc.Groups ["url"].Value, args.url.Key, 0, out args.errmsg );
+                    var _img = http.GetImage( mc.Groups["url"].Value, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                     return true;
                 } else {
                     args.errmsg = "Pattern NotFound";
@@ -2334,7 +2334,7 @@ namespace OpenTween
                                  @"^http://pikubo\.me/([a-z0-9-_]+)", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Result( "http://pikubo.me/q/${1}" )) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Result( "http://pikubo.me/q/${1}" ) ) );
                 return true;
             } else {
                 return false;
@@ -2357,11 +2357,11 @@ namespace OpenTween
         {
             // TODO: サムネイル画像読み込み処理を記述します
 
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 0, out args.errmsg );
             if ( img == null )
                 return false;
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             return true;
         }
 
@@ -2385,14 +2385,14 @@ namespace OpenTween
                                  @"^http://picplz\.com/user/\w+/pic/(?<longurl_ids>\w+)/?$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             }
             mc = Regex.Match( string.IsNullOrEmpty( args.extended ) ? args.url : args.extended,
                              @"^http://picplz\.com/(?<shorturl_ids>\w+)?$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             }
             return false;
@@ -2512,24 +2512,24 @@ namespace OpenTween
         private bool PicPlz_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var apiurl = "http://api.picplz.com/api/v2/pic.json?";
             var mc = Regex.Match( args.url.Value, @"^http://picplz\.com/user/\w+/pic/(?<longurl_ids>\w+)/?$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
-                apiurl += "longurl_ids=" + mc.Groups ["longurl_ids"].Value;
+                apiurl += "longurl_ids=" + mc.Groups["longurl_ids"].Value;
             } else {
                 mc = Regex.Match( args.url.Value, @"^http://picplz\.com/(?<shorturl_ids>\w+)?$", RegexOptions.IgnoreCase );
                 if ( mc.Success ) {
-                    apiurl += "shorturl_ids=" + mc.Groups ["shorturl_ids"].Value;
+                    apiurl += "shorturl_ids=" + mc.Groups["shorturl_ids"].Value;
                 } else {
                     return false;
                 }
             }
             var src = "";
             var imgurl = "";
-            if ( (new HttpVarious ()).GetData( apiurl, null, out src, 0, out args.errmsg, MyCommon.GetUserAgentString() ) ) {
-                var sb = new StringBuilder ();
-                var serializer = new DataContractJsonSerializer (typeof(PicPlzDataModel.ResultData));
+            if ( (new HttpVarious()).GetData( apiurl, null, out src, 0, out args.errmsg, MyCommon.GetUserAgentString() ) ) {
+                var sb = new StringBuilder();
+                var serializer = new DataContractJsonSerializer( typeof(PicPlzDataModel.ResultData) );
                 PicPlzDataModel.ResultData res;
 
                 try {
@@ -2540,13 +2540,13 @@ namespace OpenTween
 
                 if ( res.Result == "ok" ) {
                     try {
-                        imgurl = res.Value.Pics [0].PicFiles.Pic320rh.ImgUrl;
+                        imgurl = res.Value.Pics[0].PicFiles.Pic320rh.ImgUrl;
                     } catch ( Exception ) {
 
                     }
 
                     try {
-                        sb.Append( res.Value.Pics [0].Caption );
+                        sb.Append( res.Value.Pics[0].Caption );
                     } catch ( Exception ) {
 
                     }
@@ -2558,8 +2558,8 @@ namespace OpenTween
                     var _img = http.GetImage( imgurl, args.url.Key, 0, out args.errmsg );
                     if ( _img == null )
                         return false;
-                    args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                    args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, sb.ToString().Trim()) );
+                    args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                    args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, sb.ToString().Trim() ) );
                     return true;
                 }
             }
@@ -2590,7 +2590,7 @@ namespace OpenTween
                 //if (mapsUrl == null) return false;
                 if ( !AppendSettingDialog.Instance.IsPreviewFoursquare )
                     return false;
-                args.imglist.Add( new KeyValuePair<String, String> (String.IsNullOrEmpty( args.extended ) ? args.url : args.extended, "") );
+                args.imglist.Add( new KeyValuePair<String, String>( String.IsNullOrEmpty( args.extended ) ? args.url : args.extended, "" ) );
                 return true;
             } else {
                 return false;
@@ -2616,13 +2616,13 @@ namespace OpenTween
             var mapsUrl = Foursquare.GetInstance.GetMapsUri( args.url.Key, ref tipsText );
             if ( mapsUrl == null )
                 return false;
-            var img = (new HttpVarious ()).GetImage( mapsUrl, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( mapsUrl, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
             // 成功した場合はURLに対応する画像、ツールチップテキストを登録
-            args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, tipsText) );
+            args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, tipsText ) );
             return true;
         }
 #endregion
@@ -2642,8 +2642,8 @@ namespace OpenTween
         {
             // TODO URL判定処理を記述
             if ( args.geoInfo != null && (args.geoInfo.Latitude != 0 || args.geoInfo.Longitude != 0) ) {
-                var url = (new Google ()).CreateGoogleStaticMapsUri( args.geoInfo );
-                args.imglist.Add( new KeyValuePair<string, string> (url, url) );
+                var url = (new Google()).CreateGoogleStaticMapsUri( args.geoInfo );
+                args.imglist.Add( new KeyValuePair<string, string>( url, url ) );
                 return true;
             }
             return false;
@@ -2664,7 +2664,7 @@ namespace OpenTween
         private bool TwitterGeo_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var img = (new HttpVarious ()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
+            var img = (new HttpVarious()).GetImage( args.url.Value, args.url.Key, 10000, out args.errmsg );
             if ( img == null ) {
                 return false;
             }
@@ -2685,8 +2685,8 @@ namespace OpenTween
             } catch ( Exception ) {
                 url = args.url.Value;
             }
-            args.pics.Add( new KeyValuePair<string, Image> (url, img) );
-            args.tooltipText.Add( new KeyValuePair<string, string> (url, "") );
+            args.pics.Add( new KeyValuePair<string, Image>( url, img ) );
+            args.tooltipText.Add( new KeyValuePair<string, string>( url, "" ) );
             return true;
         }
 #endregion
@@ -2711,7 +2711,7 @@ namespace OpenTween
                                  @"^http://www\.tinami\.com/view/\d+$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             }
             // 短縮URL
@@ -2719,7 +2719,7 @@ namespace OpenTween
                              @"^http://tinami\.jp/(\w+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 try {
-                    args.imglist.Add( new KeyValuePair<string, string> (args.url, "http://www.tinami.com/view/" + RadixConvert.ToInt32( mc.Result( "${1}" ), 36 ).ToString()) );
+                    args.imglist.Add( new KeyValuePair<string, string>( args.url, "http://www.tinami.com/view/" + RadixConvert.ToInt32( mc.Result( "${1}" ), 36 ).ToString() ) );
                     return true;
                 } catch ( ArgumentOutOfRangeException ) {
                 }
@@ -2742,14 +2742,14 @@ namespace OpenTween
         private bool Tinami_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^http://www\.tinami\.com/view/(?<ContentId>\d+)$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 var src = "";
                 var ContentInfo = mc.Result( "http://api.tinami.com/content/info?api_key=" + ApplicationSettings.TINAMIApiKey +
                                             "&cont_id=${ContentId}" );
                 if ( http.GetData( ContentInfo, null, out src, 0, out args.errmsg, "" ) ) {
-                    var xdoc = new XmlDocument ();
+                    var xdoc = new XmlDocument();
                     var thumbnail_url = "";
                     try {
                         xdoc.LoadXml( src );
@@ -2763,8 +2763,8 @@ namespace OpenTween
                                 var _img = http.GetImage( thumbnail_url, args.url.Key );
                                 if ( _img == null )
                                     return false;
-                                args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                                args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                                args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                                args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
                                 return true;
                             } else {
                                 //エラー処理 エラーメッセージが返ってきた場合はここで処理
@@ -2812,7 +2812,7 @@ namespace OpenTween
                                  @"^https?://p\.twimg\.com/.*$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
-                args.imglist.Add( new KeyValuePair<string, string> (args.url, mc.Value) );
+                args.imglist.Add( new KeyValuePair<string, string>( args.url, mc.Value ) );
                 return true;
             }
             return false;
@@ -2833,7 +2833,7 @@ namespace OpenTween
         private bool Twimg_CreateImage(CreateImageArgs args)
         {
             // TODO: サムネイル画像読み込み処理を記述します
-            var http = new HttpVarious ();
+            var http = new HttpVarious();
             var mc = Regex.Match( args.url.Value, @"^https?://p\.twimg\.com/.*$", RegexOptions.IgnoreCase );
             if ( mc.Success ) {
                 var src = "";
@@ -2841,8 +2841,8 @@ namespace OpenTween
                 var _img = http.GetImage( ContentInfo, src, 0, out args.errmsg );
                 if ( _img == null )
                     return false;
-                args.pics.Add( new KeyValuePair<string, Image> (args.url.Key, _img) );
-                args.tooltipText.Add( new KeyValuePair<string, string> (args.url.Key, "") );
+                args.pics.Add( new KeyValuePair<string, Image>( args.url.Key, _img ) );
+                args.tooltipText.Add( new KeyValuePair<string, string>( args.url.Key, "" ) );
             }
             return false;
         }

@@ -527,10 +527,10 @@ namespace OpenTween
             this.GroupBox2.Visible = false;
 #endif
             tw = ((TweenMain)this.Owner).TwitterInstance;
-            string uname = tw.Username;
-            string pw = tw.Password;
-            string tk = tw.AccessToken;
-            string tks = tw.AccessTokenSecret;
+            string username = tw.Username;
+            string password = tw.Password;
+            string access_token = tw.AccessToken;
+            string access_token_secret = tw.AccessTokenSecret;
             //this.AuthStateLabel.Enabled = true;
             //this.AuthUserLabel.Enabled = true;
             this.AuthClearButton.Enabled = true;

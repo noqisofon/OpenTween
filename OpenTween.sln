@@ -84,6 +84,7 @@ Global
 		$2.BeforeConstructorDeclarationParentheses = False
 		$2.BeforeIndexerDeclarationBracket = False
 		$2.BeforeDelegateDeclarationParentheses = False
+		$2.NewParentheses = False
 		$2.WithinIfParentheses = True
 		$2.WithinWhileParentheses = True
 		$2.WithinForParentheses = True
@@ -91,6 +92,8 @@ Global
 		$2.WithinCatchParentheses = True
 		$2.WithinSwitchParentheses = True
 		$2.WithinLockParentheses = True
+		$2.WithinNewParentheses = True
+		$2.SpacesBeforeBrackets = False
 		$2.BlankLinesAfterUsings = 2
 		$2.BlankLinesBeforeFirstDeclaration = 2
 		$2.BlankLinesBetweenTypes = 2

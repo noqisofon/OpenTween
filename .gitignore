@@ -1,6 +1,9 @@
 *~
 \#*#
 
+makefile
+Makefile
+
 *.suo
 *.user
 *.userprefs

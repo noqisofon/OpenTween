@@ -87,13 +87,13 @@ namespace OpenTween
         private int _followersCount = 0;
         private int _friendsCount = 0;
         private int _statusesCount = 0;
-        private string _location = "";
-        private string _bio = "";
+        private string _location = string.Empty;
+        private string _bio = string.Empty;
         private string _protocol = "https://";
 
         //プロパティからアクセスされる共通情報
         private string _uname;
-        private int _iconSz;
+        private int _iconSize;
         private bool _getIcon;
         private IDictionary<string, Image> _dIcon;
 
@@ -119,7 +119,7 @@ namespace OpenTween
         public string Authenticate(string username, string password)
         {
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
 
             MyCommon.TwitterApiInfo.Initialize();
             try
@@ -137,7 +137,7 @@ namespace OpenTween
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
                 _uname = username.ToLower();
                 if (AppendSettingDialog.Instance.UserstreamStartup) this.ReconnectUserStream();
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 {
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
@@ -183,13 +183,13 @@ namespace OpenTween
                 return "Err:" + "Failed to access auth server.";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public string Authenticate(string pinCode)
         {
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
 
             MyCommon.TwitterApiInfo.Initialize();
             try
@@ -207,7 +207,7 @@ namespace OpenTween
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
                 _uname = Username.ToLower();
                 if (AppendSettingDialog.Instance.UserstreamStartup) this.ReconnectUserStream();
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 {
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
@@ -248,7 +248,7 @@ namespace OpenTween
         public void VerifyCredentials()
         {
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -290,18 +290,18 @@ namespace OpenTween
                         }
                         else
                         {
-                            return "";
+                            return string.Empty;
                         }
                     }
                 }
                 else
                 {
-                    return "";
+                    return string.Empty;
                 }
             }
             catch(Exception)
             {
-                return "";
+                return string.Empty;
             }
         }
 
@@ -329,7 +329,7 @@ namespace OpenTween
             {
                 if (orgData.IndexOf(href, posl2, StringComparison.Ordinal) > -1)
                 {
-                    var urlStr = "";
+                    var urlStr = string.Empty;
                     // IDN展開
                     posl1 = orgData.IndexOf(href, posl2, StringComparison.Ordinal);
                     posl1 += href.Length;
@@ -368,9 +368,9 @@ namespace OpenTween
             var retdata = orgdata;
 
             retdata = Regex.Replace(retdata, "<(script|object|applet|image|frameset|fieldset|legend|style).*" +
-                "</(script|object|applet|image|frameset|fieldset|legend|style)>", "", RegexOptions.IgnoreCase);
+                "</(script|object|applet|image|frameset|fieldset|legend|style)>", string.Empty, RegexOptions.IgnoreCase);
 
-            retdata = Regex.Replace(retdata, "<(frame|link|iframe|img)>", "", RegexOptions.IgnoreCase);
+            retdata = Regex.Replace(retdata, "<(frame|link|iframe|img)>", string.Empty, RegexOptions.IgnoreCase);
 
             return retdata;
         }
@@ -452,16 +452,16 @@ namespace OpenTween
             }
         }
 
-        static private PostInfo _prev = new PostInfo("", "", "", "");
+        static private PostInfo _prev = new PostInfo(string.Empty, string.Empty, string.Empty, string.Empty);
         private bool IsPostRestricted(TwitterDataModel.Status status)
         {
-            var _current = new PostInfo("", "", "", "");
+            var _current = new PostInfo(string.Empty, string.Empty, string.Empty, string.Empty);
 
             _current.CreatedAt = status.CreatedAt;
             _current.Id = status.IdStr;
             if (status.Text == null)
             {
-                _current.Text = "";
+                _current.Text = string.Empty;
             }
             else
             {
@@ -484,9 +484,9 @@ namespace OpenTween
         public string PostStatus(string postStr, long reply_to)
         {
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             postStr = postStr.Trim();
 
@@ -496,7 +496,7 @@ namespace OpenTween
             }
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.UpdateStatus(postStr, reply_to, ref content);
@@ -537,14 +537,14 @@ namespace OpenTween
                 }
                 if (op.Post(postStr.Length))
                 {
-                    return "";
+                    return string.Empty;
                 }
                 else
                 {
                     return "Outputz:Failed";
                 }
             case HttpStatusCode.NotFound:
-                return "";
+                return string.Empty;
             case HttpStatusCode.Forbidden:
             case HttpStatusCode.BadRequest:
                 {
@@ -592,14 +592,14 @@ namespace OpenTween
 
         public string PostStatusWithMedia(string postStr, long reply_to, FileInfo mediaFile)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             postStr = postStr.Trim();
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.UpdateStatusWithMedia(postStr, reply_to, mediaFile, ref content);
@@ -640,14 +640,14 @@ namespace OpenTween
                 }
                 if (op.Post(postStr.Length))
                 {
-                    return "";
+                    return string.Empty;
                 }
                 else
                 {
                     return "Outputz:Failed";
                 }
             case HttpStatusCode.NotFound:
-                return "";
+                return string.Empty;
             case HttpStatusCode.Forbidden:
             case HttpStatusCode.BadRequest:
                 {
@@ -695,9 +695,9 @@ namespace OpenTween
 
         public string SendDirectMessage(string postStr)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
             if (MyCommon.TwitterApiInfo.AccessLevel != ApiAccessLevel.None)
             {
                 if (!MyCommon.TwitterApiInfo.IsDirectMessagePermission) return "Auth Err:try to re-authorization.";
@@ -706,7 +706,7 @@ namespace OpenTween
             postStr = postStr.Trim();
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             var mc = Regex.Match(postStr, "^DM? +(?<id>[a-zA-Z0-9_]+) +(?<body>.+)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
@@ -746,7 +746,7 @@ namespace OpenTween
 
                 if (op.Post(postStr.Length))
                 {
-                    return "";
+                    return string.Empty;
                 }
                 else
                 {
@@ -800,9 +800,9 @@ namespace OpenTween
 
         public string RemoveStatus(long id)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
 
@@ -819,12 +819,12 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
             case HttpStatusCode.NotFound:
-                return "";
+                return string.Empty;
             default:
                 return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
@@ -832,8 +832,8 @@ namespace OpenTween
 
         public string PostRetweet(long id, bool read)
         {
-            if (MyCommon._endingFlag) return "";
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (MyCommon._endingFlag) return string.Empty;
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             //データ部分の生成
             var target = id;
@@ -848,7 +848,7 @@ namespace OpenTween
             }
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.RetweetStatus(target, ref content);
@@ -894,7 +894,7 @@ namespace OpenTween
             //二重取得回避
             lock (LockObj)
             {
-                if (TabInformations.GetInstance().ContainsKey(post.StatusId)) return "";
+                if (TabInformations.GetInstance().ContainsKey(post.StatusId)) return string.Empty;
             }
             //Retweet判定
             if (post.RetweetedId == 0) return "Invalid Json!";
@@ -908,14 +908,14 @@ namespace OpenTween
 
             TabInformations.GetInstance().AddPost(post);
 
-            return "";
+            return string.Empty;
         }
 
         public string RemoveDirectMessage(long id, PostClass post)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
             if (MyCommon.TwitterApiInfo.AccessLevel != ApiAccessLevel.None)
             {
                 if (!MyCommon.TwitterApiInfo.IsDirectMessagePermission) return "Auth Err:try to re-authorization.";
@@ -939,12 +939,12 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
             case HttpStatusCode.NotFound:
-                return "";
+                return string.Empty;
             default:
                 return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
@@ -952,12 +952,12 @@ namespace OpenTween
 
         public string PostFollowCommand(string screenName)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -972,7 +972,7 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
@@ -993,12 +993,12 @@ namespace OpenTween
 
         public string PostRemoveCommand(string screenName)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -1013,7 +1013,7 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
@@ -1034,12 +1034,12 @@ namespace OpenTween
 
         public string PostCreateBlock(string screenName)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -1054,7 +1054,7 @@ namespace OpenTween
             {
                 case HttpStatusCode.OK:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                    return "";
+                    return string.Empty;
                 case HttpStatusCode.Unauthorized:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                     return Properties.Resources.Unauthorized;
@@ -1075,12 +1075,12 @@ namespace OpenTween
 
         public string PostDestroyBlock(string screenName)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -1095,7 +1095,7 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
@@ -1116,12 +1116,12 @@ namespace OpenTween
 
         public string PostReportSpam(string screenName)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -1136,7 +1136,7 @@ namespace OpenTween
             {
             case HttpStatusCode.OK:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                return "";
+                return string.Empty;
             case HttpStatusCode.Unauthorized:
                 Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                 return Properties.Resources.Unauthorized;
@@ -1157,12 +1157,12 @@ namespace OpenTween
 
         public string GetFriendshipInfo(string screenName, ref bool isFollowing, ref bool isFollowed)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.ShowFriendships(_uname, screenName, ref content);
@@ -1180,7 +1180,7 @@ namespace OpenTween
                         var relation = MyCommon.CreateDataFromJson<TwitterDataModel.Relationship>(content);
                         isFollowing = relation.relationship.Source.Following;
                         isFollowed = relation.relationship.Source.FollowedBy;
-                        return "";
+                        return string.Empty;
                     }
                     catch(SerializationException ex)
                     {
@@ -1204,12 +1204,12 @@ namespace OpenTween
 
         public string GetUserInfo(string screenName, ref TwitterDataModel.User user)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             user = null;
             try
             {
@@ -1238,7 +1238,7 @@ namespace OpenTween
                         MyCommon.TraceOut(ex, MethodBase.GetCurrentMethod().Name + " " + content);
                         return "Err:Invalid Json!";
                     }
-                    return "";
+                    return string.Empty;
                 case HttpStatusCode.BadRequest:
                     return "Err:API Limits?";
                 case HttpStatusCode.Unauthorized:
@@ -1259,12 +1259,12 @@ namespace OpenTween
 
         public string GetStatus_Retweeted_Count(long StatusId, ref int retweeted_count)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             retweeted_count = 0;
 
@@ -1315,21 +1315,21 @@ namespace OpenTween
                 }
             }
         exit_for:
-            return "";
+            return string.Empty;
         }
 
         public string PostFavAdd(long id)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             //if (this.favQueue == null) this.favQueue = new FavoriteQueue(this)
 
             //if (this.favQueue.Contains(id)) this.favQueue.Remove(id)
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.CreateFavorites(id, ref content);
@@ -1346,7 +1346,7 @@ namespace OpenTween
                 case HttpStatusCode.OK:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
                     //this.favQueue.FavoriteCacheStart();
-                    if (!_restrictFavCheck) return "";
+                    if (!_restrictFavCheck) return string.Empty;
                     break;
                 case HttpStatusCode.Unauthorized:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
@@ -1374,8 +1374,8 @@ namespace OpenTween
 
             //http://twitter.com/statuses/show/id.xml APIを発行して本文を取得
 
-            //var content = "";
-            content = "";
+            //var content = string.Empty;
+            content = string.Empty;
             try
             {
                 res = twCon.ShowStatuses(id, ref content);
@@ -1406,7 +1406,7 @@ namespace OpenTween
                     }
                     if (status.Favorited)
                     {
-                        return "";
+                        return string.Empty;
                     }
                     else
                     {
@@ -1424,19 +1424,19 @@ namespace OpenTween
 
         public string PostFavRemove(long id)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             //if (this.favQueue == null) this.favQueue = new FavoriteQueue(this)
 
             //if (this.favQueue.Contains(id))
             //    this.favQueue.Remove(id)
-            //    return "";
+            //    return string.Empty;
             //}
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.DestroyFavorites(id, ref content);
@@ -1450,7 +1450,7 @@ namespace OpenTween
             {
                 case HttpStatusCode.OK:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                    return "";
+                    return string.Empty;
                 case HttpStatusCode.Unauthorized:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                     return Properties.Resources.Unauthorized;
@@ -1471,12 +1471,12 @@ namespace OpenTween
 
         public string PostUpdateProfile(string name, string url, string location, string description)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.UpdateProfile(name, url, location, description, ref content);
@@ -1490,7 +1490,7 @@ namespace OpenTween
             {
                 case HttpStatusCode.OK:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                    return "";
+                    return string.Empty;
                 case HttpStatusCode.Unauthorized:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                     return Properties.Resources.Unauthorized;
@@ -1511,12 +1511,12 @@ namespace OpenTween
 
         public string PostUpdateProfileImage(string filename)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.UpdateProfileImage(new FileInfo(filename), ref content);
@@ -1530,7 +1530,7 @@ namespace OpenTween
             {
                 case HttpStatusCode.OK:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Valid;
-                    return "";
+                    return string.Empty;
                 case HttpStatusCode.Unauthorized:
                     Twitter.AccountState = MyCommon.ACCOUNT_STATE.Invalid;
                     return Properties.Resources.Unauthorized;
@@ -1614,14 +1614,14 @@ namespace OpenTween
         {
             set
             {
-                _iconSz = value;
+                _iconSize = value;
             }
         }
 
 #region "バージョンアップ"
         public string GetVersionInfo()
         {
-            var content = "";
+            var content = string.Empty;
             if (!(new HttpVarious()).GetData("http://tween.sourceforge.jp/version.txt?" + DateTime.Now.ToString("yyMMddHHmmss") + Environment.TickCount.ToString(), null, out content, MyCommon.GetUserAgentString()))
             {
                 throw new Exception("GetVersionInfo Failed");
@@ -1651,7 +1651,7 @@ namespace OpenTween
                 }
                 //その他言語圏のリソース。取得失敗しても継続
                 //UIの言語圏のリソース
-                var curCul = "";
+                var curCul = string.Empty;
                 if (!Thread.CurrentThread.CurrentUICulture.IsNeutralCulture)
                 {
                     var idx = Thread.CurrentThread.CurrentUICulture.Name.LastIndexOf('-');
@@ -1723,7 +1723,7 @@ namespace OpenTween
                 {
                     return "Err:Download failed";
                 }
-                return "";
+                return string.Empty;
             }
             catch(Exception)
             {
@@ -1817,12 +1817,12 @@ namespace OpenTween
                                 bool more,
                                 bool startup)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             var count = AppendSettingDialog.Instance.CountApi;
             if (gType == MyCommon.WORKERTYPE.Reply) count = AppendSettingDialog.Instance.CountApiReply;
             if (AppendSettingDialog.Instance.UseAdditionalCount)
@@ -1895,12 +1895,12 @@ namespace OpenTween
                                          TabClass tab,
                                          bool more)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             if (count == 0) count = 20;
             try
@@ -1908,7 +1908,7 @@ namespace OpenTween
                 if (string.IsNullOrEmpty(userName))
                 {
                     var target = tab.User;
-                    if (string.IsNullOrEmpty(target)) return "";
+                    if (string.IsNullOrEmpty(target)) return string.Empty;
                     userName = target;
                     res = twCon.UserTimeline(0, target, count, 0, 0, ref content);
                 }
@@ -1970,19 +1970,19 @@ namespace OpenTween
                 TabInformations.GetInstance().AddPost(item);
             }
 
-            return "";
+            return string.Empty;
         }
 
         public string GetStatusApi(bool read,
                                    Int64 id,
                                    ref PostClass post)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -2030,7 +2030,7 @@ namespace OpenTween
             if (item.IsMe && !read && _readOwnPost) item.IsRead = true;
 
             post = item;
-            return "";
+            return string.Empty;
         }
 
         public string GetStatusApi(bool read,
@@ -2210,7 +2210,7 @@ namespace OpenTween
                 TabInformations.GetInstance().AddPost(post);
             }
 
-            return "";
+            return string.Empty;
         }
 
         private string CreatePostsFromPhoenixSearch(string content, MyCommon.WORKERTYPE gType, TabClass tab, bool read, int count, ref long minimumId, ref string nextPageQuery)
@@ -2261,7 +2261,7 @@ namespace OpenTween
                 TabInformations.GetInstance().AddPost(post);
             }
 
-            return string.IsNullOrEmpty(items.ErrMsg) ? "" : "Err:" + items.ErrMsg;
+            return string.IsNullOrEmpty(items.ErrMsg) ? string.Empty : "Err:" + items.ErrMsg;
         }
 
         public string GetListStatus(bool read,
@@ -2269,10 +2269,10 @@ namespace OpenTween
                                 bool more,
                                 bool startup)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             int count;
             if (AppendSettingDialog.Instance.UseAdditionalCount)
             {
@@ -2348,7 +2348,7 @@ namespace OpenTween
 
         public string GetRelatedResult(bool read, TabClass tab)
         {
-            var rslt = "";
+            var rslt = string.Empty;
             var relPosts = new List<PostClass>();
             if (tab.RelationTargetPost.TextFromApi.Contains("@") && tab.RelationTargetPost.InReplyToStatusId == 0)
             {
@@ -2383,12 +2383,12 @@ namespace OpenTween
                                              TabClass tab,
                                              List<PostClass> relatedPosts)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 if (post.RetweetedId > 0)
@@ -2437,7 +2437,7 @@ namespace OpenTween
             var targetItem = post;
             if (targetItem == null)
             {
-                return "";
+                return string.Empty;
             }
             else
             {
@@ -2482,7 +2482,7 @@ namespace OpenTween
             else if (targetItem.InReplyToStatusId > 0 && !replyAdded)
             {
                 PostClass p = null;
-                var rslt = "";
+                var rslt = string.Empty;
                 rslt = GetStatusApi(read, targetItem.InReplyToStatusId, ref p);
                 if (string.IsNullOrEmpty(rslt))
                 {
@@ -2494,7 +2494,7 @@ namespace OpenTween
             }
 
             //発言者・返信先ユーザーの直近10発言取得
-            //var rslt = this.GetUserTimelineApi(read, 10, "", tab);
+            //var rslt = this.GetUserTimelineApi(read, 10, string.Empty, tab);
             //if (!string.IsNullOrEmpty(rslt)) return rslt;
             //if (!string.IsNullOrEmpty(replyToUserName))
             //    rslt = this.GetUserTimelineApi(read, 10, replyToUserName, tab);
@@ -2513,7 +2513,7 @@ namespace OpenTween
                     var _post = TabInformations.GetInstance()[_statusId];
                     if (_post == null)
                     {
-                        var rslt = this.GetStatusApi(read, _statusId, ref p);
+                        var result = this.GetStatusApi(read, _statusId, ref p);
                     }
                     else
                     {
@@ -2527,17 +2527,17 @@ namespace OpenTween
                     }
                 }
             }
-            return "";
+            return string.Empty;
         }
 
         public string GetSearch(bool read,
                             TabClass tab,
                             bool more)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             var page = 0;
             var sinceId = 0;
             var count = 100;
@@ -2582,7 +2582,7 @@ namespace OpenTween
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
-            if (!TabInformations.GetInstance().ContainsTab(tab)) return "";
+            if (!TabInformations.GetInstance().ContainsTab(tab)) return string.Empty;
             content = Regex.Replace(content, @"[\x00-\x1f-[\x0a\x0d]]+", " ");
             var xdoc = new XmlDocument();
             try
@@ -2612,7 +2612,7 @@ namespace OpenTween
                     //Source取得（htmlの場合は、中身を取り出し）
                     post.Source = xentry["twitter:source"].InnerText;
                     post.InReplyToStatusId = 0;
-                    post.InReplyToUser = "";
+                    post.InReplyToUser = string.Empty;
                     post.InReplyToUserId = 0;
                     post.IsFav = false;
 
@@ -2679,21 +2679,21 @@ namespace OpenTween
             }
 #endif
 
-            return "";
+            return string.Empty;
         }
 
         public string GetPhoenixSearch(bool read,
                                 TabClass tab,
                                 bool more)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             var page = 0;
             var sinceId = 0;
             var count = 100;
-            var querystr = "";
+            var querystr = string.Empty;
             if (AppendSettingDialog.Instance.UseAdditionalCount &&
                 AppendSettingDialog.Instance.SearchCountApi != 0)
             {
@@ -2741,7 +2741,7 @@ namespace OpenTween
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
-            if (!TabInformations.GetInstance().ContainsTab(tab)) return "";
+            if (!TabInformations.GetInstance().ContainsTab(tab)) return string.Empty;
 
             //// TODO
             //// 遡るための情報max_idやnext_pageの情報を保持する
@@ -2871,7 +2871,7 @@ namespace OpenTween
                 TabInformations.GetInstance().AddPost(post);
             }
 
-            return "";
+            return string.Empty;
 
         }
 
@@ -2879,16 +2879,16 @@ namespace OpenTween
                                 MyCommon.WORKERTYPE gType,
                                 bool more)
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
             if (MyCommon.TwitterApiInfo.AccessLevel != ApiAccessLevel.None)
             {
                 if (!MyCommon.TwitterApiInfo.IsDirectMessagePermission) return "Auth Err:try to re-authorization.";
             }
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -2942,12 +2942,12 @@ namespace OpenTween
                             MyCommon.WORKERTYPE gType,
                             bool more)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
 
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             var count = AppendSettingDialog.Instance.CountApi;
             if (AppendSettingDialog.Instance.UseAdditionalCount &&
                 AppendSettingDialog.Instance.FavoritesCountApi != 0)
@@ -3117,7 +3117,7 @@ namespace OpenTween
 
             }
 
-            return "";
+            return string.Empty;
         }
 
         private string ReplaceTextFromApi(string text, TwitterDataModel.Entities entities)
@@ -3144,7 +3144,7 @@ namespace OpenTween
 
         public string GetFollowersApi()
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
             long cursor = -1;
             var tmpFollower = new List<long>(followerId);
 
@@ -3164,7 +3164,7 @@ namespace OpenTween
             TabInformations.GetInstance().RefreshOwl(followerId);
 
             _GetFollowerResult = true;
-            return "";
+            return string.Empty;
         }
 
         public bool GetFollowersSuccess
@@ -3177,10 +3177,10 @@ namespace OpenTween
 
         private string FollowerApi(ref long cursor)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.FollowerIds(cursor, ref content);
@@ -3209,7 +3209,7 @@ namespace OpenTween
                 var followers = MyCommon.CreateDataFromJson<TwitterDataModel.Ids>(content);
                 followerId.AddRange(followers.Id);
                 cursor = followers.NextCursor;
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3225,7 +3225,7 @@ namespace OpenTween
 
         public string GetNoRetweetIdsApi()
         {
-            if (MyCommon._endingFlag) return "";
+            if (MyCommon._endingFlag) return string.Empty;
             long cursor = -1;
             var tmpIds = new List<long>(noRTId);
 
@@ -3243,15 +3243,15 @@ namespace OpenTween
             } while (cursor > 0);
 
             _GetNoRetweetResult = true;
-            return "";
+            return string.Empty;
         }
 
         private string NoRetweetApi(ref long cursor)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.NoRetweetIds(cursor, ref content);
@@ -3280,7 +3280,7 @@ namespace OpenTween
                 var ids = MyCommon.CreateDataFromJson<long[]>(content);
                 noRTId.AddRange(ids);
                 cursor = 0;  //0より小さければ何でも良い。
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3305,7 +3305,7 @@ namespace OpenTween
         public string ConfigurationApi()
         {
             HttpStatusCode res;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.GetConfiguration(ref content);
@@ -3332,7 +3332,7 @@ namespace OpenTween
             try
             {
                 AppendSettingDialog.Instance.TwitterConfiguration = MyCommon.CreateDataFromJson<TwitterDataModel.Configuration>(content);
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3348,10 +3348,10 @@ namespace OpenTween
 
         public string GetListsApi()
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             long cursor = -1;
 
             var lists = new List<ListElement>();
@@ -3399,7 +3399,7 @@ namespace OpenTween
             } while (cursor != 0);
 
             cursor = -1;
-            content = "";
+            content = string.Empty;
             do
             {
                 try
@@ -3444,13 +3444,13 @@ namespace OpenTween
             } while (cursor != 0);
 
             TabInformations.GetInstance().SubscribableLists = lists;
-            return "";
+            return string.Empty;
         }
 
         public string DeleteList(string list_id)
         {
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -3475,13 +3475,13 @@ namespace OpenTween
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public string EditList(string list_id, string new_name, bool isPrivate, string description, ref ListElement list)
         {
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -3520,7 +3520,7 @@ namespace OpenTween
                 list.Nickname = newList.Nickname;
                 list.Username = newList.Username;
                 list.UserId = newList.UserId;
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3537,10 +3537,10 @@ namespace OpenTween
 
         public string GetListMembers(string list_id, List<UserInfo> lists, ref long cursor)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             //Do
             try
@@ -3573,7 +3573,7 @@ namespace OpenTween
                     users.users,
                     new Action<TwitterDataModel.User>(u => lists.Add(new UserInfo(u))));
                 cursor = users.NextCursor;
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3589,10 +3589,10 @@ namespace OpenTween
 
         public string CreateListApi(string listName, bool isPrivate, string description)
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -3621,7 +3621,7 @@ namespace OpenTween
             {
                 var le = MyCommon.CreateDataFromJson<TwitterDataModel.ListElementData>(content);
                 TabInformations.GetInstance().SubscribableLists.Add(new ListElement(le, this));
-                return "";
+                return string.Empty;
             }
             catch(SerializationException ex)
             {
@@ -3639,10 +3639,10 @@ namespace OpenTween
         {
             value = false;
 
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -3665,27 +3665,27 @@ namespace OpenTween
                     return "Err:API Limits?";
                 case HttpStatusCode.NotFound:
                     value = false;
-                    return "";
+                    return string.Empty;
                 default:
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
             try
             {
-                var u = MyCommon.CreateDataFromJson<TwitterDataModel.User>(content);
+                var temp_user = MyCommon.CreateDataFromJson<TwitterDataModel.User>(content);
                 value = true;
-                return "";
+                return string.Empty;
             }
             catch(Exception)
             {
                 value = false;
-                return "";
+                return string.Empty;
             }
         }
 
         public string AddUserToList(string listId, string user)
         {
-            var content = "";
+            var content = string.Empty;
             HttpStatusCode res = HttpStatusCode.BadRequest;
 
             try
@@ -3711,13 +3711,13 @@ namespace OpenTween
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public string RemoveUserToList(string listId, string user)
         {
 
-            var content = "";
+            var content = string.Empty;
             HttpStatusCode res = HttpStatusCode.BadRequest;
 
             try
@@ -3743,7 +3743,7 @@ namespace OpenTween
                     return "Err:" + res.ToString() + "(" + MethodBase.GetCurrentMethod().Name + ")";
             }
 
-            return "";
+            return string.Empty;
         }
 
         private class range
@@ -3974,7 +3974,7 @@ namespace OpenTween
                     try
                     {
                         var idx = 0;
-                        ret = "";
+                        ret = string.Empty;
                         foreach (var et in etInfo)
                         {
                             ret += Text.Substring(idx, et.Key - idx) + et.Value.Html;
@@ -4015,8 +4015,8 @@ namespace OpenTween
                 }
                 else
                 {
-                    post.Source = "";
-                    post.SourceHtml = "";
+                    post.Source = string.Empty;
+                    post.SourceHtml = string.Empty;
                 }
             }
             else
@@ -4043,7 +4043,7 @@ namespace OpenTween
             if (MyCommon._endingFlag) return true;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
             try
             {
                 res = twCon.RateLimitStatus(ref content);
@@ -4090,10 +4090,10 @@ namespace OpenTween
         }
         public string GetBlockUserIds()
         {
-            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return "";
+            if (Twitter.AccountState != MyCommon.ACCOUNT_STATE.Valid) return string.Empty;
 
             HttpStatusCode res = HttpStatusCode.BadRequest;
-            var content = "";
+            var content = string.Empty;
 
             try
             {
@@ -4123,7 +4123,7 @@ namespace OpenTween
                 var Ids = MyCommon.CreateDataFromJson<List<long>>(content);
                 if (Ids.Contains(this.UserId)) Ids.Remove(this.UserId);
                 TabInformations.GetInstance().BlockIds.AddRange(Ids);
-                return ("");
+                return (string.Empty);
             }
             catch(SerializationException ex)
             {
@@ -4177,7 +4177,7 @@ namespace OpenTween
         }
 
 #region "UserStream"
-        private string trackWord_ = "";
+        private string trackWord_ = string.Empty;
         public string TrackWord
         {
             get
@@ -4422,7 +4422,7 @@ namespace OpenTween
                     {
                         return;    //Block後のUndoをすると、SourceとTargetが逆転したfollowイベントが帰ってくるため。
                     }
-                    evt.Target = "";
+                    evt.Target = string.Empty;
                     break;
                 case "favorite":
                 case "unfavorite":
@@ -4486,17 +4486,17 @@ namespace OpenTween
                     break;
                 case "block":
                     if (!TabInformations.GetInstance().BlockIds.Contains(eventData.Target.Id)) TabInformations.GetInstance().BlockIds.Add(eventData.Target.Id);
-                    evt.Target = "";
+                    evt.Target = string.Empty;
                     break;
                 case "unblock":
                     if (TabInformations.GetInstance().BlockIds.Contains(eventData.Target.Id)) TabInformations.GetInstance().BlockIds.Remove(eventData.Target.Id);
-                    evt.Target = "";
+                    evt.Target = string.Empty;
                     break;
                 case "user_update":
-                    evt.Target = "";
+                    evt.Target = string.Empty;
                     break;
                 case "list_created":
-                    evt.Target = "";
+                    evt.Target = string.Empty;
                     break;
                 default:
                     MyCommon.TraceOut("Unknown Event:" + evt.Event + Environment.NewLine + content);
@@ -4578,7 +4578,7 @@ namespace OpenTween
             private bool _streamActive;
 
             private bool _allAtreplies = false;
-            private string _trackwords = "";
+            private string _trackwords = string.Empty;
 
             public TwitterUserstream(HttpTwitter twitterConnection)
             {

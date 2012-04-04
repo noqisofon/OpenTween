@@ -47,8 +47,8 @@ namespace OpenTween
         private bool _directAdd;
         private TabInformations _sts;
         private string _cur;
-        private List<string> idlist = new List<string> ();
-        private TabsDialog tabdialog = new TabsDialog (true);
+        private List<string> idlist = new List<string>();
+        private TabsDialog tabdialog = new TabsDialog( true );
 
         private enum EDITMODE
         {
@@ -69,14 +69,14 @@ namespace OpenTween
                 return;
 
             ListFilters.Items.Clear();
-            ListFilters.Items.AddRange( _sts.Tabs [tabName].GetFilters() );
+            ListFilters.Items.AddRange( _sts.Tabs[tabName].GetFilters() );
             if ( ListFilters.Items.Count > 0 )
                 ListFilters.SelectedIndex = 0;
 
-            CheckManageRead.Checked = _sts.Tabs [tabName].UnreadManage;
-            CheckNotifyNew.Checked = _sts.Tabs [tabName].Notify;
+            CheckManageRead.Checked = _sts.Tabs[tabName].UnreadManage;
+            CheckNotifyNew.Checked = _sts.Tabs[tabName].Notify;
 
-            int idx = ComboSound.Items.IndexOf( _sts.Tabs [tabName].SoundFile );
+            int idx = ComboSound.Items.IndexOf( _sts.Tabs[tabName].SoundFile );
             if ( idx == -1 )
                 idx = 0;
             ComboSound.SelectedIndex = idx;
@@ -91,7 +91,7 @@ namespace OpenTween
                 ShowDetail();
             }
             EditFilterGroup.Enabled = false;
-            switch ( TabInformations.GetInstance().Tabs [tabName].TabType ) {
+            switch ( TabInformations.GetInstance().Tabs[tabName].TabType ) {
             case MyCommon.TabUsageType.Home:
             case MyCommon.TabUsageType.DirectMessage:
             case MyCommon.TabUsageType.Favorites:
@@ -126,7 +126,7 @@ namespace OpenTween
                 }
                 break;
             }
-            switch ( TabInformations.GetInstance().Tabs [tabName].TabType ) {
+            switch ( TabInformations.GetInstance().Tabs[tabName].TabType ) {
             case MyCommon.TabUsageType.Home:
                 LabelTabType.Text = Properties.Resources.TabUsageTypeName_Home;
                 break;
@@ -336,7 +336,7 @@ namespace OpenTween
 
             for ( int idx = ListFilters.Items.Count - 1; idx >= 0; idx-- ) {
                 if ( ListFilters.GetSelected( idx ) ) {
-                    _sts.Tabs [ListTabs.SelectedItem.ToString()].RemoveFilter( (FiltersClass)ListFilters.Items [idx] );
+                    _sts.Tabs[ListTabs.SelectedItem.ToString()].RemoveFilter( (FiltersClass)ListFilters.Items[idx] );
                     ListFilters.Items.RemoveAt( idx );
                 }
             }
@@ -540,7 +540,7 @@ namespace OpenTween
             int i = ListFilters.SelectedIndex;
             FiltersClass ft;
 
-            ft = new FiltersClass ();
+            ft = new FiltersClass();
 
             ft.MoveFrom = OptMove.Checked;
             ft.SetMark = CheckMark.Checked;
@@ -608,10 +608,10 @@ namespace OpenTween
             ft.ExUseLambda = CheckExLambDa.Checked;
 
             if ( _mode == EDITMODE.AddNew ) {
-                if ( !_sts.Tabs [ListTabs.SelectedItem.ToString()].AddFilter( ft ) )
+                if ( !_sts.Tabs[ListTabs.SelectedItem.ToString()].AddFilter( ft ) )
                     MessageBox.Show( Properties.Resources.ButtonOK_ClickText4, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else {
-                _sts.Tabs [ListTabs.SelectedItem.ToString()].EditFilter( (FiltersClass)ListFilters.SelectedItem, ft );
+                _sts.Tabs[ListTabs.SelectedItem.ToString()].EditFilter( (FiltersClass)ListFilters.SelectedItem, ft );
             }
 
             SetFilters( ListTabs.SelectedItem.ToString() );
@@ -639,7 +639,7 @@ namespace OpenTween
         private bool IsValidRegexp(string text)
         {
             try {
-                Regex rgx = new Regex (text);
+                /* Regex re = */ new Regex( text );
             } catch ( Exception ex ) {
                 MessageBox.Show( Properties.Resources.ButtonOK_ClickText3 + ex.Message, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 return false;
@@ -789,7 +789,7 @@ namespace OpenTween
                 return;
             }
 
-            if ( ListFilters.Items [ListFilters.IndexFromPoint( ListFilters.PointToClient( Control.MousePosition ) )] == null ) {
+            if ( ListFilters.Items[ListFilters.IndexFromPoint( ListFilters.PointToClient( Control.MousePosition ) )] == null ) {
                 return;
             }
             ButtonEdit_Click( sender, e );
@@ -807,9 +807,9 @@ namespace OpenTween
 
             ComboSound.Items.Clear();
             ComboSound.Items.Add( "" );
-            DirectoryInfo oDir = new DirectoryInfo (Application.StartupPath + Path.DirectorySeparatorChar);
+            DirectoryInfo oDir = new DirectoryInfo( Application.StartupPath + Path.DirectorySeparatorChar );
             if ( Directory.Exists( Path.Combine( Application.StartupPath, "Sounds" ) ) ) {
-                oDir = oDir.GetDirectories( "Sounds" ) [0];
+                oDir = oDir.GetDirectories( "Sounds" )[0];
             }
             foreach ( FileInfo oFile in oDir.GetFiles("*.wav") ) {
                 ComboSound.Items.Add( oFile.Name );
@@ -829,7 +829,7 @@ namespace OpenTween
             if ( ListTabs.Items.Count > 0 ) {
                 if ( _cur.Length > 0 ) {
                     for ( int i = 0; i < ListTabs.Items.Count; i++ ) {
-                        if ( _cur == ListTabs.Items [i].ToString() ) {
+                        if ( _cur == ListTabs.Items[i].ToString() ) {
                             ListTabs.SelectedIndex = i;
                             //tabdialog.TabList.Items.Remove(_cur);
                             break;
@@ -947,7 +947,7 @@ namespace OpenTween
         {
             if ( ListTabs.SelectedIndex > 0 && !string.IsNullOrEmpty( ListTabs.SelectedItem.ToString() ) ) {
                 string selName = ListTabs.SelectedItem.ToString();
-                string tgtName = ListTabs.Items [ListTabs.SelectedIndex - 1].ToString();
+                string tgtName = ListTabs.Items[ListTabs.SelectedIndex - 1].ToString();
                 ((TweenMain)this.Owner).ReOrderTab(
                     selName,
                     tgtName,
@@ -963,7 +963,7 @@ namespace OpenTween
         {
             if ( ListTabs.SelectedIndex > -1 && ListTabs.SelectedIndex < ListTabs.Items.Count - 1 && !string.IsNullOrEmpty( ListTabs.SelectedItem.ToString() ) ) {
                 string selName = ListTabs.SelectedItem.ToString();
-                string tgtName = ListTabs.Items [ListTabs.SelectedIndex + 1].ToString();
+                string tgtName = ListTabs.Items[ListTabs.SelectedIndex + 1].ToString();
                 ((TweenMain)this.Owner).ReOrderTab(
                     selName,
                     tgtName,
@@ -978,7 +978,7 @@ namespace OpenTween
         private void CheckNotifyNew_CheckedChanged(object sender, EventArgs e)
         {
             if ( ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty( ListTabs.SelectedItem.ToString() ) ) {
-                _sts.Tabs [ListTabs.SelectedItem.ToString()].Notify = CheckNotifyNew.Checked;
+                _sts.Tabs[ListTabs.SelectedItem.ToString()].Notify = CheckNotifyNew.Checked;
             }
         }
 
@@ -989,7 +989,7 @@ namespace OpenTween
                 string filename = "";
                 if ( ComboSound.SelectedIndex > -1 )
                     filename = ComboSound.SelectedItem.ToString();
-                _sts.Tabs [ListTabs.SelectedItem.ToString()].SoundFile = filename;
+                _sts.Tabs[ListTabs.SelectedItem.ToString()].SoundFile = filename;
             }
         }
 
@@ -1013,13 +1013,13 @@ namespace OpenTween
         {
             if ( ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null && ListFilters.SelectedIndex > 0 ) {
                 string tabname = ListTabs.SelectedItem.ToString();
-                FiltersClass selected = _sts.Tabs [tabname].Filters [ListFilters.SelectedIndex];
-                FiltersClass target = _sts.Tabs [tabname].Filters [ListFilters.SelectedIndex - 1];
+                FiltersClass selected = _sts.Tabs[tabname].Filters[ListFilters.SelectedIndex];
+                FiltersClass target = _sts.Tabs[tabname].Filters[ListFilters.SelectedIndex - 1];
                 int idx = ListFilters.SelectedIndex;
                 ListFilters.Items.RemoveAt( idx - 1 );
                 ListFilters.Items.Insert( idx, target );
-                _sts.Tabs [tabname].Filters.RemoveAt( idx - 1 );
-                _sts.Tabs [tabname].Filters.Insert( idx, target );
+                _sts.Tabs[tabname].Filters.RemoveAt( idx - 1 );
+                _sts.Tabs[tabname].Filters.Insert( idx, target );
             }
         }
 
@@ -1028,13 +1028,13 @@ namespace OpenTween
         {
             if ( ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null && ListFilters.SelectedIndex < ListFilters.Items.Count - 1 ) {
                 string tabname = ListTabs.SelectedItem.ToString();
-                FiltersClass selected = _sts.Tabs [tabname].Filters [ListFilters.SelectedIndex];
-                FiltersClass target = _sts.Tabs [tabname].Filters [ListFilters.SelectedIndex + 1];
+                FiltersClass selected = _sts.Tabs[tabname].Filters[ListFilters.SelectedIndex];
+                FiltersClass target = _sts.Tabs[tabname].Filters[ListFilters.SelectedIndex + 1];
                 int idx = ListFilters.SelectedIndex;
                 ListFilters.Items.RemoveAt( idx + 1 );
                 ListFilters.Items.Insert( idx, target );
-                _sts.Tabs [tabname].Filters.RemoveAt( idx + 1 );
-                _sts.Tabs [tabname].Filters.Insert( idx, target );
+                _sts.Tabs[tabname].Filters.RemoveAt( idx + 1 );
+                _sts.Tabs[tabname].Filters.Insert( idx, target );
             }
         }
 
@@ -1048,16 +1048,16 @@ namespace OpenTween
                 }
                 string tabname = ListTabs.SelectedItem.ToString();
                 StringCollection tabs = tabdialog.SelectedTabNames;
-                List<FiltersClass> filters = new List<FiltersClass> ();
+                List<FiltersClass> filters = new List<FiltersClass>();
 
                 foreach ( int idx in ListFilters.SelectedIndices ) {
-                    filters.Add( _sts.Tabs [tabname].Filters [idx].CopyTo( new FiltersClass () ) );
+                    filters.Add( _sts.Tabs[tabname].Filters[idx].CopyTo( new FiltersClass() ) );
                 }
                 foreach ( string tb in tabs ) {
                     if ( tb != tabname ) {
                         foreach ( FiltersClass flt in filters ) {
-                            if ( !_sts.Tabs [tb].Filters.Contains( flt ) )
-                                _sts.Tabs [tb].AddFilter( flt.CopyTo( new FiltersClass () ) );
+                            if ( !_sts.Tabs[tb].Filters.Contains( flt ) )
+                                _sts.Tabs[tb].AddFilter( flt.CopyTo( new FiltersClass() ) );
                         }
                     }
                 }
@@ -1075,24 +1075,24 @@ namespace OpenTween
                 }
                 string tabname = ListTabs.SelectedItem.ToString();
                 StringCollection tabs = tabdialog.SelectedTabNames;
-                List<FiltersClass> filters = new List<FiltersClass> ();
+                List<FiltersClass> filters = new List<FiltersClass>();
 
                 foreach ( int idx in ListFilters.SelectedIndices ) {
-                    filters.Add( _sts.Tabs [tabname].Filters [idx].CopyTo( new FiltersClass () ) );
+                    filters.Add( _sts.Tabs[tabname].Filters[idx].CopyTo( new FiltersClass() ) );
                 }
-                if ( tabs.Count == 1 && tabs [0] == tabname )
+                if ( tabs.Count == 1 && tabs[0] == tabname )
                     return;
                 foreach ( string tb in tabs ) {
                     if ( tb != tabname ) {
                         foreach ( FiltersClass flt in filters ) {
-                            if ( !_sts.Tabs [tb].Filters.Contains( flt ) )
-                                _sts.Tabs [tb].AddFilter( flt.CopyTo( new FiltersClass () ) );
+                            if ( !_sts.Tabs[tb].Filters.Contains( flt ) )
+                                _sts.Tabs[tb].AddFilter( flt.CopyTo( new FiltersClass() ) );
                         }
                     }
                 }
                 for ( int idx = ListFilters.Items.Count - 1; idx >= 0; idx-- ) {
                     if ( ListFilters.GetSelected( idx ) ) {
-                        _sts.Tabs [ListTabs.SelectedItem.ToString()].RemoveFilter( (FiltersClass)ListFilters.Items [idx] );
+                        _sts.Tabs[ListTabs.SelectedItem.ToString()].RemoveFilter( (FiltersClass)ListFilters.Items[idx] );
                         ListFilters.Items.RemoveAt( idx );
                     }
                 }
@@ -1110,7 +1110,7 @@ namespace OpenTween
                     int endidx = tbox.SelectionStart - 1;
                     string startstr = "";
                     for ( int i = tbox.SelectionStart - 1; i >= 0; i-- ) {
-                        char c = tbox.Text [i];
+                        char c = tbox.Text[i];
                         if ( Char.IsLetterOrDigit( c ) || c == '_' ) {
                             continue;
                         }

@@ -332,13 +332,13 @@ namespace OpenTween
 
             //プロセスを閉じるためにtry-finally
             try {
-                var tbButtonLocal = new TBBUTTON ();   //本プロセス内のタスクバーボタン情報作成（サイズ特定でのみ使用）
+                var tbButtonLocal = new TBBUTTON();   //本プロセス内のタスクバーボタン情報作成（サイズ特定でのみ使用）
                 //Explorer内のタスクバーボタン格納メモリ確保
                 var ptbSysButton = VirtualAllocEx( hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf( tbButtonLocal ), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite );
                 if ( ptbSysButton.Equals( IntPtr.Zero ) )
                     return false; //メモリ確保失敗
                 try {
-                    var tbButtonInfoLocal = new TBBUTTONINFO ();   //本プロセス内ツールバーボタン詳細情報作成
+                    var tbButtonInfoLocal = new TBBUTTONINFO();   //本プロセス内ツールバーボタン詳細情報作成
                     //Explorer内のタスクバーボタン詳細情報格納メモリ確保
                     var ptbSysInfo = VirtualAllocEx( hProc, IntPtr.Zero, (IntPtr)Marshal.SizeOf( tbButtonInfoLocal ), AllocationTypes.Reserve | AllocationTypes.Commit, MemoryProtectionTypes.ReadWrite );
                     if ( ptbSysInfo.Equals( IntPtr.Zero ) )
@@ -357,12 +357,12 @@ namespace OpenTween
                                 return false; //メモリ確保失敗
                             try {
                                 //通知領域ボタン数取得
-                                var iCount = (int)SendMessage( toolWin, (int)Sm_Message.TB_BUTTONCOUNT, new IntPtr (0), new IntPtr (0) );
+                                var iCount = (int)SendMessage( toolWin, (int)Sm_Message.TB_BUTTONCOUNT, new IntPtr( 0 ), new IntPtr( 0 ) );
                                 //左から順に情報取得
                                 for ( var i = 0; i < iCount; i++ ) {
                                     var dwBytes = 0;  //読み書きバイト数
-                                    var tbButtonLocal2 = new TBBUTTON ();  //ボタン情報
-                                    var tbButtonInfoLocal2 = new TBBUTTONINFO ();  //ボタン詳細情報
+                                    var tbButtonLocal2 = new TBBUTTON();  //ボタン情報
+                                    var tbButtonInfoLocal2 = new TBBUTTONINFO();  //ボタン詳細情報
                                     //共有メモリにボタン情報読込メモリ確保
                                     var ptrLocal = Marshal.AllocCoTaskMem( Marshal.SizeOf( tbButtonLocal ) );
                                     if ( ptrLocal.Equals( IntPtr.Zero ) )
@@ -373,7 +373,7 @@ namespace OpenTween
                                         SendMessage(
                                             toolWin,
                                             (int)Sm_Message.TB_GETBUTTON,
-                                            new IntPtr (i),
+                                            new IntPtr( i ),
                                             ptbSysButton );
                                         //Explorer内のメモリを共有メモリに読み込み
                                         ReadProcessMemory(
@@ -436,8 +436,8 @@ namespace OpenTween
                                     //Tooltipが指定文字列を含んでいればクリック
                                     if ( title.Contains( tooltip ) ) {
                                         //PostMessageでクリックを送るために、ボタン詳細情報のlParamでポイントされているTRAYNOTIFY情報が必要
-                                        var tNotify = new TRAYNOTIFY ();
-                                        var tNotify2 = new TRAYNOTIFY ();
+                                        var tNotify = new TRAYNOTIFY();
+                                        var tNotify2 = new TRAYNOTIFY();
                                         //共有メモリ確保
                                         var ptNotify = Marshal.AllocCoTaskMem( Marshal.SizeOf( tNotify ) );
                                         if ( ptNotify.Equals( IntPtr.Zero ) )
@@ -497,7 +497,7 @@ namespace OpenTween
             FlashSpecification flashType,
             int flashCount)
         {
-            var fInfo = new FLASHWINFO ();
+            var fInfo = new FLASHWINFO();
             fInfo.cbSize = Convert.ToInt32( Marshal.SizeOf( fInfo ) );
             fInfo.hwnd = hwnd;
             fInfo.dwFlags = (int)FlashSpecification.FlashAll;
@@ -565,7 +565,7 @@ namespace OpenTween
 
         public static bool IsScreenSaverRunning()
         {
-            var ret = 0;
+            int ret;
             var isRunning = false;
 
             ret = SystemParametersInfo( SPI_GETSCREENSAVERRUNNING, 0, ref isRunning, 0 );
@@ -602,14 +602,14 @@ namespace OpenTween
                 var atomName = Thread.CurrentThread.ManagedThreadId.ToString( "X8" ) + targetForm.Name + registerCount.ToString();
                 hotkeyID = GlobalAddAtom( atomName );
                 if ( hotkeyID == 0 ) {
-                    throw new Exception ("Unable to generate unique hotkey ID. Error code: " +
-                       Marshal.GetLastWin32Error().ToString());
+                    throw new Exception( "Unable to generate unique hotkey ID. Error code: " +
+                       Marshal.GetLastWin32Error().ToString() );
                 }
 
                 // register the hotkey, throw if any error
                 if ( RegisterHotKey( targetForm.Handle, hotkeyID, modifiers, hotkeyValue ) == 0 ) {
-                    throw new Exception ("Unable to register hotkey. Error code: " +
-                       Marshal.GetLastWin32Error().ToString());
+                    throw new Exception( "Unable to register hotkey. Error code: " +
+                       Marshal.GetLastWin32Error().ToString() );
                 }
                 return hotkeyID;
             } catch ( Exception ) {
@@ -677,13 +677,13 @@ namespace OpenTween
             } else if ( strProxy == null ) {
                 //IE Default
                 var p = WebRequest.GetSystemWebProxy();
-                if ( p.IsBypassed( new Uri ("http://www.google.com/") ) ) {
+                if ( p.IsBypassed( new Uri( "http://www.google.com/" ) ) ) {
                     ipi.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
                     ipi.proxy = IntPtr.Zero;
                     ipi.proxyBypass = IntPtr.Zero;
                 } else {
                     ipi.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
-                    ipi.proxy = Marshal.StringToHGlobalAnsi( p.GetProxy( new Uri ("http://www.google.com/") ).Authority );
+                    ipi.proxy = Marshal.StringToHGlobalAnsi( p.GetProxy( new Uri( "http://www.google.com/" ) ).Authority );
                     ipi.proxyBypass = Marshal.StringToHGlobalAnsi( "local" );
                 }
             } else {
