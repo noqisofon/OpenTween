@@ -51,6 +51,8 @@ namespace OpenTween
 
     public partial class TweenMain : Form
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger( typeof(TweenMain) );
+        
         //各種設定
         private Size _mySize;           //画面サイズ
         private Point _myLoc;           //画面位置
@@ -58,7 +60,7 @@ namespace OpenTween
         private int _mySpDis2;          //発言欄区切り位置
         private int _mySpDis3;          //プレビュー区切り位置
         private int _myAdSpDis;         //Ad区切り位置
-        private int _iconSz;            //アイコンサイズ（現在は16、24、48の3種類。将来直接数字指定可能とする 注：24x24の場合に26と指定しているのはMSゴシック系フォントのための仕様）
+        private int _iconSize;          //アイコンサイズ（現在は16、24、48の3種類。将来直接数字指定可能とする 注：24x24の場合に26と指定しているのはMSゴシック系フォントのための仕様）
         private bool _iconCol;          //1列表示の時true（48サイズのとき）
 
         //雑多なフラグ類
@@ -339,23 +341,28 @@ namespace OpenTween
 
         private void TweenMain_Activated(object sender, EventArgs e)
         {
+            logger.Debug( "entering TweenMain_Activated" );
             //画面がアクティブになったら、発言欄の背景色戻す
             if ( StatusText.Focused )
             {
+                logger.Debug( "発言欄にフォーカスがあたっています。" );
                 this.StatusText_Enter( this.StatusText, System.EventArgs.Empty );
             }
+            logger.Debug( "ending TweenMain_Activated" );
         }
 
 
         private void TweenMain_Disposed(object sender, EventArgs e)
         {
+            logger.Debug( "entering TweenMain_Disposed" );
             //後始末
             SettingDialog.Dispose();
             TabDialog.Dispose();
             SearchDialog.Dispose();
             fltDialog.Dispose();
             UrlDialog.Dispose();
-            _spaceKeyCanceler.Dispose();
+            if ( _spaceKeyCanceler != null )
+                _spaceKeyCanceler.Dispose();
             if ( NIconAt != null )
                 NIconAt.Dispose();
             if ( NIconAtRed != null )
@@ -427,6 +434,8 @@ namespace OpenTween
             // 終了時にRemoveHandlerしておかないとメモリリークする
             // http://msdn.microsoft.com/ja-jp/library/microsoft.win32.systemevents.powermodechanged.aspx
             Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
+            
+            logger.Debug( "ending TweenMain_Disposed" );
         }
 
 
@@ -435,26 +444,33 @@ namespace OpenTween
             string starting_path = Application.StartupPath;
             string file_path;
             
+            logger.Debug( "entering LoadIcon" );
+            
             if ( Path.DirectorySeparatorChar != '/' ) {
+                logger.Debug( "Path.DirectorySeparatorChar が '/' ではないようです。" );
                 if ( file_name.IndexOf( '\\' ) >= 0 )
                     file_name = file_name.Replace( '\\', '/' );
             }
             file_path = Path.Combine( starting_path, file_name );
+            logger.DebugFormat( "file path is {0}", file_path );
             
             if ( File.Exists( file_path ) )
             {
                 try
                 {
                     icon = new Icon( file_path );
-                } catch ( Exception )
+                } catch ( Exception e )
                 {
+                    logger.Error( "アイコンを読み込む時に例外が発生しました。", e );
                 }
             }
+            logger.Debug( "ending LoadIcon" );
         }
 
 
         private void LoadIcons()
         {
+            logger.Debug( "entering LoadIcons" );
             //着せ替えアイコン対応
             //タスクトレイ通常時アイコン
             string dir = Application.StartupPath;
@@ -471,8 +487,11 @@ namespace OpenTween
             ReplyIcon = Properties.Resources.Reply;
             ReplyIconBlink = Properties.Resources.ReplyBlink;
 
-            if ( !Directory.Exists( Path.Combine( dir, "Icons" ) ) )
+            if ( !Directory.Exists( Path.Combine( dir, "Icons" ) ) ) {
+                logger.Debug( "ending LoadIcons" );
+            
                 return;
+            }
 
             LoadIcon( ref NIconAt, "Icons\\At.ico" );
 
@@ -500,11 +519,15 @@ namespace OpenTween
 
             //Reply点滅のアイコン
             LoadIcon( ref ReplyIconBlink, "Icons\\ReplyBlink.ico" );
+            
+            logger.Debug( "ending LoadIcons" );
         }
 
 
         private void InitColumnText()
         {
+            logger.Debug( "entering InitColumnText" );
+            
             ColumnText[0] = "";
             ColumnText[1] = Properties.Resources.AddNewTabText2;
             ColumnText[2] = Properties.Resources.AddNewTabText3;
@@ -566,11 +589,13 @@ namespace OpenTween
                     ColumnText[c] = ColumnOrgText[c] + "▴";
                 }
             }
+            logger.Debug( "ending InitColumnText" );
         }
 
 
         private void InitializeTraceFrag()
         {
+            logger.Debug( "entering InitializeTraceFrag" );
 #if DEBUG
             TraceOutToolStripMenuItem.Checked = true;
             MyCommon.TraceFlag = true;
@@ -580,17 +605,21 @@ namespace OpenTween
                 TraceOutToolStripMenuItem.Checked = true;
                 MyCommon.TraceFlag = true;
             }
+            logger.Debug( "ending InitializeTraceFrag" );
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _ignoreConfigSave = true;
+            logger.Debug( "entering Form1_Load" );
+         
+           _ignoreConfigSave = true;
             this.Visible = false;
 
             //Win32Api.SetProxy(HttpConnection.ProxyType.Specified, "127.0.0.1", 8080, "user", "pass")
-
+            logger.Debug( "InternalSecurityManager を生成します。" );
             securityManager = new InternetSecurityManager( PostBrowser );
+            logger.Debug( "InternalSecurityManager を生成しました。" );
             thumbnail_ = new Thumbnail( this );
 
             MyCommon.TwitterApiInfo.Changed += SetStatusLabelApiHandler;
@@ -1180,42 +1209,42 @@ namespace OpenTween
             switch ( SettingDialog.IconSz )
             {
                 case MyCommon.IconSizes.IconNone:
-                    _iconSz = 0;
+                    _iconSize = 0;
                     break;
                 case MyCommon.IconSizes.Icon16:
-                    _iconSz = 16;
+                    _iconSize = 16;
                     break;
                 case MyCommon.IconSizes.Icon24:
-                    _iconSz = 26;
+                    _iconSize = 26;
                     break;
                 case MyCommon.IconSizes.Icon48:
-                    _iconSz = 48;
+                    _iconSize = 48;
                     break;
                 case MyCommon.IconSizes.Icon48_2:
-                    _iconSz = 48;
+                    _iconSize = 48;
                     _iconCol = true;
                     break;
             }
-            if ( _iconSz == 0 )
+            if ( _iconSize == 0 )
             {
                 tw.GetIcon = false;
             } else
             {
                 tw.GetIcon = true;
-                tw.IconSize = _iconSz;
+                tw.IconSize = _iconSize;
             }
             tw.TinyUrlResolve = SettingDialog.TinyUrlResolve;
             ShortUrl.IsForceResolve = SettingDialog.ShortUrlForceResolve;
 
             //発言詳細部アイコンをリストアイコンにサイズ変更
             int icon_size;
-            if ( _iconSz == 0 )
+            if ( _iconSize == 0 )
             {
                 icon_size = 16;
             }
             else 
             {
-                icon_size = _iconSz;
+                icon_size = _iconSize;
             }
 
             tw.DetailIcon = TIconDic;
@@ -1335,6 +1364,7 @@ namespace OpenTween
                     break;
                 }
             }
+            logger.Debug( "exiting Form1_Load" );
         }
 
 
@@ -4728,9 +4758,9 @@ namespace OpenTween
                 TabDialog.AddTab( tabName );
 
             _listCustom.SmallImageList = new ImageList();
-            if ( _iconSz > 0 )
+            if ( _iconSize > 0 )
             {
-                _listCustom.SmallImageList.ImageSize = new Size( _iconSz, _iconSz );
+                _listCustom.SmallImageList.ImageSize = new Size( _iconSize, _iconSize );
             } else
             {
                 _listCustom.SmallImageList.ImageSize = new Size( 1, 1 );
@@ -5675,14 +5705,14 @@ namespace OpenTween
             Rectangle iconRect;
             if ( item.Image != null )
             {
-                iconRect = Rectangle.Intersect( new Rectangle( e.Item.GetBounds( ItemBoundsPortion.Icon ).Location, new Size( _iconSz, _iconSz ) ), itemRect );
-                iconRect.Offset( 0, Math.Max( 0, ( itemRect.Height - _iconSz ) / 2 ) );
-                stateRect = Rectangle.Intersect( new Rectangle( iconRect.Location.X + _iconSz + 2, iconRect.Location.Y, 18, 16 ), itemRect );
+                iconRect = Rectangle.Intersect( new Rectangle( e.Item.GetBounds( ItemBoundsPortion.Icon ).Location, new Size( _iconSize, _iconSize ) ), itemRect );
+                iconRect.Offset( 0, Math.Max( 0, ( itemRect.Height - _iconSize ) / 2 ) );
+                stateRect = Rectangle.Intersect( new Rectangle( iconRect.Location.X + _iconSize + 2, iconRect.Location.Y, 18, 16 ), itemRect );
             } else
             {
                 iconRect = Rectangle.Intersect( new Rectangle( e.Item.GetBounds( ItemBoundsPortion.Icon ).Location, new Size( 1, 1 ) ), itemRect );
                 //iconRect.Offset(0, Math.Max(0, (itemRect.Height - _iconSz) / 2));
-                stateRect = Rectangle.Intersect( new Rectangle( iconRect.Location.X + _iconSz + 2, iconRect.Location.Y, 18, 16 ), itemRect );
+                stateRect = Rectangle.Intersect( new Rectangle( iconRect.Location.X + _iconSize + 2, iconRect.Location.Y, 18, 16 ), itemRect );
             }
 
             if ( item.Image != null && iconRect.Width > 0 )
@@ -6020,8 +6050,8 @@ namespace OpenTween
                 SelectListItem( lst, idx );
                 if ( _statuses.SortMode == IdComparerClass.ComparerMode.Id )
                 {
-                    if ( _statuses.SortOrder == SortOrder.Ascending && lst.Items[idx].Position.Y > lst.ClientSize.Height - _iconSz - 10 ||
-                       _statuses.SortOrder == SortOrder.Descending && lst.Items[idx].Position.Y < _iconSz + 10 )
+                    if ( _statuses.SortOrder == SortOrder.Ascending && lst.Items[idx].Position.Y > lst.ClientSize.Height - _iconSize - 10 ||
+                       _statuses.SortOrder == SortOrder.Descending && lst.Items[idx].Position.Y < _iconSize + 10 )
                     {
                         MoveTop();
                     } else

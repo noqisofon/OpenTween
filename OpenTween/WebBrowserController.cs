@@ -259,6 +259,7 @@ namespace OpenTween
 
     public class InternetSecurityManager : WebBrowserAPI.IServiceProvider, WebBrowserAPI.IInternetSecurityManager
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger( typeof(InternetSecurityManager) );
     #region "HRESULT"
         private class HRESULT
         {
@@ -283,14 +284,19 @@ namespace OpenTween
 
         public InternetSecurityManager(WebBrowser _WebBrowser)
         {
+            logger.Debug( "entering InternetSecurityManager.ctor" );
             // ActiveXコントロール取得
             _WebBrowser.DocumentText = "about:blank"; //ActiveXを初期化する
-            int hresult = 0;
-
-            do {
-                Thread.Sleep( 100 );
-                Application.DoEvents();
-            } while (_WebBrowser.ReadyState != WebBrowserReadyState.Complete);
+            int hresult;
+            
+            logger.DebugFormat( "{0}", _WebBrowser.Url );
+            if ( _WebBrowser.Url != null ) {
+                do {
+                    Thread.Sleep( 100 );
+                    Application.DoEvents();
+                    logger.DebugFormat( "ready state: {0}", _WebBrowser.ReadyState );
+                } while ( _WebBrowser.ReadyState != WebBrowserReadyState.Complete );
+            }
 
             ocx = _WebBrowser.ActiveXInstance;
 
@@ -303,12 +309,13 @@ namespace OpenTween
                                 ref WebBrowserAPI.IID_IProfferService, out profferServicePtr );
             } catch ( SEHException ex ) {
                 MyCommon.TraceOut( ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
+                logger.ErrorFormat( "ocxServiceProvider.QueryService() HRESULT: {0}", ex.ErrorCode.ToString( "X8" ) );
                 return;
             } catch ( ExternalException ex ) {
                 MyCommon.TraceOut( ex, "ocxServiceProvider.QueryService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
+                logger.ErrorFormat( "ocxServiceProvider.QueryService() HRESULT: {0}", ex.ErrorCode.ToString( "X8" ) );
                 return;
             }
-
 
             profferService = (WebBrowserAPI.IProfferService)Marshal.GetObjectForIUnknown( profferServicePtr );
 
@@ -320,11 +327,16 @@ namespace OpenTween
                                 ref WebBrowserAPI.IID_IInternetSecurityManager, this, out cookie );
             } catch ( SEHException ex ) {
                 MyCommon.TraceOut( ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
+                logger.ErrorFormat( "IProfferSerive.ProfferService() HRESULT: {0}", ex.ErrorCode.ToString( "X8" ) );
+                
                 return;
             } catch ( ExternalException ex ) {
                 MyCommon.TraceOut( ex, "IProfferSerive.ProfferService() HRESULT:" + ex.ErrorCode.ToString( "X8" ) + Environment.NewLine );
+                logger.ErrorFormat( "IProfferSerive.ProfferService() HRESULT: {0}", ex.ErrorCode.ToString( "X8" ) );
+                
                 return;
             }
+            logger.Debug( "exiting InternetSecurityManager.ctor" );
         }
 
 
