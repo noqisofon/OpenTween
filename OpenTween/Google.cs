@@ -318,9 +318,9 @@ namespace OpenTween
 
         public string CreateGoogleStaticMapsUri(double lat, double lng)
         {
-            int width = AppendSettingDialog.Instance.FoursquarePreviewWidth;
-            int height = AppendSettingDialog.Instance.FoursquarePreviewHeight;
-            int zoom = AppendSettingDialog.Instance.FoursquarePreviewZoom;
+            int width = AppendSettingDialog.Instance.foursquare_preview_width_;
+            int height = AppendSettingDialog.Instance.foursquare_preview_height_;
+            int zoom = AppendSettingDialog.Instance.foursquare_preview_zoom_;
             string location = lat.ToString() + "," + lng.ToString();
 
             return "http://maps.google.com/maps/api/staticmap?center=" + location + "&size=" + width + "x" + height + "&zoom=" + zoom + "&markers=" + location + "&sensor=false";
@@ -335,7 +335,7 @@ namespace OpenTween
 
         public string CreateGoogleMapsUri(double lat, double lng)
         {
-            int zoom = AppendSettingDialog.Instance.FoursquarePreviewZoom;
+            int zoom = AppendSettingDialog.Instance.foursquare_preview_zoom_;
             string location = lat.ToString() + "," + lng.ToString();
 
             return "http://maps.google.com/maps?ll=" + location + "&z=" + zoom + "&q=" + location;

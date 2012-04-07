@@ -42,26 +42,26 @@ namespace OpenTween
 
     public partial class AppendSettingDialog : Form
     {
-        private static AppendSettingDialog _instance = new AppendSettingDialog ();
-        private Twitter tw;
-        private HttpConnection.ProxyType _MyProxyType;
-        private bool _ValidationError = false;
-        private MyCommon.EVENTTYPE _MyEventNotifyFlag;
-        private MyCommon.EVENTTYPE _isMyEventNotifyFlag;
-        private string _MyTranslateLanguage;
-        public bool HideDuplicatedRetweets;
-        public bool IsPreviewFoursquare;
-        public int FoursquarePreviewHeight;
-        public int FoursquarePreviewWidth;
-        public int FoursquarePreviewZoom;
-        public bool IsListStatusesIncludeRts;
-        public List<UserAccount> UserAccounts;
-        private long InitialUserId;
-        public bool TabMouseLock;
-        public bool IsRemoveSameEvent;
-        public bool IsNotifyUseGrowl;
-        public TwitterDataModel.Configuration TwitterConfiguration = new TwitterDataModel.Configuration ();
-        private string _pin;
+        private static AppendSettingDialog _instance = new AppendSettingDialog();
+        private Twitter twitter_;
+        private HttpConnection.ProxyType my_proxy_type_;
+        private bool validation_error_ = false;
+        private MyCommon.EVENTTYPE my_event_notify_flag_;
+        private MyCommon.EVENTTYPE is_my_event_notify_flag_;
+        private string my_translated_retweets_;
+        public bool hide_duplicated_retweets_;
+        public bool is_preview_foursquare_;
+        public int foursquare_preview_height_;
+        public int foursquare_preview_width_;
+        public int foursquare_preview_zoom_;
+        public bool is_list_statuses_include_rts_;
+        public List<UserAccount> user_accounts_;
+        private long initial_user_id_;
+        public bool tab_mouse_lock_;
+        public bool is_remove_same_event_;
+        public bool is_notify_use_growl_;
+        public TwitterDataModel.Configuration twitter_config_ = new TwitterDataModel.Configuration();
+        private string pin_;
 
         public class IntervalChangedEventArgs : EventArgs
         {
@@ -85,11 +85,12 @@ namespace OpenTween
         {
             if ( this.TreeViewSetting.SelectedNode == null )
                 return;
-            Panel pnl = (Panel)this.TreeViewSetting.SelectedNode.Tag;
-            if ( pnl == null )
+            Panel panel = (Panel)this.TreeViewSetting.SelectedNode.Tag;
+            if ( panel == null )
                 return;
-            pnl.Enabled = false;
-            pnl.Visible = false;
+            
+            panel.Enabled = false;
+            panel.Visible = false;
         }
 
 
@@ -97,13 +98,13 @@ namespace OpenTween
         {
             if ( e.Node == null )
                 return;
-            Panel pnl = (Panel)e.Node.Tag;
-            if ( pnl == null )
+            Panel panel = (Panel)e.Node.Tag;
+            if ( panel == null )
                 return;
-            pnl.Enabled = true;
-            pnl.Visible = true;
+            panel.Enabled = true;
+            panel.Visible = true;
 
-            if ( pnl.Name == "PreviewPanel" ) {
+            if ( panel.Name == "PreviewPanel" ) {
                 if ( GrowlHelper.IsDllExists ) {
                     IsNotifyUseGrowlCheckBox.Enabled = true;
                 } else {
@@ -122,45 +123,47 @@ namespace OpenTween
                 // 参照: http://sourceforge.jp/projects/opentween/lists/archive/dev/2012-January/000020.html
                 if ( string.IsNullOrEmpty( TextBitlyId.Text ) || string.IsNullOrEmpty( TextBitlyPw.Text ) ) {
                     MessageBox.Show( "bit.ly のログイン名とAPIキーの指定は必須項目です。", Application.ProductName );
-                    _ValidationError = true;
+                    validation_error_ = true;
                     TreeViewSetting.SelectedNode = TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ShortUrlNode"]; // 動作タブを選択
                     TreeViewSetting.Select();
                     TextBitlyId.Focus();
+                    
                     return;
                 }
 
                 if ( !BitlyValidation( TextBitlyId.Text, TextBitlyPw.Text ) ) {
                     MessageBox.Show( Properties.Resources.SettingSave_ClickText1 );
-                    _ValidationError = true;
+                    validation_error_ = true;
                     TreeViewSetting.SelectedNode = TreeViewSetting.Nodes ["ConnectionNode"].Nodes ["ShortUrlNode"]; // 動作タブを選択
                     TreeViewSetting.Select();
                     TextBitlyId.Focus();
+                    
                     return;
                 } else {
-                    _ValidationError = false;
+                    validation_error_ = false;
                 }
             } else {
-                _ValidationError = false;
+                validation_error_ = false;
             }
 
-            this.UserAccounts.Clear();
-            foreach ( object u in this.AuthUserCombo.Items ) {
-                this.UserAccounts.Add( (UserAccount)u );
+            this.user_accounts_.Clear();
+            foreach ( object that in this.AuthUserCombo.Items ) {
+                this.user_accounts_.Add( (UserAccount)that );
             }
             if ( this.AuthUserCombo.SelectedIndex > -1 ) {
-                foreach ( UserAccount u in this.UserAccounts ) {
-                    if ( u.Username.ToLower() == ((UserAccount)this.AuthUserCombo.SelectedItem).Username.ToLower() ) {
-                        tw.Initialize( u.Token, u.TokenSecret, u.Username, u.UserId );
-                        if ( u.UserId == 0 ) {
-                            tw.VerifyCredentials();
-                            u.UserId = tw.UserId;
+                foreach ( UserAccount user_account in this.user_accounts_ ) {
+                    if ( user_account.Username.ToLower() == ((UserAccount)this.AuthUserCombo.SelectedItem).Username.ToLower() ) {
+                        twitter_.Initialize( user_account.Token, user_account.TokenSecret, user_account.Username, user_account.UserId );
+                        if ( user_account.UserId == 0 ) {
+                            twitter_.VerifyCredentials();
+                            user_account.UserId = twitter_.UserId;
                         }
                         break;
                     }
                 }
             } else {
-                tw.ClearAuthInfo();
-                tw.Initialize( "", "", "", 0 );
+                twitter_.ClearAuthInfo();
+                twitter_.Initialize( string.Empty, string.Empty, string.Empty, 0 );
             }
 
 #if UA
@@ -187,54 +190,55 @@ namespace OpenTween
                 string ppw = TextProxyPassword.Text.Trim();
                 HttpConnection.InitializeConnection(20, ptype, padr, pport, pusr, ppw);
 
-                string ret = tw.PostFollowCommand(ApplicationSettings.FeedbackTwitterName);
+                string ret = twitter_.PostFollowCommand(ApplicationSettings.FeedbackTwitterName);
             }
 #endif
-            IntervalChangedEventArgs arg = new IntervalChangedEventArgs ();
-            bool isIntervalChanged = false;
+            IntervalChangedEventArgs interval_changed_eventargs = new IntervalChangedEventArgs();
+            //bool isIntervalChanged = false;
+            bool is_interval_changed = false;
 
             try {
                 UserstreamStartup = this.StartupUserstreamCheck.Checked;
 
                 if ( UserstreamPeriodInt != int.Parse( UserstreamPeriod.Text ) ) {
                     UserstreamPeriodInt = int.Parse( UserstreamPeriod.Text );
-                    arg.UserStream = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.UserStream = true;
+                    is_interval_changed = true;
                 }
                 if ( TimelinePeriodInt != int.Parse( TimelinePeriod.Text ) ) {
                     TimelinePeriodInt = int.Parse( TimelinePeriod.Text );
-                    arg.Timeline = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.Timeline = true;
+                    is_interval_changed = true;
                 }
                 if ( DMPeriodInt != int.Parse( DMPeriod.Text ) ) {
                     DMPeriodInt = int.Parse( DMPeriod.Text );
-                    arg.DirectMessage = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.DirectMessage = true;
+                    is_interval_changed = true;
                 }
                 if ( PubSearchPeriodInt != int.Parse( PubSearchPeriod.Text ) ) {
                     PubSearchPeriodInt = int.Parse( PubSearchPeriod.Text );
-                    arg.PublicSearch = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.PublicSearch = true;
+                    is_interval_changed = true;
                 }
 
                 if ( ListsPeriodInt != int.Parse( ListsPeriod.Text ) ) {
                     ListsPeriodInt = int.Parse( ListsPeriod.Text );
-                    arg.Lists = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.Lists = true;
+                    is_interval_changed = true;
                 }
                 if ( ReplyPeriodInt != int.Parse( ReplyPeriod.Text ) ) {
                     ReplyPeriodInt = int.Parse( ReplyPeriod.Text );
-                    arg.Reply = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.Reply = true;
+                    is_interval_changed = true;
                 }
                 if ( UserTimelinePeriodInt != int.Parse( UserTimelinePeriod.Text ) ) {
                     UserTimelinePeriodInt = int.Parse( UserTimelinePeriod.Text );
-                    arg.UserTimeline = true;
-                    isIntervalChanged = true;
+                    interval_changed_eventargs.UserTimeline = true;
+                    is_interval_changed = true;
                 }
 
-                if ( isIntervalChanged && IntervalChanged != null ) {
-                    IntervalChanged( this, arg );
+                if ( is_interval_changed && IntervalChanged != null ) {
+                    IntervalChanged( this, interval_changed_eventargs );
                 }
 
                 Readed = StartupReaded.Checked;
@@ -347,11 +351,11 @@ namespace OpenTween
                 ShortUrl.IsResolve = TinyUrlResolve;
                 ShortUrl.IsForceResolve = ShortUrlForceResolve;
                 if ( RadioProxyNone.Checked ) {
-                    _MyProxyType = HttpConnection.ProxyType.None;
+                    my_proxy_type_ = HttpConnection.ProxyType.None;
                 } else if ( RadioProxyIE.Checked ) {
-                    _MyProxyType = HttpConnection.ProxyType.IE;
+                    my_proxy_type_ = HttpConnection.ProxyType.IE;
                 } else {
-                    _MyProxyType = HttpConnection.ProxyType.Specified;
+                    my_proxy_type_ = HttpConnection.ProxyType.Specified;
                 }
                 ProxyAddress = TextProxyAddress.Text.Trim();
                 ProxyPort = int.Parse( TextProxyPort.Text.Trim() );
@@ -383,7 +387,7 @@ namespace OpenTween
                 RetweetNoConfirm = CheckRetweetNoConfirm.Checked;
                 LimitBalloon = CheckBalloonLimit.Checked;
                 EventNotifyEnabled = CheckEventNotify.Checked;
-                GetEventNotifyFlag( ref _MyEventNotifyFlag, ref _isMyEventNotifyFlag );
+                GetEventNotifyFlag( ref my_event_notify_flag_, ref is_my_event_notify_flag_ );
                 ForceEventNotify = CheckForceEventNotify.Checked;
                 FavEventUnread = CheckFavEventUnread.Checked;
                 TranslateLanguage = (new Bing ()).GetLanguageEnumFromIndex( ComboBoxTranslateLanguage.SelectedIndex );
@@ -431,19 +435,19 @@ namespace OpenTween
                     Language = "en";
                     break;
                 }
-                HotkeyEnabled = this.HotkeyCheck.Checked;
-                HotkeyMod = Keys.None;
+                hotkey_enabled_ = this.HotkeyCheck.Checked;
+                hotkey_mod_ = Keys.None;
                 if ( this.HotkeyAlt.Checked )
-                    HotkeyMod = HotkeyMod | Keys.Alt;
+                    hotkey_mod_ = hotkey_mod_ | Keys.Alt;
                 if ( this.HotkeyShift.Checked )
-                    HotkeyMod = HotkeyMod | Keys.Shift;
+                    hotkey_mod_ = hotkey_mod_ | Keys.Shift;
                 if ( this.HotkeyCtrl.Checked )
-                    HotkeyMod = HotkeyMod | Keys.Control;
+                    hotkey_mod_ = hotkey_mod_ | Keys.Control;
                 if ( this.HotkeyWin.Checked )
-                    HotkeyMod = HotkeyMod | Keys.LWin;
-                int.TryParse( HotkeyCode.Text, out HotkeyValue );
-                HotkeyKey = (Keys)HotkeyText.Tag;
-                BlinkNewMentions = ChkNewMentionsBlink.Checked;
+                    hotkey_mod_ = hotkey_mod_ | Keys.LWin;
+                int.TryParse( HotkeyCode.Text, out hotkey_value_ );
+                hotkey_key_ = (Keys)HotkeyText.Tag;
+                blink_new_mentions_ = ChkNewMentionsBlink.Checked;
                 UseAdditionalCount = UseChangeGetCount.Checked;
                 MoreCountApi = int.Parse( GetMoreTextCountApi.Text );
                 FirstCountApi = int.Parse( FirstTextCountApi.Text );
@@ -454,18 +458,19 @@ namespace OpenTween
                 OpenUserTimeline = CheckOpenUserTimeline.Checked;
                 ListDoubleClickAction = ListDoubleClickActionComboBox.SelectedIndex;
                 UserAppointUrl = UserAppointUrlText.Text;
-                this.HideDuplicatedRetweets = this.HideDuplicatedRetweetsCheck.Checked;
-                this.IsPreviewFoursquare = this.IsPreviewFoursquareCheckBox.Checked;
-                this.FoursquarePreviewHeight = int.Parse( this.FoursquarePreviewHeightTextBox.Text );
-                this.FoursquarePreviewWidth = int.Parse( this.FoursquarePreviewWidthTextBox.Text );
-                this.FoursquarePreviewZoom = int.Parse( this.FoursquarePreviewZoomTextBox.Text );
-                this.IsListStatusesIncludeRts = this.IsListsIncludeRtsCheckBox.Checked;
-                this.TabMouseLock = this.TabMouseLockCheck.Checked;
-                this.IsRemoveSameEvent = this.IsRemoveSameFavEventCheckBox.Checked;
-                this.IsNotifyUseGrowl = this.IsNotifyUseGrowlCheckBox.Checked;
+                this.hide_duplicated_retweets_ = this.HideDuplicatedRetweetsCheck.Checked;
+                this.is_preview_foursquare_ = this.IsPreviewFoursquareCheckBox.Checked;
+                this.foursquare_preview_height_ = int.Parse( this.FoursquarePreviewHeightTextBox.Text );
+                this.foursquare_preview_width_ = int.Parse( this.FoursquarePreviewWidthTextBox.Text );
+                this.foursquare_preview_zoom_ = int.Parse( this.FoursquarePreviewZoomTextBox.Text );
+                this.is_list_statuses_include_rts_ = this.IsListsIncludeRtsCheckBox.Checked;
+                this.tab_mouse_lock_ = this.TabMouseLockCheck.Checked;
+                this.is_remove_same_event_ = this.IsRemoveSameFavEventCheckBox.Checked;
+                this.is_notify_use_growl_ = this.IsNotifyUseGrowlCheckBox.Checked;
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.Save_ClickText3 );
                 this.DialogResult = DialogResult.Cancel;
+                
                 return;
             }
         }
@@ -479,35 +484,36 @@ namespace OpenTween
             if ( this.DialogResult == DialogResult.Cancel ) {
                 //キャンセル時は画面表示時のアカウントに戻す
                 //キャンセル時でも認証済みアカウント情報は保存する
-                this.UserAccounts.Clear();
+                this.user_accounts_.Clear();
                 foreach ( object u in this.AuthUserCombo.Items ) {
-                    this.UserAccounts.Add( (UserAccount)u );
+                    this.user_accounts_.Add( (UserAccount)u );
                 }
                 //アクティブユーザーを起動時のアカウントに戻す（起動時アカウントなければ何もしない）
-                bool userSet = false;
-                if ( this.InitialUserId > 0 ) {
-                    foreach ( UserAccount u in this.UserAccounts ) {
-                        if ( u.UserId == this.InitialUserId ) {
-                            tw.Initialize( u.Token, u.TokenSecret, u.Username, u.UserId );
-                            userSet = true;
+                bool user_set = false;
+                if ( this.initial_user_id_ > 0 ) {
+                    foreach ( UserAccount user_account in this.user_accounts_ ) {
+                        if ( user_account.UserId == this.initial_user_id_ ) {
+                            twitter_.Initialize( user_account.Token, user_account.TokenSecret, user_account.Username, user_account.UserId );
+                            user_set = true;
+                            
                             break;
                         }
                     }
                 }
                 //認証済みアカウントが削除されていた場合、もしくは起動時アカウントがなかった場合は、
                 //アクティブユーザーなしとして初期化
-                if ( !userSet ) {
-                    tw.ClearAuthInfo();
-                    tw.Initialize( "", "", "", 0 );
+                if ( !user_set ) {
+                    twitter_.ClearAuthInfo();
+                    twitter_.Initialize( string.Empty, string.Empty, string.Empty, 0 );
                 }
             }
 
-            if ( tw != null && string.IsNullOrEmpty( tw.Username ) && e.CloseReason == CloseReason.None ) {
+            if ( twitter_ != null && string.IsNullOrEmpty( twitter_.Username ) && e.CloseReason == CloseReason.None ) {
                 if ( MessageBox.Show( Properties.Resources.Setting_FormClosing1, "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question ) == DialogResult.Cancel ) {
                     e.Cancel = true;
                 }
             }
-            if ( _ValidationError ) {
+            if ( validation_error_ ) {
                 e.Cancel = true;
             }
             if ( e.Cancel == false && TreeViewSetting.SelectedNode != null ) {
@@ -526,11 +532,11 @@ namespace OpenTween
 #else
             this.GroupBox2.Visible = false;
 #endif
-            tw = ((TweenMain)this.Owner).TwitterInstance;
-            string username = tw.Username;
-            string password = tw.Password;
-            string access_token = tw.AccessToken;
-            string access_token_secret = tw.AccessTokenSecret;
+            twitter_ = ((TweenMain)this.Owner).TwitterInstance;
+            string username = twitter_.Username;
+            string password = twitter_.Password;
+            string access_token = twitter_.AccessToken;
+            string access_token_secret = twitter_.AccessTokenSecret;
             //this.AuthStateLabel.Enabled = true;
             //this.AuthUserLabel.Enabled = true;
             this.AuthClearButton.Enabled = true;
@@ -556,12 +562,12 @@ namespace OpenTween
             //}
 
             this.AuthUserCombo.Items.Clear();
-            if ( this.UserAccounts.Count > 0 ) {
-                this.AuthUserCombo.Items.AddRange( this.UserAccounts.ToArray() );
-                foreach ( UserAccount u in this.UserAccounts ) {
-                    if ( u.UserId == tw.UserId ) {
-                        this.AuthUserCombo.SelectedItem = u;
-                        this.InitialUserId = u.UserId;
+            if ( this.user_accounts_.Count > 0 ) {
+                this.AuthUserCombo.Items.AddRange( this.user_accounts_.ToArray() );
+                foreach ( UserAccount user_account in this.user_accounts_ ) {
+                    if ( user_account.UserId == twitter_.UserId ) {
+                        this.AuthUserCombo.SelectedItem = user_account;
+                        this.initial_user_id_ = user_account.UserId;
                         break;
                     }
                 }
@@ -683,7 +689,7 @@ namespace OpenTween
             CheckSortOrderLock.Checked = SortOrderLock;
             CheckTinyURL.Checked = TinyUrlResolve;
             CheckForceResolve.Checked = ShortUrlForceResolve;
-            switch ( _MyProxyType ) {
+            switch ( my_proxy_type_ ) {
             case HttpConnection.ProxyType.None:
                 RadioProxyNone.Checked = true;
                 break;
@@ -694,15 +700,15 @@ namespace OpenTween
                 RadioProxySpecified.Checked = true;
                 break;
             }
-            bool chk = RadioProxySpecified.Checked;
-            LabelProxyAddress.Enabled = chk;
-            TextProxyAddress.Enabled = chk;
-            LabelProxyPort.Enabled = chk;
-            TextProxyPort.Enabled = chk;
-            LabelProxyUser.Enabled = chk;
-            TextProxyUser.Enabled = chk;
-            LabelProxyPassword.Enabled = chk;
-            TextProxyPassword.Enabled = chk;
+            bool be_checked = RadioProxySpecified.Checked;
+            LabelProxyAddress.Enabled = be_checked;
+            TextProxyAddress.Enabled = be_checked;
+            LabelProxyPort.Enabled = be_checked;
+            TextProxyPort.Enabled = be_checked;
+            LabelProxyUser.Enabled = be_checked;
+            TextProxyUser.Enabled = be_checked;
+            LabelProxyPassword.Enabled = be_checked;
+            TextProxyPassword.Enabled = be_checked;
 
             TextProxyAddress.Text = ProxyAddress;
             TextProxyPort.Text = ProxyPort.ToString();
@@ -786,21 +792,21 @@ namespace OpenTween
                 LanguageCombo.SelectedIndex = 0;
                 break;
             }
-            HotkeyCheck.Checked = HotkeyEnabled;
-            HotkeyAlt.Checked = ((HotkeyMod & Keys.Alt) == Keys.Alt);
-            HotkeyCtrl.Checked = ((HotkeyMod & Keys.Control) == Keys.Control);
-            HotkeyShift.Checked = ((HotkeyMod & Keys.Shift) == Keys.Shift);
-            HotkeyWin.Checked = ((HotkeyMod & Keys.LWin) == Keys.LWin);
-            HotkeyCode.Text = HotkeyValue.ToString();
-            HotkeyText.Text = HotkeyKey.ToString();
-            HotkeyText.Tag = HotkeyKey;
-            HotkeyAlt.Enabled = HotkeyEnabled;
-            HotkeyShift.Enabled = HotkeyEnabled;
-            HotkeyCtrl.Enabled = HotkeyEnabled;
-            HotkeyWin.Enabled = HotkeyEnabled;
-            HotkeyText.Enabled = HotkeyEnabled;
-            HotkeyCode.Enabled = HotkeyEnabled;
-            ChkNewMentionsBlink.Checked = BlinkNewMentions;
+            HotkeyCheck.Checked = hotkey_enabled_;
+            HotkeyAlt.Checked = ((hotkey_mod_ & Keys.Alt) == Keys.Alt);
+            HotkeyCtrl.Checked = ((hotkey_mod_ & Keys.Control) == Keys.Control);
+            HotkeyShift.Checked = ((hotkey_mod_ & Keys.Shift) == Keys.Shift);
+            HotkeyWin.Checked = ((hotkey_mod_ & Keys.LWin) == Keys.LWin);
+            HotkeyCode.Text = hotkey_value_.ToString();
+            HotkeyText.Text = hotkey_key_.ToString();
+            HotkeyText.Tag = hotkey_key_;
+            HotkeyAlt.Enabled = hotkey_enabled_;
+            HotkeyShift.Enabled = hotkey_enabled_;
+            HotkeyCtrl.Enabled = hotkey_enabled_;
+            HotkeyWin.Enabled = hotkey_enabled_;
+            HotkeyText.Enabled = hotkey_enabled_;
+            HotkeyCode.Enabled = hotkey_enabled_;
+            ChkNewMentionsBlink.Checked = blink_new_mentions_;
 
             CheckOutputz_CheckedChanged( sender, e );
 
@@ -826,15 +832,15 @@ namespace OpenTween
             CheckOpenUserTimeline.Checked = OpenUserTimeline;
             ListDoubleClickActionComboBox.SelectedIndex = ListDoubleClickAction;
             UserAppointUrlText.Text = UserAppointUrl;
-            this.HideDuplicatedRetweetsCheck.Checked = this.HideDuplicatedRetweets;
-            this.IsPreviewFoursquareCheckBox.Checked = this.IsPreviewFoursquare;
-            this.FoursquarePreviewHeightTextBox.Text = this.FoursquarePreviewHeight.ToString();
-            this.FoursquarePreviewWidthTextBox.Text = this.FoursquarePreviewWidth.ToString();
-            this.FoursquarePreviewZoomTextBox.Text = this.FoursquarePreviewZoom.ToString();
-            this.IsListsIncludeRtsCheckBox.Checked = this.IsListStatusesIncludeRts;
-            this.TabMouseLockCheck.Checked = this.TabMouseLock;
-            this.IsRemoveSameFavEventCheckBox.Checked = this.IsRemoveSameEvent;
-            this.IsNotifyUseGrowlCheckBox.Checked = this.IsNotifyUseGrowl;
+            this.HideDuplicatedRetweetsCheck.Checked = this.hide_duplicated_retweets_;
+            this.IsPreviewFoursquareCheckBox.Checked = this.is_preview_foursquare_;
+            this.FoursquarePreviewHeightTextBox.Text = this.foursquare_preview_height_.ToString();
+            this.FoursquarePreviewWidthTextBox.Text = this.foursquare_preview_width_.ToString();
+            this.FoursquarePreviewZoomTextBox.Text = this.foursquare_preview_zoom_.ToString();
+            this.IsListsIncludeRtsCheckBox.Checked = this.is_list_statuses_include_rts_;
+            this.TabMouseLockCheck.Checked = this.tab_mouse_lock_;
+            this.IsRemoveSameFavEventCheckBox.Checked = this.is_remove_same_event_;
+            this.IsNotifyUseGrowlCheckBox.Checked = this.is_notify_use_growl_;
 
             if ( GrowlHelper.IsDllExists ) {
                 IsNotifyUseGrowlCheckBox.Enabled = true;
@@ -869,18 +875,20 @@ namespace OpenTween
 
         private void UserstreamPeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( UserstreamPeriod.Text );
+                period = int.Parse( UserstreamPeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.UserstreamPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd < 0 || prd > 60 ) {
+            if ( period < 0 || period > 60 ) {
                 MessageBox.Show( Properties.Resources.UserstreamPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -889,18 +897,20 @@ namespace OpenTween
 
         private void TimelinePeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( TimelinePeriod.Text );
+                period = int.Parse( TimelinePeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
+            if ( period != 0 && (period < 15 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -909,18 +919,20 @@ namespace OpenTween
 
         private void ReplyPeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( ReplyPeriod.Text );
+                period = int.Parse( ReplyPeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
+            if ( period != 0 && (period < 15 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.TimelinePeriod_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -929,18 +941,20 @@ namespace OpenTween
 
         private void DMPeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( DMPeriod.Text );
+                period = int.Parse( DMPeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
+            if ( period != 0 && (period < 15 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -949,16 +963,17 @@ namespace OpenTween
 
         private void PubSearchPeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( PubSearchPeriod.Text );
+                period = int.Parse( PubSearchPeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.PubSearchPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 30 || prd > 6000) ) {
+            if ( period != 0 && (period < 30 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.PubSearchPeriod_ValidatingText2 );
                 e.Cancel = true;
             }
@@ -967,18 +982,20 @@ namespace OpenTween
 
         private void ListsPeriod_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( ListsPeriod.Text );
+                period = int.Parse( ListsPeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
+            if ( period != 0 && (period < 15 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -987,18 +1004,20 @@ namespace OpenTween
 
         private void UserTimeline_Validating(object sender, CancelEventArgs e)
         {
-            int prd;
+            int period;
             try {
-                prd = int.Parse( UserTimelinePeriod.Text );
+                period = int.Parse( UserTimelinePeriod.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( prd != 0 && (prd < 15 || prd > 6000) ) {
+            if ( period != 0 && (period < 15 || period > 6000) ) {
                 MessageBox.Show( Properties.Resources.DMPeriod_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
             CalcApiUsing();
@@ -1017,8 +1036,8 @@ namespace OpenTween
 
         private void btnFontAndColor_Click(object sender, EventArgs e)
         { // Handles btnUnread.Click, btnDetail.Click, btnListFont.Click, btnInputFont.Click
-            Button Btn = (Button)sender;
-            DialogResult rtn;
+            Button button = (Button)sender;
+            DialogResult dr;
 
             FontDialog1.AllowVerticalFonts = false;
             FontDialog1.AllowScriptChange = true;
@@ -1031,7 +1050,7 @@ namespace OpenTween
             FontDialog1.ShowEffects = true;
             FontDialog1.ShowColor = true;
 
-            switch ( Btn.Name ) {
+            switch ( button.Name ) {
             case "btnUnread":
                 FontDialog1.Color = lblUnread.ForeColor;
                 FontDialog1.Font = lblUnread.Font;
@@ -1051,16 +1070,16 @@ namespace OpenTween
             }
 
             try {
-                rtn = FontDialog1.ShowDialog();
+                dr = FontDialog1.ShowDialog();
             } catch ( ArgumentException ex ) {
                 MessageBox.Show( ex.Message );
                 return;
             }
 
-            if ( rtn == DialogResult.Cancel )
+            if ( dr == DialogResult.Cancel )
                 return;
 
-            switch ( Btn.Name ) {
+            switch ( button.Name ) {
             case "btnUnread":
                 lblUnread.ForeColor = FontDialog1.Color;
                 lblUnread.Font = FontDialog1.Font;
@@ -1084,15 +1103,15 @@ namespace OpenTween
 
         private void btnColor_Click(object sender, EventArgs e)
         { //Handles btnSelf.Click, btnAtSelf.Click, btnTarget.Click, btnAtTarget.Click, btnAtFromTarget.Click, btnFav.Click, btnOWL.Click, btnInputBackcolor.Click, btnAtTo.Click, btnListBack.Click, btnDetailBack.Click, btnDetailLink.Click, btnRetweet.Click
-            Button Btn = (Button)sender;
-            DialogResult rtn;
+            Button button = (Button)sender;
+            DialogResult dr;
 
             ColorDialog1.AllowFullOpen = true;
             ColorDialog1.AnyColor = true;
             ColorDialog1.FullOpen = false;
             ColorDialog1.SolidColorOnly = false;
 
-            switch ( Btn.Name ) {
+            switch ( button.Name ) {
             case "btnSelf":
                 ColorDialog1.Color = lblSelf.BackColor;
                 break;
@@ -1134,12 +1153,12 @@ namespace OpenTween
                 break;
             }
 
-            rtn = ColorDialog1.ShowDialog();
+            dr = ColorDialog1.ShowDialog();
 
-            if ( rtn == DialogResult.Cancel )
+            if ( dr == DialogResult.Cancel )
                 return;
 
-            switch ( Btn.Name ) {
+            switch ( button.Name ) {
             case "btnSelf":
                 lblSelf.BackColor = ColorDialog1.Color;
                 break;
@@ -1362,10 +1381,10 @@ namespace OpenTween
 
         public HttpConnection.ProxyType SelectedProxyType {
             get {
-                return _MyProxyType;
+                return my_proxy_type_;
             }
             set {
-                _MyProxyType = value;
+                my_proxy_type_ = value;
             }
         }
 
@@ -1486,14 +1505,14 @@ namespace OpenTween
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog filedlg = new OpenFileDialog()) {
-                filedlg.Filter = Properties.Resources.Button3_ClickText1;
-                filedlg.FilterIndex = 1;
-                filedlg.Title = Properties.Resources.Button3_ClickText2;
-                filedlg.RestoreDirectory = true;
+            using (OpenFileDialog open_file_dialog = new OpenFileDialog()) {
+                open_file_dialog.Filter = Properties.Resources.Button3_ClickText1;
+                open_file_dialog.FilterIndex = 1;
+                open_file_dialog.Title = Properties.Resources.Button3_ClickText2;
+                open_file_dialog.RestoreDirectory = true;
 
-                if ( filedlg.ShowDialog() == DialogResult.OK ) {
-                    BrowserPathText.Text = filedlg.FileName;
+                if ( open_file_dialog.ShowDialog() == DialogResult.OK ) {
+                    BrowserPathText.Text = open_file_dialog.FileName;
                 }
             }
         }
@@ -1501,15 +1520,15 @@ namespace OpenTween
 
         private void RadioProxySpecified_CheckedChanged(object sender, EventArgs e)
         {
-            bool chk = RadioProxySpecified.Checked;
-            LabelProxyAddress.Enabled = chk;
-            TextProxyAddress.Enabled = chk;
-            LabelProxyPort.Enabled = chk;
-            TextProxyPort.Enabled = chk;
-            LabelProxyUser.Enabled = chk;
-            TextProxyUser.Enabled = chk;
-            LabelProxyPassword.Enabled = chk;
-            TextProxyPassword.Enabled = chk;
+            bool radio_proxy_specified_checked = RadioProxySpecified.Checked;
+            LabelProxyAddress.Enabled = radio_proxy_specified_checked;
+            TextProxyAddress.Enabled = radio_proxy_specified_checked;
+            LabelProxyPort.Enabled = radio_proxy_specified_checked;
+            TextProxyPort.Enabled = radio_proxy_specified_checked;
+            LabelProxyUser.Enabled = radio_proxy_specified_checked;
+            TextProxyUser.Enabled = radio_proxy_specified_checked;
+            LabelProxyPassword.Enabled = radio_proxy_specified_checked;
+            TextProxyPassword.Enabled = radio_proxy_specified_checked;
         }
 
 
@@ -1521,11 +1540,13 @@ namespace OpenTween
             if ( int.TryParse( TextProxyPort.Text.Trim(), out port ) == false ) {
                 MessageBox.Show( Properties.Resources.TextProxyPort_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
             if ( port < 0 || port > 65535 ) {
                 MessageBox.Show( Properties.Resources.TextProxyPort_ValidatingText2 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -1595,16 +1616,17 @@ namespace OpenTween
 
         private void ConnectionTimeOut_Validating(object sender, CancelEventArgs e)
         {
-            int tm;
+            int connection_timeout;
             try {
-                tm = int.Parse( ConnectionTimeOut.Text );
+                connection_timeout = int.Parse( ConnectionTimeOut.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.ConnectionTimeOut_ValidatingText1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( tm < (int)MyCommon.HttpTimeOut.MinValue || tm > (int)MyCommon.HttpTimeOut.MaxValue ) {
+            if ( connection_timeout < (int)MyCommon.HttpTimeOut.MinValue || connection_timeout > (int)MyCommon.HttpTimeOut.MaxValue ) {
                 MessageBox.Show( Properties.Resources.ConnectionTimeOut_ValidatingText1 );
                 e.Cancel = true;
             }
@@ -1619,18 +1641,20 @@ namespace OpenTween
 
         private void TextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( TextCountApi.Text );
+                count = int.Parse( TextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt < 20 || cnt > 200 ) {
+            if ( count < 20 || count > 200 ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -1638,18 +1662,20 @@ namespace OpenTween
 
         private void TextCountApiReply_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( TextCountApiReply.Text );
+                count = int.Parse( TextCountApiReply.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt < 20 || cnt > 200 ) {
+            if ( count < 20 || count > 200 ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -1663,20 +1689,20 @@ namespace OpenTween
 
         public MyCommon.EVENTTYPE EventNotifyFlag {
             get {
-                return _MyEventNotifyFlag;
+                return my_event_notify_flag_;
             }
             set {
-                _MyEventNotifyFlag = value;
+                my_event_notify_flag_ = value;
             }
         }
 
 
         public MyCommon.EVENTTYPE IsMyEventNotifyFlag {
             get {
-                return _isMyEventNotifyFlag;
+                return is_my_event_notify_flag_;
             }
             set {
-                _isMyEventNotifyFlag = value;
+                is_my_event_notify_flag_ = value;
             }
         }
 
@@ -1689,10 +1715,10 @@ namespace OpenTween
 
         public string TranslateLanguage {
             get {
-                return _MyTranslateLanguage;
+                return my_translated_retweets_;
             }
             set {
-                _MyTranslateLanguage = value;
+                my_translated_retweets_ = value;
                 ComboBoxTranslateLanguage.SelectedIndex = (new Bing ()).GetIndexFromLanguageEnum( value );
             }
         }
@@ -1769,41 +1795,48 @@ namespace OpenTween
         private bool StartAuth()
         {
             //現在の設定内容で通信
-            HttpConnection.ProxyType ptype;
+            HttpConnection.ProxyType proxy_type;
             if ( RadioProxyNone.Checked ) {
-                ptype = HttpConnection.ProxyType.None;
+                proxy_type = HttpConnection.ProxyType.None;
             } else if ( RadioProxyIE.Checked ) {
-                ptype = HttpConnection.ProxyType.IE;
+                proxy_type = HttpConnection.ProxyType.IE;
             } else {
-                ptype = HttpConnection.ProxyType.Specified;
+                proxy_type = HttpConnection.ProxyType.Specified;
             }
-            string padr = TextProxyAddress.Text.Trim();
-            int pport = int.Parse( TextProxyPort.Text.Trim() );
-            string pusr = TextProxyUser.Text.Trim();
-            string ppw = TextProxyPassword.Text.Trim();
+            //string padr = TextProxyAddress.Text.Trim();
+            string proxy_address_trimed = TextProxyAddress.Text.Trim();
+            //int pport = int.Parse( TextProxyPort.Text.Trim() );
+            int proxy_port = int.Parse( TextProxyPort.Text.Trim() );
+            //string pusr = TextProxyUser.Text.Trim();
+            string proxy_username = TextProxyUser.Text.Trim();
+            //string ppw = TextProxyPassword.Text.Trim();
+            string proxy_password = TextProxyPassword.Text.Trim();
 
             //通信基底クラス初期化
-            HttpConnection.InitializeConnection( 20, ptype, padr, pport, pusr, ppw );
+            HttpConnection.InitializeConnection( 20, proxy_type, proxy_address_trimed, proxy_port, proxy_username, proxy_password );
             HttpTwitter.TwitterUrl = TwitterAPIText.Text.Trim();
             HttpTwitter.TwitterSearchUrl = TwitterSearchAPIText.Text.Trim();
-            tw.Initialize( "", "", "", 0 );
+            twitter_.Initialize( string.Empty, string.Empty, string.Empty, 0 );
             //this.AuthStateLabel.Text = Properties.Resources.AuthorizeButton_Click4;
             //this.AuthUserLabel.Text = "";
-            string pinPageUrl = "";
-            string rslt = tw.StartAuthentication( ref pinPageUrl );
-            if ( string.IsNullOrEmpty( rslt ) ) {
-                using (AuthBrowser ab = new AuthBrowser()) {
-                    ab.Auth = true;
-                    ab.UrlString = pinPageUrl;
-                    if ( ab.ShowDialog( this ) == DialogResult.OK ) {
-                        this._pin = ab.PinString;
+            //string pinPageUrl = "";
+            string pin_page_url = string.Empty;
+            string result = twitter_.StartAuthentication( ref pin_page_url );
+            if ( string.IsNullOrEmpty( result ) ) {
+                using (AuthBrowser auth_browser = new AuthBrowser()) {
+                    auth_browser.Auth = true;
+                    auth_browser.UrlString = pin_page_url;
+                    if ( auth_browser.ShowDialog( this ) == DialogResult.OK ) {
+                        this.pin_ = auth_browser.PinString;
+                        
                         return true;
                     } else {
                         return false;
                     }
                 }
             } else {
-                MessageBox.Show( Properties.Resources.AuthorizeButton_Click2 + Environment.NewLine + rslt, "Authenticate", MessageBoxButtons.OK );
+                MessageBox.Show( Properties.Resources.AuthorizeButton_Click2 + Environment.NewLine + result, "Authenticate", MessageBoxButtons.OK );
+                
                 return false;
             }
         }
@@ -1811,30 +1844,32 @@ namespace OpenTween
 
         private bool PinAuth()
         {
-            string pin = this._pin;   //PIN Code
+            string pin_code = this.pin_;   //PIN Code
 
-            string rslt = tw.Authenticate( pin );
-            if ( string.IsNullOrEmpty( rslt ) ) {
+            string result = twitter_.Authenticate( pin_code );
+            if ( string.IsNullOrEmpty( result ) ) {
                 MessageBox.Show( Properties.Resources.AuthorizeButton_Click1, "Authenticate", MessageBoxButtons.OK );
                 //this.AuthStateLabel.Text = Properties.Resources.AuthorizeButton_Click3;
                 //this.AuthUserLabel.Text = tw.Username;
-                int idx = -1;
+                int index = -1;
                 UserAccount user = new UserAccount ();
-                user.Username = tw.Username;
-                user.UserId = tw.UserId;
-                user.Token = tw.AccessToken;
-                user.TokenSecret = tw.AccessTokenSecret;
+                user.Username = twitter_.Username;
+                user.UserId = twitter_.UserId;
+                user.Token = twitter_.AccessToken;
+                user.TokenSecret = twitter_.AccessTokenSecret;
 
-                foreach ( object u in this.AuthUserCombo.Items ) {
-                    if ( ((UserAccount)u).Username.ToLower() == tw.Username.ToLower() ) {
-                        idx = this.AuthUserCombo.Items.IndexOf( u );
+                foreach ( object that in this.AuthUserCombo.Items ) {
+                    UserAccount user_account = (UserAccount)that;
+                    if ( user_account.Username.ToLower() == twitter_.Username.ToLower() ) {
+                        index = this.AuthUserCombo.Items.IndexOf( user_account );
+                        
                         break;
                     }
                 }
-                if ( idx > -1 ) {
-                    this.AuthUserCombo.Items.RemoveAt( idx );
-                    this.AuthUserCombo.Items.Insert( idx, user );
-                    this.AuthUserCombo.SelectedIndex = idx;
+                if ( index > -1 ) {
+                    this.AuthUserCombo.Items.RemoveAt( index );
+                    this.AuthUserCombo.Items.Insert( index, user );
+                    this.AuthUserCombo.SelectedIndex = index;
                 } else {
                     this.AuthUserCombo.SelectedIndex = this.AuthUserCombo.Items.Add( user );
                 }
@@ -1848,7 +1883,7 @@ namespace OpenTween
                 //}
                 return true;
             } else {
-                MessageBox.Show( Properties.Resources.AuthorizeButton_Click2 + Environment.NewLine + rslt, "Authenticate", MessageBoxButtons.OK );
+                MessageBox.Show( Properties.Resources.AuthorizeButton_Click2 + Environment.NewLine + result, "Authenticate", MessageBoxButtons.OK );
                 //this.AuthStateLabel.Text = Properties.Resources.AuthorizeButton_Click4;
                 //this.AuthUserLabel.Text = "";
                 return false;
@@ -1898,23 +1933,27 @@ namespace OpenTween
 
         private void CalcApiUsing()
         {
-            int UsingApi = 0;
             int tmp;
-            int ListsTabNum = 0;
-            int UserTimelineTabNum = 0;
-            int ApiLists = 0;
-            int ApiUserTimeline = 0;
+            int using_api = 0;
+            //int ListsTabNum = 0;
+            int lists_tab_amount = 0;
+            //int UserTimelineTabNum = 0;
+            int user_timeline_tab_amout = 0;
+            //int ApiLists = 0;
+            int lists_api = 0;
+            //int ApiUserTimeline = 0;
+            int user_timeline_api = 0;
 
             try {
                 // 初回起動時などにnullの場合あり
-                ListsTabNum = TabInformations.GetInstance().GetTabsByType( MyCommon.TabUsageType.Lists ).Count;
+                lists_tab_amount = TabInformations.GetInstance().GetTabsByType( MyCommon.TabUsageType.Lists ).Count;
             } catch ( Exception ) {
                 return;
             }
 
             try {
                 // 初回起動時などにnullの場合あり
-                UserTimelineTabNum = TabInformations.GetInstance().GetTabsByType( MyCommon.TabUsageType.UserTimeline ).Count;
+                user_timeline_tab_amout = TabInformations.GetInstance().GetTabsByType( MyCommon.TabUsageType.UserTimeline ).Count;
             } catch ( Exception ) {
                 return;
             }
@@ -1922,64 +1961,64 @@ namespace OpenTween
             // Recent計算 0は手動更新
             if ( int.TryParse( TimelinePeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    UsingApi += 3600 / tmp;
+                    using_api += 3600 / tmp;
                 }
             }
 
             // Reply計算 0は手動更新
             if ( int.TryParse( ReplyPeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    UsingApi += 3600 / tmp;
+                    using_api += 3600 / tmp;
                 }
             }
 
             // DM計算 0は手動更新 送受信両方
             if ( int.TryParse( DMPeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    UsingApi += (3600 / tmp) * 2;
+                    using_api += (3600 / tmp) * 2;
                 }
             }
 
             // Listsタブ計算 0は手動更新
             if ( int.TryParse( ListsPeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    ApiLists = (3600 / tmp) * ListsTabNum;
-                    UsingApi += ApiLists;
+                    lists_api = (3600 / tmp) * lists_tab_amount;
+                    using_api += lists_api;
                 }
             }
 
             // UserTimelineタブ計算 0は手動更新
             if ( int.TryParse( UserTimelinePeriod.Text, out tmp ) ) {
                 if ( tmp != 0 ) {
-                    ApiUserTimeline = (3600 / tmp) * UserTimelineTabNum;
-                    UsingApi += ApiUserTimeline;
+                    user_timeline_api = (3600 / tmp) * user_timeline_tab_amout;
+                    using_api += user_timeline_api;
                 }
             }
 
-            if ( tw != null ) {
+            if ( twitter_ != null ) {
                 if ( MyCommon.TwitterApiInfo.MaxCount == -1 ) {
                     if ( Twitter.AccountState == MyCommon.ACCOUNT_STATE.Valid ) {
-                        MyCommon.TwitterApiInfo.UsingCount = UsingApi;
+                        MyCommon.TwitterApiInfo.UsingCount = using_api;
                         Thread proc = new Thread (new System.Threading.ThreadStart (() => {
-                            tw.GetInfoApi( null ); //取得エラー時はinfoCountは初期状態（値：-1）
+                            twitter_.GetInfoApi( null ); //取得エラー時はinfoCountは初期状態（値：-1）
                             if ( this.IsHandleCreated && !this.IsDisposed )
                                 Invoke( new MethodInvoker (DisplayApiMaxCount) );
                         }));
                         proc.Start();
                     } else {
-                        LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, UsingApi, "???" );
+                        LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, using_api, "???" );
                     }
                 } else {
-                    LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, UsingApi, MyCommon.TwitterApiInfo.MaxCount );
+                    LabelApiUsing.Text = string.Format( Properties.Resources.SettingAPIUse1, using_api, MyCommon.TwitterApiInfo.MaxCount );
                 }
             }
 
 
-            LabelPostAndGet.Visible = CheckPostAndGet.Checked && !tw.UserStreamEnabled;
-            LabelUserStreamActive.Visible = tw.UserStreamEnabled;
+            LabelPostAndGet.Visible = CheckPostAndGet.Checked && !twitter_.UserStreamEnabled;
+            LabelUserStreamActive.Visible = twitter_.UserStreamEnabled;
 
-            LabelApiUsingUserStreamEnabled.Text = string.Format( Properties.Resources.SettingAPIUse2, (ApiLists + ApiUserTimeline).ToString() );
-            LabelApiUsingUserStreamEnabled.Visible = tw.UserStreamEnabled;
+            LabelApiUsingUserStreamEnabled.Text = string.Format( Properties.Resources.SettingAPIUse2, (lists_api + user_timeline_api).ToString() );
+            LabelApiUsingUserStreamEnabled.Visible = twitter_.UserStreamEnabled;
         }
 
 
@@ -2018,9 +2057,9 @@ namespace OpenTween
                 return false;
             }
 
-            string req = "http://api.bit.ly/v3/validate";
-            string content = "";
-            Dictionary<string, string> param = new Dictionary<string, string> ();
+            string request_url = "http://api.bit.ly/v3/validate";
+            string content = string.Empty;
+            IDictionary<string, string> param = new Dictionary<string, string>();
 
             param.Add( "login", ApplicationSettings.BitlyLoginId );
             param.Add( "apiKey", ApplicationSettings.BitlyApiKey );
@@ -2028,7 +2067,7 @@ namespace OpenTween
             param.Add( "x_apiKey", apikey );
             param.Add( "format", "txt" );
 
-            if ( !(new HttpVarious ()).PostData( req, param, out content ) ) {
+            if ( !(new HttpVarious ()).PostData( request_url, param, out content ) ) {
                 return true;             // 通信エラーの場合はとりあえずチェックを通ったことにする
             } else if ( content.Trim() == "1" ) {
                 return true;             // 検証成功
@@ -2042,14 +2081,14 @@ namespace OpenTween
 
         private void Cancel_Click(object sender, EventArgs e)
         {
-            _ValidationError = false;
+            validation_error_ = false;
         }
 
 
-        public bool HotkeyEnabled;
-        public Keys HotkeyKey;
-        public int HotkeyValue;
-        public Keys HotkeyMod;
+        public bool hotkey_enabled_;
+        public Keys hotkey_key_;
+        public int hotkey_value_;
+        public Keys hotkey_mod_;
 
 
         private void HotkeyText_KeyDown(object sender, KeyEventArgs e)
@@ -2075,23 +2114,25 @@ namespace OpenTween
         }
 
 
-        public bool BlinkNewMentions;
+        public bool blink_new_mentions_;
 
 
         private void GetMoreTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( GetMoreTextCountApi.Text );
+                count = int.Parse( GetMoreTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
+            if ( count != 0 && (count < 20 || count > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2116,18 +2157,20 @@ namespace OpenTween
 
         private void FirstTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( FirstTextCountApi.Text );
+                count = int.Parse( FirstTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
+            if ( count != 0 && (count < 20 || count > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2135,18 +2178,20 @@ namespace OpenTween
 
         private void SearchTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( SearchTextCountApi.Text );
+                count = int.Parse( SearchTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextSearchCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 100) ) {
+            if ( count != 0 && (count < 20 || count > 100) ) {
                 MessageBox.Show( Properties.Resources.TextSearchCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2154,18 +2199,20 @@ namespace OpenTween
 
         private void FavoritesTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( FavoritesTextCountApi.Text );
+                count = int.Parse( FavoritesTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
+            if ( count != 0 && (count < 20 || count > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2173,18 +2220,20 @@ namespace OpenTween
 
         private void UserTimelineTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( UserTimelineTextCountApi.Text );
+                count = int.Parse( UserTimelineTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
+            if ( count != 0 && (count < 20 || count > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2192,18 +2241,20 @@ namespace OpenTween
 
         private void ListTextCountApi_Validating(object sender, CancelEventArgs e)
         {
-            int cnt;
+            int count;
             try {
-                cnt = int.Parse( ListTextCountApi.Text );
+                count = int.Parse( ListTextCountApi.Text );
             } catch ( Exception ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
 
-            if ( cnt != 0 && (cnt < 20 || cnt > 200) ) {
+            if ( count != 0 && (count < 20 || count > 200) ) {
                 MessageBox.Show( Properties.Resources.TextCountApi_Validating1 );
                 e.Cancel = true;
+                
                 return;
             }
         }
@@ -2219,93 +2270,94 @@ namespace OpenTween
         //    ApplyEventNotifyFlag(EventNotifyEnabled, EventNotifyFlag, IsMyEventNotifyFlag);
         //}
 
-        private class EventCheckboxTblElement
+        private class EventCheckboxTableElement
         {
             public CheckBox CheckBox;
             public MyCommon.EVENTTYPE Type;
         }
 
-        private EventCheckboxTblElement[] GetEventCheckboxTable()
+        private EventCheckboxTableElement[] GetEventCheckboxTable()
         {
-            EventCheckboxTblElement[] _eventCheckboxTable = new EventCheckboxTblElement[8];
+            //EventCheckboxTableElement[] _eventCheckboxTable = new EventCheckboxTableElement[8];
+            EventCheckboxTableElement[] event_checkbox_table = new EventCheckboxTableElement[8];
 
-            _eventCheckboxTable [0] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [0].CheckBox = CheckFavoritesEvent;
-            _eventCheckboxTable [0].Type = MyCommon.EVENTTYPE.Favorite;
+            event_checkbox_table [0] = new EventCheckboxTableElement ();
+            event_checkbox_table [0].CheckBox = CheckFavoritesEvent;
+            event_checkbox_table [0].Type = MyCommon.EVENTTYPE.Favorite;
 
-            _eventCheckboxTable [1] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [1].CheckBox = CheckUnfavoritesEvent;
-            _eventCheckboxTable [1].Type = MyCommon.EVENTTYPE.Unfavorite;
+            event_checkbox_table [1] = new EventCheckboxTableElement ();
+            event_checkbox_table [1].CheckBox = CheckUnfavoritesEvent;
+            event_checkbox_table [1].Type = MyCommon.EVENTTYPE.Unfavorite;
 
-            _eventCheckboxTable [2] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [2].CheckBox = CheckFollowEvent;
-            _eventCheckboxTable [2].Type = MyCommon.EVENTTYPE.Follow;
+            event_checkbox_table [2] = new EventCheckboxTableElement ();
+            event_checkbox_table [2].CheckBox = CheckFollowEvent;
+            event_checkbox_table [2].Type = MyCommon.EVENTTYPE.Follow;
 
-            _eventCheckboxTable [3] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [3].CheckBox = CheckListMemberAddedEvent;
-            _eventCheckboxTable [3].Type = MyCommon.EVENTTYPE.ListMemberAdded;
+            event_checkbox_table [3] = new EventCheckboxTableElement ();
+            event_checkbox_table [3].CheckBox = CheckListMemberAddedEvent;
+            event_checkbox_table [3].Type = MyCommon.EVENTTYPE.ListMemberAdded;
 
-            _eventCheckboxTable [4] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [4].CheckBox = CheckListMemberRemovedEvent;
-            _eventCheckboxTable [4].Type = MyCommon.EVENTTYPE.ListMemberRemoved;
+            event_checkbox_table [4] = new EventCheckboxTableElement ();
+            event_checkbox_table [4].CheckBox = CheckListMemberRemovedEvent;
+            event_checkbox_table [4].Type = MyCommon.EVENTTYPE.ListMemberRemoved;
 
-            _eventCheckboxTable [5] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [5].CheckBox = CheckBlockEvent;
-            _eventCheckboxTable [5].Type = MyCommon.EVENTTYPE.Block;
+            event_checkbox_table [5] = new EventCheckboxTableElement ();
+            event_checkbox_table [5].CheckBox = CheckBlockEvent;
+            event_checkbox_table [5].Type = MyCommon.EVENTTYPE.Block;
 
-            _eventCheckboxTable [6] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [6].CheckBox = CheckUserUpdateEvent;
-            _eventCheckboxTable [6].Type = MyCommon.EVENTTYPE.UserUpdate;
+            event_checkbox_table [6] = new EventCheckboxTableElement ();
+            event_checkbox_table [6].CheckBox = CheckUserUpdateEvent;
+            event_checkbox_table [6].Type = MyCommon.EVENTTYPE.UserUpdate;
 
-            _eventCheckboxTable [7] = new EventCheckboxTblElement ();
-            _eventCheckboxTable [7].CheckBox = CheckListCreatedEvent;
-            _eventCheckboxTable [7].Type = MyCommon.EVENTTYPE.ListCreated;
+            event_checkbox_table [7] = new EventCheckboxTableElement ();
+            event_checkbox_table [7].CheckBox = CheckListCreatedEvent;
+            event_checkbox_table [7].Type = MyCommon.EVENTTYPE.ListCreated;
 
-            return _eventCheckboxTable;
+            return event_checkbox_table;
         }
 
 
         private void GetEventNotifyFlag(ref MyCommon.EVENTTYPE eventnotifyflag, ref MyCommon.EVENTTYPE isMyeventnotifyflag)
         {
-            MyCommon.EVENTTYPE evt = MyCommon.EVENTTYPE.None;
-            MyCommon.EVENTTYPE myevt = MyCommon.EVENTTYPE.None;
+            MyCommon.EVENTTYPE event_type = MyCommon.EVENTTYPE.None;
+            MyCommon.EVENTTYPE my_event_type = MyCommon.EVENTTYPE.None;
 
-            foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
-                switch ( tbl.CheckBox.CheckState ) {
+            foreach ( EventCheckboxTableElement table_element in GetEventCheckboxTable() ) {
+                switch ( table_element.CheckBox.CheckState ) {
                 case CheckState.Checked:
-                    evt = evt | tbl.Type;
-                    myevt = myevt | tbl.Type;
+                    event_type = event_type | table_element.Type;
+                    my_event_type = my_event_type | table_element.Type;
                     break;
                 case CheckState.Indeterminate:
-                    evt = evt | tbl.Type;
+                    event_type = event_type | table_element.Type;
                     break;
                 case CheckState.Unchecked:
                     break;
                 }
             }
-            eventnotifyflag = evt;
-            isMyeventnotifyflag = myevt;
+            eventnotifyflag = event_type;
+            isMyeventnotifyflag = my_event_type;
         }
 
 
         private void ApplyEventNotifyFlag(bool rootEnabled, MyCommon.EVENTTYPE eventnotifyflag, MyCommon.EVENTTYPE isMyeventnotifyflag)
         {
-            MyCommon.EVENTTYPE evt = eventnotifyflag;
-            MyCommon.EVENTTYPE myevt = isMyeventnotifyflag;
+            MyCommon.EVENTTYPE event_type = eventnotifyflag;
+            MyCommon.EVENTTYPE my_event_type = isMyeventnotifyflag;
 
             CheckEventNotify.Checked = rootEnabled;
 
-            foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
-                if ( (evt & tbl.Type) != 0 ) {
-                    if ( (myevt & tbl.Type) != 0 ) {
-                        tbl.CheckBox.CheckState = CheckState.Checked;
+            foreach ( EventCheckboxTableElement table_element in GetEventCheckboxTable() ) {
+                if ( (event_type & table_element.Type) != 0 ) {
+                    if ( (my_event_type & table_element.Type) != 0 ) {
+                        table_element.CheckBox.CheckState = CheckState.Checked;
                     } else {
-                        tbl.CheckBox.CheckState = CheckState.Indeterminate;
+                        table_element.CheckBox.CheckState = CheckState.Indeterminate;
                     }
                 } else {
-                    tbl.CheckBox.CheckState = CheckState.Unchecked;
+                    table_element.CheckBox.CheckState = CheckState.Unchecked;
                 }
-                tbl.CheckBox.Enabled = rootEnabled;
+                table_element.CheckBox.Enabled = rootEnabled;
             }
 
         }
@@ -2313,8 +2365,8 @@ namespace OpenTween
 
         private void CheckEventNotify_CheckedChanged(object sender, EventArgs e)
         {
-            foreach ( EventCheckboxTblElement tbl in GetEventCheckboxTable() ) {
-                tbl.CheckBox.Enabled = CheckEventNotify.Checked;
+            foreach ( EventCheckboxTableElement table_element in GetEventCheckboxTable() ) {
+                table_element.CheckBox.Enabled = CheckEventNotify.Checked;
             }
         }
 
@@ -2336,20 +2388,24 @@ namespace OpenTween
         private void SoundFileListup()
         {
             if ( EventSoundFile == null )
-                EventSoundFile = "";
+                EventSoundFile = string.Empty;
+            
             ComboBoxEventNotifySound.Items.Clear();
-            ComboBoxEventNotifySound.Items.Add( "" );
-            DirectoryInfo oDir = new DirectoryInfo (Application.StartupPath + Path.DirectorySeparatorChar);
+            ComboBoxEventNotifySound.Items.Add( string.Empty );
+            
+            DirectoryInfo directory = new DirectoryInfo (Application.StartupPath + Path.DirectorySeparatorChar);            
             if ( Directory.Exists( Path.Combine( Application.StartupPath, "Sounds" ) ) ) {
-                oDir = oDir.GetDirectories( "Sounds" ) [0];
+                directory = directory.GetDirectories( "Sounds" ) [0];
             }
-            foreach ( FileInfo oFile in oDir.GetFiles("*.wav") ) {
-                ComboBoxEventNotifySound.Items.Add( oFile.Name );
+            
+            foreach ( FileInfo file in directory.GetFiles("*.wav") ) {
+                ComboBoxEventNotifySound.Items.Add( file.Name );
             }
-            int idx = ComboBoxEventNotifySound.Items.IndexOf( EventSoundFile );
-            if ( idx == -1 )
-                idx = 0;
-            ComboBoxEventNotifySound.SelectedIndex = idx;
+            
+            int index = ComboBoxEventNotifySound.Items.IndexOf( EventSoundFile );
+            if ( index == -1 )
+                index = 0;
+            ComboBoxEventNotifySound.SelectedIndex = index;
         }
 
         //private void ComboBoxEventNotifySound_VisibleChanged(object sender, EventArgs e)
@@ -2380,24 +2436,26 @@ namespace OpenTween
 
         private void OpenUrl(string url)
         {
-            string myPath = url;
+            string my_path = url;
             string path = this.BrowserPathText.Text;
             try {
                 if ( !string.IsNullOrEmpty( BrowserPath ) ) {
                     if ( path.StartsWith( "\"" ) && path.Length > 2 && path.IndexOf( "\"", 2 ) > -1 ) {
-                        int sep = path.IndexOf( "\"", 2 );
-                        string browserPath = path.Substring( 1, sep - 1 );
-                        string arg = "";
-                        if ( sep < path.Length - 1 ) {
-                            arg = path.Substring( sep + 1 );
+                        int separator = path.IndexOf( "\"", 2 );
+                        string browser_path = path.Substring( 1, separator - 1 );
+                        string arg = string.Empty;
+                        
+                        if ( separator < path.Length - 1 ) {
+                            arg = path.Substring( separator + 1 );
                         }
-                        myPath = arg + " " + myPath;
-                        System.Diagnostics.Process.Start( browserPath, myPath );
+                        
+                        my_path = arg + " " + my_path;
+                        System.Diagnostics.Process.Start( browser_path, my_path );
                     } else {
-                        System.Diagnostics.Process.Start( path, myPath );
+                        System.Diagnostics.Process.Start( path, my_path );
                     }
                 } else {
-                    System.Diagnostics.Process.Start( myPath );
+                    System.Diagnostics.Process.Start( my_path );
                 }
             } catch ( Exception ) {
 //              MessageBox.Show("ブラウザの起動に失敗、またはタイムアウトしました。" + ex.ToString());

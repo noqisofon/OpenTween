@@ -2588,7 +2588,7 @@ namespace OpenTween
                 // TODO 成功時はサムネイルURLを作成しimglist.Addする
                 //var mapsUrl = Foursquare.GetInstance.GetMapsUri(args.url);
                 //if (mapsUrl == null) return false;
-                if ( !AppendSettingDialog.Instance.IsPreviewFoursquare )
+                if ( !AppendSettingDialog.Instance.is_preview_foursquare_ )
                     return false;
                 args.imglist.Add( new KeyValuePair<String, String>( String.IsNullOrEmpty( args.extended ) ? args.url : args.extended, "" ) );
                 return true;

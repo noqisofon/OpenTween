@@ -2301,11 +2301,11 @@ namespace OpenTween
             {
                 if (more)
                 {
-                    res = twCon.GetListsStatuses(tab.ListInfo.UserId, tab.ListInfo.Id, count, tab.OldestId, 0, AppendSettingDialog.Instance.IsListStatusesIncludeRts, ref content);
+                    res = twCon.GetListsStatuses(tab.ListInfo.UserId, tab.ListInfo.Id, count, tab.OldestId, 0, AppendSettingDialog.Instance.is_list_statuses_include_rts_, ref content);
                 }
                 else
                 {
-                    res = twCon.GetListsStatuses(tab.ListInfo.UserId, tab.ListInfo.Id, count, 0, 0, AppendSettingDialog.Instance.IsListStatusesIncludeRts, ref content);
+                    res = twCon.GetListsStatuses(tab.ListInfo.UserId, tab.ListInfo.Id, count, 0, 0, AppendSettingDialog.Instance.is_list_statuses_include_rts_, ref content);
                 }
             }
             catch(Exception ex)
@@ -3331,7 +3331,7 @@ namespace OpenTween
 
             try
             {
-                AppendSettingDialog.Instance.TwitterConfiguration = MyCommon.CreateDataFromJson<TwitterDataModel.Configuration>(content);
+                AppendSettingDialog.Instance.twitter_config_ = MyCommon.CreateDataFromJson<TwitterDataModel.Configuration>(content);
                 return string.Empty;
             }
             catch(SerializationException ex)
@@ -4428,7 +4428,7 @@ namespace OpenTween
                 case "unfavorite":
                     evt.Target = "@" + eventData.TargetObject.User.ScreenName + ":" + HttpUtility.HtmlDecode(eventData.TargetObject.Text);
                     evt.Id = eventData.TargetObject.Id;
-                    if (AppendSettingDialog.Instance.IsRemoveSameEvent)
+                    if (AppendSettingDialog.Instance.is_remove_same_event_)
                     {
                         if (StoredEvent.Any(ev =>
                                            {

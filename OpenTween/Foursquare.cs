@@ -115,7 +115,7 @@ namespace OpenTween
 
         public string GetMapsUri(string url, ref string refText)
         {
-            if ( !AppendSettingDialog.Instance.IsPreviewFoursquare )
+            if ( !AppendSettingDialog.Instance.is_preview_foursquare_ )
                 return null;
 
             var urlId = Regex.Replace( url, @"https?://(4sq|foursquare)\.com/", "" );

@@ -133,7 +133,7 @@ namespace OpenTween
         }
 
 
-        public bool PostData(string Url, Dictionary<string, string> param)
+        public bool PostData(string Url, IDictionary<string, string> param)
         {
             try {
                 HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
@@ -147,7 +147,7 @@ namespace OpenTween
         }
 
 
-        public bool PostData(string Url, Dictionary<string, string> param, out string content)
+        public bool PostData(string Url, IDictionary<string, string> param, out string content)
         {
             try {
                 HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
@@ -162,27 +162,27 @@ namespace OpenTween
         }
 
 
-        public bool GetData(string Url, Dictionary<string, string> param, out string content, string userAgent)
+        public bool GetData(string Url, IDictionary<string, string> param, out string content, string userAgent)
         {
             string errmsg;
             return GetData( Url, param, out content, 100000, out errmsg, userAgent );
         }
 
 
-        public bool GetData(string Url, Dictionary<string, string> param, out string content)
+        public bool GetData(string Url, IDictionary<string, string> param, out string content)
         {
             return GetData( Url, param, out content, 100000 );
         }
 
 
-        public bool GetData(string Url, Dictionary<string, string> param, out string content, int timeout)
+        public bool GetData(string Url, IDictionary<string, string> param, out string content, int timeout)
         {
             string errmsg;
             return GetData( Url, param, out content, timeout, out errmsg, "" );
         }
 
 
-        public bool GetData(string Url, Dictionary<string, string> param, out string content, int timeout, out string errmsg, string userAgent)
+        public bool GetData(string Url, IDictionary<string, string> param, out string content, int timeout, out string errmsg, string userAgent)
         {
             try {
                 HttpWebRequest req = CreateRequest( GetMethod, new Uri (Url), param, false );
@@ -208,7 +208,7 @@ namespace OpenTween
         }
 
 
-        public HttpStatusCode GetContent(string method, Uri Url, Dictionary<string, string> param, out string content, Dictionary<string, string> headerInfo, string userAgent)
+        public HttpStatusCode GetContent(string method, Uri Url, IDictionary<string, string> param, out string content, IDictionary<string, string> headerInfo, string userAgent)
         {
             //Searchで使用。呼び出し元で例外キャッチしている。
             HttpWebRequest req = CreateRequest( method, Url, param, false );

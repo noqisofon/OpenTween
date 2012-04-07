@@ -110,8 +110,8 @@ namespace OpenTween
          // 投稿メッセージの再構成
          if ( string.IsNullOrEmpty( message ) )
              message = "";
-         if ( message.Length + AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia + 1 > 140 )
-             message = message.Substring( 0, 140 - AppendSettingDialog.Instance.TwitterConfiguration.CharactersReservedPerMedia - 1 ) + " " + url;
+         if ( message.Length + AppendSettingDialog.Instance.twitter_config_.CharactersReservedPerMedia + 1 > 140 )
+             message = message.Substring( 0, 140 - AppendSettingDialog.Instance.twitter_config_.CharactersReservedPerMedia - 1 ) + " " + url;
          else
              message += " " + url;
 

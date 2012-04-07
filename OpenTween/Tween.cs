@@ -725,7 +725,7 @@ namespace OpenTween
                 _cfgCommon.UserName = "";
             tw.Initialize( _cfgCommon.Token, _cfgCommon.TokenSecret, _cfgCommon.UserName, _cfgCommon.UserId );
 
-            SettingDialog.UserAccounts = _cfgCommon.UserAccounts;
+            SettingDialog.user_accounts_ = _cfgCommon.UserAccounts;
 
             SettingDialog.TimelinePeriodInt = _cfgCommon.TimelinePeriod;
             SettingDialog.ReplyPeriodInt = _cfgCommon.ReplyPeriod;
@@ -903,12 +903,12 @@ namespace OpenTween
             }
 
             SettingDialog.Nicoms = _cfgCommon.Nicoms;
-            SettingDialog.HotkeyEnabled = _cfgCommon.HotkeyEnabled;
-            SettingDialog.HotkeyMod = _cfgCommon.HotkeyModifier;
-            SettingDialog.HotkeyKey = _cfgCommon.HotkeyKey;
-            SettingDialog.HotkeyValue = _cfgCommon.HotkeyValue;
+            SettingDialog.hotkey_enabled_ = _cfgCommon.HotkeyEnabled;
+            SettingDialog.hotkey_mod_ = _cfgCommon.HotkeyModifier;
+            SettingDialog.hotkey_key_ = _cfgCommon.HotkeyKey;
+            SettingDialog.hotkey_value_ = _cfgCommon.HotkeyValue;
 
-            SettingDialog.BlinkNewMentions = _cfgCommon.BlinkNewMentions;
+            SettingDialog.blink_new_mentions_ = _cfgCommon.BlinkNewMentions;
 
             SettingDialog.UseAdditionalCount = _cfgCommon.UseAdditionalCount;
             SettingDialog.MoreCountApi = _cfgCommon.MoreCountApi;
@@ -923,16 +923,16 @@ namespace OpenTween
             SettingDialog.OpenUserTimeline = _cfgCommon.OpenUserTimeline;
             SettingDialog.ListDoubleClickAction = _cfgCommon.ListDoubleClickAction;
             SettingDialog.UserAppointUrl = _cfgCommon.UserAppointUrl;
-            SettingDialog.HideDuplicatedRetweets = _cfgCommon.HideDuplicatedRetweets;
+            SettingDialog.hide_duplicated_retweets_ = _cfgCommon.HideDuplicatedRetweets;
 
-            SettingDialog.IsPreviewFoursquare = _cfgCommon.IsPreviewFoursquare;
-            SettingDialog.FoursquarePreviewHeight = _cfgCommon.FoursquarePreviewHeight;
-            SettingDialog.FoursquarePreviewWidth = _cfgCommon.FoursquarePreviewWidth;
-            SettingDialog.FoursquarePreviewZoom = _cfgCommon.FoursquarePreviewZoom;
-            SettingDialog.IsListStatusesIncludeRts = _cfgCommon.IsListsIncludeRts;
-            SettingDialog.TabMouseLock = _cfgCommon.TabMouseLock;
-            SettingDialog.IsRemoveSameEvent = _cfgCommon.IsRemoveSameEvent;
-            SettingDialog.IsNotifyUseGrowl = _cfgCommon.IsUseNotifyGrowl;
+            SettingDialog.is_preview_foursquare_ = _cfgCommon.IsPreviewFoursquare;
+            SettingDialog.foursquare_preview_height_ = _cfgCommon.FoursquarePreviewHeight;
+            SettingDialog.foursquare_preview_width_ = _cfgCommon.FoursquarePreviewWidth;
+            SettingDialog.foursquare_preview_zoom_ = _cfgCommon.FoursquarePreviewZoom;
+            SettingDialog.is_list_statuses_include_rts_ = _cfgCommon.IsListsIncludeRts;
+            SettingDialog.tab_mouse_lock_ = _cfgCommon.TabMouseLock;
+            SettingDialog.is_remove_same_event_ = _cfgCommon.IsRemoveSameEvent;
+            SettingDialog.is_notify_use_growl_ = _cfgCommon.IsUseNotifyGrowl;
 
             //ハッシュタグ関連
             HashSupl = new AtIdSupplement( _cfgCommon.HashTags, "#" );
@@ -1044,20 +1044,20 @@ namespace OpenTween
                 //他の設定項目は、随時設定画面で保持している値を読み出して使用
             }
 
-            if ( SettingDialog.HotkeyEnabled )
+            if ( SettingDialog.hotkey_enabled_ )
             {
                 //////グローバルホットキーの登録
                 HookGlobalHotkey.ModKeys modKey = HookGlobalHotkey.ModKeys.None;
-                if ( ( SettingDialog.HotkeyMod & Keys.Alt ) == Keys.Alt )
+                if ( ( SettingDialog.hotkey_mod_ & Keys.Alt ) == Keys.Alt )
                     modKey = modKey | HookGlobalHotkey.ModKeys.Alt;
-                if ( ( SettingDialog.HotkeyMod & Keys.Control ) == Keys.Control )
+                if ( ( SettingDialog.hotkey_mod_ & Keys.Control ) == Keys.Control )
                     modKey = modKey | HookGlobalHotkey.ModKeys.Ctrl;
-                if ( ( SettingDialog.HotkeyMod & Keys.Shift ) == Keys.Shift )
+                if ( ( SettingDialog.hotkey_mod_ & Keys.Shift ) == Keys.Shift )
                     modKey = modKey | HookGlobalHotkey.ModKeys.Shift;
-                if ( ( SettingDialog.HotkeyMod & Keys.LWin ) == Keys.LWin )
+                if ( ( SettingDialog.hotkey_mod_ & Keys.LWin ) == Keys.LWin )
                     modKey = modKey | HookGlobalHotkey.ModKeys.Win;
 
-                _hookGlobalHotkey.RegisterOriginalHotkey( SettingDialog.HotkeyKey, SettingDialog.HotkeyValue, modKey );
+                _hookGlobalHotkey.RegisterOriginalHotkey( SettingDialog.hotkey_key_, SettingDialog.hotkey_value_, modKey );
             }
 
             //Twitter用通信クラス初期化
@@ -1155,7 +1155,7 @@ namespace OpenTween
                 UnreadStripMenuItem.Enabled = false;
             }
 
-            if ( SettingDialog.IsNotifyUseGrowl )
+            if ( SettingDialog.is_notify_use_growl_ )
                 gh.RegisterGrowl();
 
             //タイマー設定
@@ -1356,7 +1356,7 @@ namespace OpenTween
                     }
                 }
             }
-            foreach ( UserAccount ua in SettingDialog.UserAccounts )
+            foreach ( UserAccount ua in SettingDialog.user_accounts_ )
             {
                 if ( ua.UserId == 0 && ua.Username.ToLower() == tw.Username.ToLower() )
                 {
@@ -1866,7 +1866,7 @@ namespace OpenTween
                 if ( notifyPosts != null && notifyPosts.Length > 0 )
                 {
                     //Growlは一個ずつばらして通知。ただし、3ポスト以上あるときはまとめる
-                    if ( SettingDialog.IsNotifyUseGrowl )
+                    if ( SettingDialog.is_notify_use_growl_ )
                     {
                         StringBuilder sb = new StringBuilder();
                         bool reply = false;
@@ -2055,7 +2055,7 @@ namespace OpenTween
             }
 
             //mentions新着時に画面ブリンク
-            if ( !_initial && SettingDialog.BlinkNewMentions && newMentions && Form.ActiveForm == null )
+            if ( !_initial && SettingDialog.blink_new_mentions_ && newMentions && Form.ActiveForm == null )
             {
                 Win32Api.FlashMyWindow( this.Handle, Win32Api.FlashSpecification.FlashTray, 3 );
             }
@@ -3260,9 +3260,9 @@ namespace OpenTween
                     break;
                 case MyCommon.WORKERTYPE.Configuration:
                     //_waitFollower = false
-                    if ( SettingDialog.TwitterConfiguration.PhotoSizeLimit != 0 )
+                    if ( SettingDialog.twitter_config_.PhotoSizeLimit != 0 )
                     {
-                        pictureService["Twitter"].Configuration( "MaxUploadFilesize", SettingDialog.TwitterConfiguration.PhotoSizeLimit );
+                        pictureService["Twitter"].Configuration( "MaxUploadFilesize", SettingDialog.twitter_config_.PhotoSizeLimit );
                     }
                     _itemCache = null;
                     _postCache = null;
@@ -4331,27 +4331,27 @@ namespace OpenTween
                     }
 
                     _hookGlobalHotkey.UnregisterAllOriginalHotkey();
-                    if ( SettingDialog.HotkeyEnabled )
+                    if ( SettingDialog.hotkey_enabled_ )
                     {
                         ///グローバルホットキーの登録。設定で変更可能にするかも
                         HookGlobalHotkey.ModKeys modKey = HookGlobalHotkey.ModKeys.None;
-                        if ( ( SettingDialog.HotkeyMod & Keys.Alt ) == Keys.Alt )
+                        if ( ( SettingDialog.hotkey_mod_ & Keys.Alt ) == Keys.Alt )
                             modKey = modKey | HookGlobalHotkey.ModKeys.Alt;
-                        if ( ( SettingDialog.HotkeyMod & Keys.Control ) == Keys.Control )
+                        if ( ( SettingDialog.hotkey_mod_ & Keys.Control ) == Keys.Control )
                             modKey = modKey | HookGlobalHotkey.ModKeys.Ctrl;
-                        if ( ( SettingDialog.HotkeyMod & Keys.Shift ) == Keys.Shift )
+                        if ( ( SettingDialog.hotkey_mod_ & Keys.Shift ) == Keys.Shift )
                             modKey = modKey | HookGlobalHotkey.ModKeys.Shift;
-                        if ( ( SettingDialog.HotkeyMod & Keys.LWin ) == Keys.LWin )
+                        if ( ( SettingDialog.hotkey_mod_ & Keys.LWin ) == Keys.LWin )
                             modKey = modKey | HookGlobalHotkey.ModKeys.Win;
 
-                        _hookGlobalHotkey.RegisterOriginalHotkey( SettingDialog.HotkeyKey, SettingDialog.HotkeyValue, modKey );
+                        _hookGlobalHotkey.RegisterOriginalHotkey( SettingDialog.hotkey_key_, SettingDialog.hotkey_value_, modKey );
                     }
 
                     if ( uid != tw.Username )
                         this.doGetFollowersMenu();
 
                     SetImageServiceCombo();
-                    if ( SettingDialog.IsNotifyUseGrowl )
+                    if ( SettingDialog.is_notify_use_growl_ )
                         gh.RegisterGrowl();
                     try
                     {
@@ -4983,7 +4983,7 @@ namespace OpenTween
         {
             //タブのD&D
 
-            if ( !SettingDialog.TabMouseLock && e.Button == MouseButtons.Left && _tabDrag )
+            if ( !SettingDialog.tab_mouse_lock_ && e.Button == MouseButtons.Left && _tabDrag )
             {
                 string tn = "";
                 Rectangle dragEnableRectangle = new Rectangle( (int)( _tabMouseDownPoint.X - ( SystemInformation.DragSize.Width / 2 ) ), (int)( _tabMouseDownPoint.Y - ( SystemInformation.DragSize.Height / 2 ) ), SystemInformation.DragSize.Width, SystemInformation.DragSize.Height );
@@ -5256,7 +5256,7 @@ namespace OpenTween
             //}
             foreach ( Match m in Regex.Matches(StatusText.Text, Twitter.rgUrl, RegexOptions.IgnoreCase) )
             {
-                pLen += m.Result( "${url}" ).Length - SettingDialog.TwitterConfiguration.ShortUrlLength;
+                pLen += m.Result( "${url}" ).Length - SettingDialog.twitter_config_.ShortUrlLength;
                 //if (m.Result("${url}").Length > SettingDialog.TwitterConfiguration.ShortUrlLength)
                 //{
                 //    pLen += m.Result("${url}").Length - SettingDialog.TwitterConfiguration.ShortUrlLength;
@@ -5264,7 +5264,7 @@ namespace OpenTween
             }
             if ( ImageSelectionPanel.Visible && ImageSelectedPicture.Tag != null && !string.IsNullOrEmpty( this.ImageService ) )
             {
-                pLen -= SettingDialog.TwitterConfiguration.CharactersReservedPerMedia;
+                pLen -= SettingDialog.twitter_config_.CharactersReservedPerMedia;
             }
             return pLen;
         }
@@ -7902,7 +7902,7 @@ namespace OpenTween
                 _cfgCommon.Password = tw.Password;
                 _cfgCommon.Token = tw.AccessToken;
                 _cfgCommon.TokenSecret = tw.AccessTokenSecret;
-                _cfgCommon.UserAccounts = SettingDialog.UserAccounts;
+                _cfgCommon.UserAccounts = SettingDialog.user_accounts_;
                 _cfgCommon.UserstreamStartup = SettingDialog.UserstreamStartup;
                 _cfgCommon.UserstreamPeriod = SettingDialog.UserstreamPeriodInt;
                 _cfgCommon.TimelinePeriod = SettingDialog.TimelinePeriodInt;
@@ -8006,11 +8006,11 @@ namespace OpenTween
                 _cfgCommon.HashIsNotAddToAtReply = HashMgr.IsNotAddToAtReply;
                 _cfgCommon.TwitterUrl = SettingDialog.TwitterApiUrl;
                 _cfgCommon.TwitterSearchUrl = SettingDialog.TwitterSearchApiUrl;
-                _cfgCommon.HotkeyEnabled = SettingDialog.HotkeyEnabled;
-                _cfgCommon.HotkeyModifier = SettingDialog.HotkeyMod;
-                _cfgCommon.HotkeyKey = SettingDialog.HotkeyKey;
-                _cfgCommon.HotkeyValue = SettingDialog.HotkeyValue;
-                _cfgCommon.BlinkNewMentions = SettingDialog.BlinkNewMentions;
+                _cfgCommon.HotkeyEnabled = SettingDialog.hotkey_enabled_;
+                _cfgCommon.HotkeyModifier = SettingDialog.hotkey_mod_;
+                _cfgCommon.HotkeyKey = SettingDialog.hotkey_key_;
+                _cfgCommon.HotkeyValue = SettingDialog.hotkey_value_;
+                _cfgCommon.BlinkNewMentions = SettingDialog.blink_new_mentions_;
                 if ( ToolStripFocusLockMenuItem != null &&
                         ToolStripFocusLockMenuItem.IsDisposed == false )
                 {
@@ -8029,15 +8029,15 @@ namespace OpenTween
                 _cfgCommon.UseImageService = ImageServiceCombo.SelectedIndex;
                 _cfgCommon.ListDoubleClickAction = SettingDialog.ListDoubleClickAction;
                 _cfgCommon.UserAppointUrl = SettingDialog.UserAppointUrl;
-                _cfgCommon.HideDuplicatedRetweets = SettingDialog.HideDuplicatedRetweets;
-                _cfgCommon.IsPreviewFoursquare = SettingDialog.IsPreviewFoursquare;
-                _cfgCommon.FoursquarePreviewHeight = SettingDialog.FoursquarePreviewHeight;
-                _cfgCommon.FoursquarePreviewWidth = SettingDialog.FoursquarePreviewWidth;
-                _cfgCommon.FoursquarePreviewZoom = SettingDialog.FoursquarePreviewZoom;
-                _cfgCommon.IsListsIncludeRts = SettingDialog.IsListStatusesIncludeRts;
-                _cfgCommon.TabMouseLock = SettingDialog.TabMouseLock;
-                _cfgCommon.IsRemoveSameEvent = SettingDialog.IsRemoveSameEvent;
-                _cfgCommon.IsUseNotifyGrowl = SettingDialog.IsNotifyUseGrowl;
+                _cfgCommon.HideDuplicatedRetweets = SettingDialog.hide_duplicated_retweets_;
+                _cfgCommon.IsPreviewFoursquare = SettingDialog.is_preview_foursquare_;
+                _cfgCommon.FoursquarePreviewHeight = SettingDialog.foursquare_preview_height_;
+                _cfgCommon.FoursquarePreviewWidth = SettingDialog.foursquare_preview_width_;
+                _cfgCommon.FoursquarePreviewZoom = SettingDialog.foursquare_preview_zoom_;
+                _cfgCommon.IsListsIncludeRts = SettingDialog.is_list_statuses_include_rts_;
+                _cfgCommon.TabMouseLock = SettingDialog.tab_mouse_lock_;
+                _cfgCommon.IsRemoveSameEvent = SettingDialog.is_remove_same_event_;
+                _cfgCommon.IsUseNotifyGrowl = SettingDialog.is_notify_use_growl_;
 
                 _cfgCommon.Save();
             }
@@ -8272,7 +8272,7 @@ namespace OpenTween
 
         private void Tabs_MouseDown(object sender, MouseEventArgs e)
         {
-            if ( SettingDialog.TabMouseLock )
+            if ( SettingDialog.tab_mouse_lock_ )
                 return;
             //Point current_pos = new Point( e.X, e.Y );
             if ( e.Button == MouseButtons.Left )
@@ -11016,7 +11016,7 @@ namespace OpenTween
                     GetTimeline( MyCommon.WORKERTYPE.Follower, 0, 0, "" );
 
                 // 取得失敗の場合は再試行する
-                if ( SettingDialog.TwitterConfiguration.PhotoSizeLimit == 0 )
+                if ( SettingDialog.twitter_config_.PhotoSizeLimit == 0 )
                     GetTimeline( MyCommon.WORKERTYPE.Configuration, 0, 0, "" );
 
                 // 権限チェック read/write権限(xAuthで取得したトークン)の場合は再認証を促す
@@ -11598,10 +11598,10 @@ namespace OpenTween
 
         public bool IsTwitterId(string name)
         {
-            if ( SettingDialog.TwitterConfiguration.NonUsernamePaths == null || SettingDialog.TwitterConfiguration.NonUsernamePaths.Length == 0 )
+            if ( SettingDialog.twitter_config_.NonUsernamePaths == null || SettingDialog.twitter_config_.NonUsernamePaths.Length == 0 )
                 return !Regex.Match( name, @"^(about|jobs|tos|privacy|who_to_follow|download|messages)$", RegexOptions.IgnoreCase ).Success;
             else
-                return !SettingDialog.TwitterConfiguration.NonUsernamePaths.Contains( name.ToLower() );
+                return !SettingDialog.twitter_config_.NonUsernamePaths.Contains( name.ToLower() );
         }
 
 
@@ -13162,7 +13162,7 @@ namespace OpenTween
                     text = " ";
                 }
                 //NotifyIcon1.ShowBalloonTip(500);
-                if ( SettingDialog.IsNotifyUseGrowl )
+                if ( SettingDialog.is_notify_use_growl_ )
                 {
                     gh.Notify( GrowlHelper.NotifyType.UserStreamEvent,
                               ev.Id.ToString(), title.ToString(), text );

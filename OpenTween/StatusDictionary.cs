@@ -1289,7 +1289,7 @@ namespace OpenTween
                             if ( Item.IsFav && Item.RetweetedId > 0 )
                                 Item.IsFav = false;
                             //既に持っている公式RTは捨てる
-                            if ( AppendSettingDialog.Instance.HideDuplicatedRetweets &&
+                            if ( AppendSettingDialog.Instance.hide_duplicated_retweets_ &&
                                 !Item.IsMe &&
                                 this._retweets.ContainsKey( Item.RetweetedId ) &&
                                 this._retweets [Item.RetweetedId].RetweetedCount > 0 )
