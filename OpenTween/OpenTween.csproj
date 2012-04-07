@@ -91,7 +91,6 @@
     <Compile Include="Connection\HttpConnectionOAuth.cs" />
     <Compile Include="Connection\HttpConnectionOAuthEcho.cs" />
     <Compile Include="Connection\IHttpConnection.cs" />
-    <Compile Include="Connection\imgly.cs" />
     <Compile Include="Connection\IMultimediaShareService.cs" />
     <Compile Include="EventViewerDialog.cs">
       <SubType>Form</SubType>
@@ -123,11 +122,6 @@
     <Compile Include="ListManage.Designer.cs">
       <DependentUpon>ListManage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Connection\Plixi.cs" />
-    <Compile Include="Connection\TwitPic.cs" />
-    <Compile Include="Connection\TwitterPhoto.cs" />
-    <Compile Include="Connection\TwitVideo.cs" />
-    <Compile Include="Connection\yfrog.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DetailsListView.cs">
       <SubType>Component</SubType>
@@ -240,6 +234,12 @@
     <Compile Include="Tween.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Connection\ImgLyMultimediaShareService.cs" />
+    <Compile Include="Connection\PlixiMultimediaShareService.cs" />
+    <Compile Include="Connection\TwitPicMultimediaShareService.cs" />
+    <Compile Include="Connection\TwitterPhotoMultimediaShareService.cs" />
+    <Compile Include="Connection\TwitVideoMultimediaShareService.cs" />
+    <Compile Include="Connection\YFrogMultimediaShareService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection\HttpConnection.cs" />

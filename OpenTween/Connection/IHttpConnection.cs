@@ -36,27 +36,27 @@ namespace OpenTween
     public interface IHttpConnection
     {
         HttpStatusCode GetContent(string method,
-                Uri requestUri,
-                Dictionary<string, string> param,
-                ref Stream content,
-                string userAgent);
+                                  Uri requestUri,
+                                  IDictionary<string, string> param,
+                                  ref Stream content,
+                                  string userAgent);
 
 
         HttpStatusCode GetContent(string method,
-                Uri requestUri,
-                Dictionary<string, string> param,
-                ref string content,
-                Dictionary<string, string> headerInfo,
-                CallbackDelegate callback);
+                                  Uri requestUri,
+                                  IDictionary<string, string> param,
+                                  ref string content,
+                                  IDictionary<string, string> headerInfo,
+                                  HttpConnectionCallback callback);
 
 
         HttpStatusCode GetContent(string method,
-                Uri requestUri,
-                Dictionary<string, string> param,
-                List<KeyValuePair<string, FileInfo>> binary,
-                ref string content,
-                Dictionary<string, string> headerInfo,
-                CallbackDelegate callback);
+                                  Uri requestUri,
+                                  IDictionary<string, string> param,
+                                  IList<KeyValuePair<string, FileInfo>> binary,
+                                  ref string content,
+                                  IDictionary<string, string> headerInfo,
+                                  HttpConnectionCallback callback);
 
 
         void RequestAbort();
@@ -72,11 +72,11 @@ namespace OpenTween
     }
 
     /// <summary>
-    /// APIメソッドの処理が終了し呼び出し元へ戻る直前に呼ばれるデリゲート
+    /// API メソッドの処理が終了し呼び出し元へ戻る直前に呼ばれるデリゲート
     /// </summary>
     /// <param name="sender">メソッド名</param>
     /// <param name="code">APIメソッドの返したHTTPステータスコード</param>
     /// <param name="content">APIメソッドの処理結果</param>
     /// <remarks>contentはNothingになることがあるのでチェックを必ず行うこと</remarks>
-    public delegate void CallbackDelegate(object sender,ref HttpStatusCode code,ref string content);
+    public delegate void HttpConnectionCallback(object sender,ref HttpStatusCode code,ref string content);
 }

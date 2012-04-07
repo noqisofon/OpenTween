@@ -42,14 +42,16 @@ namespace OpenTween
         public string GetRedirectTo(string url)
         {
             try {
-                HttpWebRequest req = CreateRequest( HeadMethod, new Uri (url), null, false );
-                req.Timeout = 5000;
-                req.AllowAutoRedirect = false;
+                HttpWebRequest request = CreateRequest( HeadMethod, new Uri( url ), null, false );
+                request.Timeout = 5000;
+                request.AllowAutoRedirect = false;
                 string data;
-                IDictionary<string, string> head = new Dictionary<string, string> ();
-                HttpStatusCode ret = GetResponse( req, out data, head, false );
+                IDictionary<string, string> head = new Dictionary<string, string>();
+                /* HttpStatusCode status_code = */
+                GetResponse( request, out data, head, false );
+                
                 if ( head.ContainsKey( "Location" ) ) {
-                    return head ["Location"];
+                    return head["Location"];
                 } else {
                     return url;
                 }
@@ -73,61 +75,64 @@ namespace OpenTween
 
         public Image GetImage(string url, int timeout)
         {
-            string errmsg;
-            return GetImage( url, "", timeout, out errmsg );
+            string error_message;
+            
+            return GetImage( url, string.Empty, timeout, out error_message );
         }
 
 
         public Image GetImage(string url, string referer)
         {
-            string errmsg;
-            return GetImage( url, referer, 10000, out errmsg );
+            string error_message;
+
+            return GetImage( url, referer, 10000, out error_message );
         }
 
 
-        public Image GetImage(string url, string referer, int timeout, out string errmsg)
+        public Image GetImage(string url, string referer, int timeout, out string error_message)
         {
-            return GetImageInternal( CheckValidImage, url, referer, timeout, out errmsg );
+            return GetImageInternal( CheckValidImage, url, referer, timeout, out error_message );
         }
 
 
         public Image GetIconImage(string url, int timeout)
         {
-            string errmsg;
-            return GetImageInternal( CheckValidIconImage, url, "", timeout, out errmsg );
+            string error_message;
+            
+            return GetImageInternal( CheckValidIconImage, url, string.Empty, timeout, out error_message );
         }
 
         private delegate Image CheckValidImageDelegate(Image img,int width,int height);
 
 
-        private Image GetImageInternal(CheckValidImageDelegate CheckImage, string url, string referer, int timeout, out string errmsg)
+        private Image GetImageInternal(CheckValidImageDelegate CheckImage, string url, string referer, int timeout, out string error_message)
         {
             try {
-                HttpWebRequest req = CreateRequest( GetMethod, new Uri (url), null, false );
+                HttpWebRequest request = CreateRequest( GetMethod, new Uri( url ), null, false );
                 if ( !String.IsNullOrEmpty( referer ) )
-                    req.Referer = referer;
+                    request.Referer = referer;
                 if ( timeout < 3000 || timeout > 30000 ) {
-                    req.Timeout = 10000;
+                    request.Timeout = 10000;
                 } else {
-                    req.Timeout = timeout;
+                    request.Timeout = timeout;
                 }
-                Bitmap img;
-                HttpStatusCode ret = GetResponse( req, out img, null, false );
-                if ( ret == HttpStatusCode.OK ) {
-                    errmsg = "";
+                Bitmap bitmap;
+                HttpStatusCode status_code = GetResponse( request, out bitmap, null, false );
+                if ( status_code == HttpStatusCode.OK ) {
+                    error_message = string.Empty;
                 } else {
-                    errmsg = ret.ToString();
+                    error_message = status_code.ToString();
                 }
-                if ( img != null )
-                    img.Tag = url;
-                if ( ret == HttpStatusCode.OK )
-                    return CheckImage( img, img.Width, img.Height );
+                if ( bitmap != null )
+                    bitmap.Tag = url;
+                if ( status_code == HttpStatusCode.OK )
+                    return CheckImage( bitmap, bitmap.Width, bitmap.Height );
                 return null;
             } catch ( WebException ex ) {
-                errmsg = ex.Message;
+                error_message = ex.Message;
                 return null;
             } catch ( Exception ) {
-                errmsg = "";
+                error_message = string.Empty;
                 return null;
             }
         }
@@ -136,10 +141,12 @@ namespace OpenTween
         public bool PostData(string Url, IDictionary<string, string> param)
         {
             try {
-                HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
-                HttpStatusCode res = this.GetResponse( req, null, false );
-                if ( res == HttpStatusCode.OK )
+                HttpWebRequest request = CreateRequest( PostMethod, new Uri( Url ), param, false );
+                HttpStatusCode status_code = this.GetResponse( request, null, false );
+                
+                if ( status_code == HttpStatusCode.OK )
                     return true;
+                
                 return false;
             } catch ( Exception ) {
                 return false;
@@ -150,10 +157,12 @@ namespace OpenTween
         public bool PostData(string Url, IDictionary<string, string> param, out string content)
         {
             try {
-                HttpWebRequest req = CreateRequest( PostMethod, new Uri (Url), param, false );
-                HttpStatusCode res = this.GetResponse( req, out content, null, false );
-                if ( res == HttpStatusCode.OK )
+                HttpWebRequest request = CreateRequest( PostMethod, new Uri( Url ), param, false );
+                HttpStatusCode status_code = this.GetResponse( request, out content, null, false );
+                
+                if ( status_code == HttpStatusCode.OK )
                     return true;
+                
                 return false;
             } catch ( Exception ) {
                 content = null;
@@ -164,8 +173,9 @@ namespace OpenTween
 
         public bool GetData(string Url, IDictionary<string, string> param, out string content, string userAgent)
         {
-            string errmsg;
-            return GetData( Url, param, out content, 100000, out errmsg, userAgent );
+            string error_message;
+            
+            return GetData( Url, param, out content, 100000, out error_message, userAgent );
         }
 
 
@@ -177,32 +187,39 @@ namespace OpenTween
 
         public bool GetData(string Url, IDictionary<string, string> param, out string content, int timeout)
         {
-            string errmsg;
-            return GetData( Url, param, out content, timeout, out errmsg, "" );
+            string error_message;
+            
+            return GetData( Url, param, out content, timeout, out error_message, string.Empty );
         }
 
 
-        public bool GetData(string Url, IDictionary<string, string> param, out string content, int timeout, out string errmsg, string userAgent)
+        public bool GetData(string Url, IDictionary<string, string> param, out string content, int timeout, out string error_message, string userAgent)
         {
             try {
-                HttpWebRequest req = CreateRequest( GetMethod, new Uri (Url), param, false );
+                HttpWebRequest request = CreateRequest( GetMethod, new Uri( Url ), param, false );
+                
                 if ( timeout < 3000 || timeout > 100000 ) {
-                    req.Timeout = 10000;
+                    request.Timeout = 10000;
                 } else {
-                    req.Timeout = timeout;
+                    request.Timeout = timeout;
                 }
+                
                 if ( !String.IsNullOrEmpty( userAgent ) )
-                    req.UserAgent = userAgent;
-                HttpStatusCode res = this.GetResponse( req, out content, null, false );
-                if ( res == HttpStatusCode.OK ) {
-                    errmsg = "";
+                    request.UserAgent = userAgent;
+                
+                HttpStatusCode status_code = this.GetResponse( request, out content, null, false );
+                if ( status_code == HttpStatusCode.OK ) {
+                    error_message = string.Empty;
+                    
                     return true;
                 }
-                errmsg = res.ToString();
+                error_message = status_code.ToString();
+                
                 return false;
             } catch ( Exception ex ) {
                 content = null;
-                errmsg = ex.Message;
+                error_message = ex.Message;
+                
                 return false;
             }
         }
@@ -211,23 +228,27 @@ namespace OpenTween
         public HttpStatusCode GetContent(string method, Uri Url, IDictionary<string, string> param, out string content, IDictionary<string, string> headerInfo, string userAgent)
         {
             //Searchで使用。呼び出し元で例外キャッチしている。
-            HttpWebRequest req = CreateRequest( method, Url, param, false );
-            req.UserAgent = userAgent;
-            return this.GetResponse( req, out content, headerInfo, false );
+            HttpWebRequest request = CreateRequest( method, Url, param, false );
+            request.UserAgent = userAgent;
+            
+            return this.GetResponse( request, out content, headerInfo, false );
         }
 
 
         public bool GetDataToFile(string Url, string savePath)
         {
             try {
-                HttpWebRequest req = CreateRequest( GetMethod, new Uri (Url), null, false );
-                req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-                req.UserAgent = MyCommon.GetUserAgentString();
-                using (FileStream strm = new FileStream(savePath, FileMode.Create, FileAccess.Write)) {
+                HttpWebRequest request = CreateRequest( GetMethod, new Uri( Url ), null, false );
+                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                request.UserAgent = MyCommon.GetUserAgentString();
+                
+                using ( FileStream file_stream = new FileStream( savePath, FileMode.Create, FileAccess.Write ) ) {
                     try {
-                        HttpStatusCode res = this.GetResponse( req, strm, null, false );
-                        if ( res == HttpStatusCode.OK )
+                        HttpStatusCode status_code = this.GetResponse( request, file_stream, null, false );
+                        
+                        if ( status_code == HttpStatusCode.OK )
                             return true;
+                        
                         return false;
                     } catch ( Exception ) {
                         return false;
@@ -250,35 +271,37 @@ namespace OpenTween
             if ( img == null )
                 return null;
 
-            Bitmap bmp = null;
+            Bitmap bitmap = null;
 
             try {
-                bmp = new Bitmap (width, height);
-                using (Graphics g = Graphics.FromImage(bmp)) {
+                bitmap = new Bitmap( width, height );
+                using (Graphics g = Graphics.FromImage(bitmap)) {
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                     g.DrawImage( img, 0, 0, width, height );
                 }
-                bmp.Tag = img.Tag;
+                bitmap.Tag = img.Tag;
 
-                Bitmap result = bmp;
-                bmp = null; //返り値のBitmapはDisposeしない
+                Bitmap result = bitmap;
+                bitmap = null; //返り値のBitmapはDisposeしない
+                
                 return result;
             } catch ( Exception ) {
-                if ( bmp != null ) {
-                    bmp.Dispose();
-                    bmp = null;
+                if ( bitmap != null ) {
+                    bitmap.Dispose();
+                    bitmap = null;
                 }
 
-                bmp = new Bitmap (width, height);
-                bmp.Tag = img.Tag;
+                bitmap = new Bitmap( width, height );
+                bitmap.Tag = img.Tag;
 
-                Bitmap result = bmp;
-                bmp = null; //返り値のBitmapはDisposeしない
+                Bitmap result = bitmap;
+                bitmap = null; //返り値のBitmapはDisposeしない
+                
                 return result;
             } finally {
-                if ( bmp != null )
-                    bmp.Dispose();
+                if ( bitmap != null )
+                    bitmap.Dispose();
                 img.Dispose();
             }
         }

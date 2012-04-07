@@ -35,20 +35,20 @@ using NotSupportedException = System.NotSupportedException;
 
 namespace OpenTween
 {
- public class TwitterPhoto : IMultimediaShareService
+ public class TwitterPhotoMultimediaShareService : IMultimediaShareService
  {
-     private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
+     private string[] picture_extensions_ = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
 
      private const long MaxfilesizeDefault = 3145728;
 
      // help/configurationにより取得されコンストラクタへ渡される
-     private long _MaxFileSize = 3145728;
+     private long max_filesize_ = 3145728;
 
-     private Twitter tw;
+     private Twitter twitter_;
 
      public bool CheckValidExtension( string ext )
      {
-         if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
+         if ( Array.IndexOf( this.picture_extensions_, ext.ToLower() ) > -1 )
              return true;
 
          return false;
@@ -57,7 +57,7 @@ namespace OpenTween
      public bool CheckValidFilesize( string ext, long fileSize )
      {
          if ( this.CheckValidExtension( ext ) )
-             return fileSize <= this._MaxFileSize;
+             return fileSize <= this.max_filesize_;
 
          return false;
      }
@@ -71,13 +71,13 @@ namespace OpenTween
              {
                  val = Convert.ToInt64( value );
                  if ( val > 0 )
-                     this._MaxFileSize = val;
+                     this.max_filesize_ = val;
                  else
-                 this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
+                 this.max_filesize_ = TwitterPhotoMultimediaShareService.MaxfilesizeDefault;
              }
              catch ( Exception )
              {
-                 this._MaxFileSize = TwitterPhoto.MaxfilesizeDefault;
+                 this.max_filesize_ = TwitterPhotoMultimediaShareService.MaxfilesizeDefault;
                  return false; // error
              }
              return true; // 正常に設定終了
@@ -127,12 +127,12 @@ namespace OpenTween
          if ( MyCommon.IsAnimatedGif( filePath ) )
              return "Err:Don't support animatedGIF.";
 
-         return tw.PostStatusWithMedia( message, reply_to, mediaFile );
+         return twitter_.PostStatusWithMedia( message, reply_to, mediaFile );
      }
 
-     public TwitterPhoto( Twitter twitter )
+     public TwitterPhotoMultimediaShareService( Twitter twitter )
      {
-         this.tw = twitter;
+         this.twitter_ = twitter;
      }
  }
 }

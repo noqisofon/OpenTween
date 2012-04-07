@@ -49,22 +49,22 @@ namespace OpenTween
         ///<summary>
         ///プロキシ
         ///</summary>
-        private static WebProxy proxy = null;
+        private static WebProxy __proxy = null;
 
         ///<summary>
         ///ユーザーが選択したプロキシの方式
         ///</summary>
-        private static ProxyType proxyKind = ProxyType.IE;
+        private static ProxyType __proxy_kind = ProxyType.IE;
 
         ///<summary>
         ///クッキー保存用コンテナ
         ///</summary>
-        private static CookieContainer cookieContainer = new CookieContainer ();
+        private static CookieContainer __cookie_container = new CookieContainer ();
 
         ///<summary>
         ///初期化済みフラグ
         ///</summary>
-        private static bool isInitialize = false;
+        private static bool __is_initialize = false;
 
         public enum ProxyType
         {
@@ -95,42 +95,42 @@ namespace OpenTween
                                                IDictionary<string, string> param,
                                                bool withCookie)
         {
-            if ( !isInitialize )
+            if ( !__is_initialize )
                 throw new Exception ("Sequence error.(not initialized)");
 
             //GETメソッドの場合はクエリとurlを結合
-            UriBuilder ub = new UriBuilder (requestUri.AbsoluteUri);
+            UriBuilder uri_builder = new UriBuilder (requestUri.AbsoluteUri);
             if ( param != null && (method == "GET" || method == "DELETE" || method == "HEAD") ) {
-                ub.Query = CreateQueryString( param );
+                uri_builder.Query = CreateQueryString( param );
             }
 
-            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create( ub.Uri );
+            HttpWebRequest web_request = (HttpWebRequest)WebRequest.Create( uri_builder.Uri );
 
-            webReq.ReadWriteTimeout = 90 * 1000; //Streamの読み込みは90秒でタイムアウト（デフォルト5分）
+            web_request.ReadWriteTimeout = 90 * 1000; //Streamの読み込みは90秒でタイムアウト（デフォルト5分）
 
             //プロキシ設定
-            if ( proxyKind != ProxyType.IE )
-                webReq.Proxy = proxy;
+            if ( __proxy_kind != ProxyType.IE )
+                web_request.Proxy = __proxy;
 
-            webReq.Method = method;
+            web_request.Method = method;
             if ( method == "POST" || method == "PUT" ) {
-                webReq.ContentType = "application/x-www-form-urlencoded";
+                web_request.ContentType = "application/x-www-form-urlencoded";
                 //POST/PUTメソッドの場合は、ボディデータとしてクエリ構成して書き込み
-                using (StreamWriter writer = new StreamWriter(webReq.GetRequestStream())) {
+                using (StreamWriter writer = new StreamWriter(web_request.GetRequestStream())) {
                     writer.Write( CreateQueryString( param ) );
                 }
             }
             //cookie設定
             if ( withCookie )
-                webReq.CookieContainer = cookieContainer;
+                web_request.CookieContainer = __cookie_container;
             //タイムアウト設定
             if ( InstanceTimeout > 0 ) {
-                webReq.Timeout = InstanceTimeout;
+                web_request.Timeout = InstanceTimeout;
             } else {
-                webReq.Timeout = DefaultTimeout;
+                web_request.Timeout = DefaultTimeout;
             }
 
-            return webReq;
+            return web_request;
         }
 
         ///<summary>
@@ -148,49 +148,50 @@ namespace OpenTween
         protected HttpWebRequest CreateRequest(string method,
                                                Uri requestUri,
                                                IDictionary<string, string> param,
-                                               List<KeyValuePair<String, FileInfo>> binaryFileInfo,
+                                               IList<KeyValuePair<String, FileInfo>> binaryFileInfo,
                                                bool withCookie)
         {
-            if ( !isInitialize )
+            if ( !__is_initialize )
                 throw new Exception ("Sequence error.(not initialized)");
 
             //methodはPOST,PUTのみ許可
-            UriBuilder ub = new UriBuilder (requestUri.AbsoluteUri);
+            UriBuilder uri_builder = new UriBuilder (requestUri.AbsoluteUri);
             if ( method == "GET" || method == "DELETE" || method == "HEAD" )
                 throw new ArgumentException ("Method must be POST or PUT");
             if ( (param == null || param.Count == 0) && (binaryFileInfo == null || binaryFileInfo.Count == 0) )
                 throw new ArgumentException ("Data is empty");
 
-            HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create( ub.Uri );
+            HttpWebRequest web_request = (HttpWebRequest)WebRequest.Create( uri_builder.Uri );
 
             //プロキシ設定
-            if ( proxyKind != ProxyType.IE )
-                webReq.Proxy = proxy;
+            if ( __proxy_kind != ProxyType.IE )
+                web_request.Proxy = __proxy;
 
-            webReq.Method = method;
+            web_request.Method = method;
             if ( method == "POST" || method == "PUT" ) {
                 string boundary = System.Environment.TickCount.ToString();
-                webReq.ContentType = "multipart/form-data; boundary=" + boundary;
-                using (Stream reqStream = webReq.GetRequestStream()) {
+                
+                web_request.ContentType = "multipart/form-data; boundary=" + boundary;
+                using (Stream request_stream = web_request.GetRequestStream()) {
                     //POST送信する文字データを作成
                     if ( param != null ) {
-                        string postData = "";
+                        string post_data = string.Empty;
                         foreach ( KeyValuePair<string, string> kvp in param ) {
-                            postData += "--" + boundary + "\r\n" +
+                            post_data += "--" + boundary + "\r\n" +
                                     "Content-Disposition: form-data; name=\"" + kvp.Key + "\"" +
                                     "\r\n\r\n" + kvp.Value + "\r\n";
                         }
-                        byte[] postBytes = Encoding.UTF8.GetBytes( postData );
-                        reqStream.Write( postBytes, 0, postBytes.Length );
+                        byte[] post_bytes = Encoding.UTF8.GetBytes( post_data );
+                        request_stream.Write( post_bytes, 0, post_bytes.Length );
                     }
                     //POST送信するバイナリデータを作成
                     if ( binaryFileInfo != null ) {
-                        foreach ( KeyValuePair<string, FileInfo> kvp in binaryFileInfo ) {
-                            string postData = "";
-                            byte[] crlfByte = Encoding.UTF8.GetBytes( "\r\n" );
+                        foreach ( KeyValuePair<string, FileInfo> pair in binaryFileInfo ) {
+                            string post_data = string.Empty;
+                            byte[] crlf_bytes = Encoding.UTF8.GetBytes( "\r\n" );
                             //コンテンツタイプの指定
-                            string mime = "";
-                            switch ( kvp.Value.Extension.ToLower() ) {
+                            string mime = string.Empty;
+                            switch ( pair.Value.Extension.ToLower() ) {
                             case ".jpg":
                             case ".jpeg":
                             case ".jpe":
@@ -244,41 +245,41 @@ namespace OpenTween
                                 mime = "application/octet-stream\r\nContent-Transfer-Encoding: binary";
                                 break;
                             }
-                            postData = "--" + boundary + "\r\n" +
-                                "Content-Disposition: form-data; name=\"" + kvp.Key + "\"; filename=\"" +
-                                kvp.Value.Name + "\"\r\n" +
+                            post_data = "--" + boundary + "\r\n" +
+                                "Content-Disposition: form-data; name=\"" + pair.Key + "\"; filename=\"" +
+                                pair.Value.Name + "\"\r\n" +
                                 "Content-Type: " + mime + "\r\n\r\n";
-                            byte[] postBytes = Encoding.UTF8.GetBytes( postData );
-                            reqStream.Write( postBytes, 0, postBytes.Length );
+                            byte[] post_bytes = Encoding.UTF8.GetBytes( post_data );
+                            request_stream.Write( post_bytes, 0, post_bytes.Length );
                             //ファイルを読み出してHTTPのストリームに書き込み
-                            using (FileStream fs = new FileStream(kvp.Value.FullName, FileMode.Open, FileAccess.Read)) {
-                                int readSize = 0;
-                                byte[] readBytes = new byte[0x1000];
+                            using (FileStream file_stream = new FileStream(pair.Value.FullName, FileMode.Open, FileAccess.Read)) {
+                                int read_size = 0;
+                                byte[] read_bytes = new byte[0x1000];
                                 while ( true ) {
-                                    readSize = fs.Read( readBytes, 0, readBytes.Length );
-                                    if ( readSize == 0 )
+                                    read_size = file_stream.Read( read_bytes, 0, read_bytes.Length );
+                                    if ( read_size == 0 )
                                         break;
-                                    reqStream.Write( readBytes, 0, readSize );
+                                    request_stream.Write( read_bytes, 0, read_size );
                                 }
                             }
-                            reqStream.Write( crlfByte, 0, crlfByte.Length );
+                            request_stream.Write( crlf_bytes, 0, crlf_bytes.Length );
                         }
                     }
                     //終端
-                    byte[] endBytes = Encoding.UTF8.GetBytes( "--" + boundary + "--\r\n" );
-                    reqStream.Write( endBytes, 0, endBytes.Length );
+                    byte[] end_bytes = Encoding.UTF8.GetBytes( "--" + boundary + "--\r\n" );
+                    request_stream.Write( end_bytes, 0, end_bytes.Length );
                 }
             }
             //cookie設定
             if ( withCookie )
-                webReq.CookieContainer = cookieContainer;
+                web_request.CookieContainer = __cookie_container;
             //タイムアウト設定
             if ( InstanceTimeout > 0 )
-                webReq.Timeout = InstanceTimeout;
+                web_request.Timeout = InstanceTimeout;
             else
-                webReq.Timeout = DefaultTimeout;
+                web_request.Timeout = DefaultTimeout;
 
-            return webReq;
+            return web_request;
         }
 
         ///<summary>
@@ -300,33 +301,33 @@ namespace OpenTween
                                              bool withCookie)
         {
             try {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
-                    HttpStatusCode statusCode = webRes.StatusCode;
+                using (HttpWebResponse web_response = (HttpWebResponse)webRequest.GetResponse()) {
+                    HttpStatusCode status_code = web_response.StatusCode;
                     //cookie保持
                     if ( withCookie )
-                        SaveCookie( webRes.Cookies );
+                        SaveCookie( web_response.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo( webRes, headerInfo );
+                    GetHeaderInfo( web_response, headerInfo );
                     //応答のストリームをコピーして戻す
-                    if ( webRes.ContentLength > 0 ) {
+                    if ( web_response.ContentLength > 0 ) {
                         //gzipなら応答ストリームの内容は伸張済み。それ以外なら伸張する。
-                        if ( webRes.ContentEncoding == "gzip" || webRes.ContentEncoding == "deflate" ) {
-                            using (Stream stream = webRes.GetResponseStream()) {
+                        if ( web_response.ContentEncoding == "gzip" || web_response.ContentEncoding == "deflate" ) {
+                            using (Stream stream = web_response.GetResponseStream()) {
                                 if ( stream != null )
                                     CopyStream( stream, contentStream );
                             }
                         } else {
-                            using (Stream stream = new GZipStream(webRes.GetResponseStream(), CompressionMode.Decompress)) {
+                            using (Stream stream = new GZipStream(web_response.GetResponseStream(), CompressionMode.Decompress)) {
                                 if ( stream != null )
                                     CopyStream( stream, contentStream );
                             }
                         }
                     }
-                    return statusCode;
+                    return status_code;
                 }
-            } catch ( WebException ex ) {
-                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
-                    HttpWebResponse res = (HttpWebResponse)ex.Response;
+            } catch ( WebException we ) {
+                if ( we.Status == WebExceptionStatus.ProtocolError ) {
+                    HttpWebResponse res = (HttpWebResponse)we.Response;
                     GetHeaderInfo( res, headerInfo );
                     return res.StatusCode;
                 }
@@ -353,27 +354,27 @@ namespace OpenTween
                                              bool withCookie)
         {
             try {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
-                    HttpStatusCode statusCode = webRes.StatusCode;
+                using (HttpWebResponse web_response = (HttpWebResponse)webRequest.GetResponse()) {
+                    HttpStatusCode status_code = web_response.StatusCode;
                     //cookie保持
                     if ( withCookie )
-                        SaveCookie( webRes.Cookies );
+                        SaveCookie( web_response.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo( webRes, headerInfo );
+                    GetHeaderInfo( web_response, headerInfo );
                     //応答のストリームをテキストに書き出し
-                    using (StreamReader sr = new StreamReader(webRes.GetResponseStream())) {
-                        contentText = sr.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(web_response.GetResponseStream())) {
+                        contentText = reader.ReadToEnd();
                     }
-                    return statusCode;
+                    return status_code;
                 }
-            } catch ( WebException ex ) {
-                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
-                    HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo( res, headerInfo );
-                    using (StreamReader sr = new StreamReader(res.GetResponseStream())) {
-                        contentText = sr.ReadToEnd();
+            } catch ( WebException we ) {
+                if ( we.Status == WebExceptionStatus.ProtocolError ) {
+                    HttpWebResponse response = (HttpWebResponse)we.Response;
+                    GetHeaderInfo( response, headerInfo );
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream())) {
+                        contentText = reader.ReadToEnd();
                     }
-                    return res.StatusCode;
+                    return response.StatusCode;
                 }
                 throw;
             }
@@ -395,20 +396,22 @@ namespace OpenTween
                                              bool withCookie)
         {
             try {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
-                    HttpStatusCode statusCode = webRes.StatusCode;
+                using (HttpWebResponse web_response = (HttpWebResponse)webRequest.GetResponse()) {
+                    HttpStatusCode status_code = web_response.StatusCode;
                     //cookie保持
                     if ( withCookie )
-                        SaveCookie( webRes.Cookies );
+                        SaveCookie( web_response.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo( webRes, headerInfo );
-                    return statusCode;
+                    GetHeaderInfo( web_response, headerInfo );
+                    
+                    return status_code;
                 }
-            } catch ( WebException ex ) {
-                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
-                    HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo( res, headerInfo );
-                    return res.StatusCode;
+            } catch ( WebException we ) {
+                if ( we.Status == WebExceptionStatus.ProtocolError ) {
+                    HttpWebResponse response = (HttpWebResponse)we.Response;
+                    GetHeaderInfo( response, headerInfo );
+                    
+                    return response.StatusCode;
                 }
                 throw;
             }
@@ -432,24 +435,26 @@ namespace OpenTween
                                              bool withCookie)
         {
             try {
-                using (HttpWebResponse webRes = (HttpWebResponse)webRequest.GetResponse()) {
-                    HttpStatusCode statusCode = webRes.StatusCode;
+                using (HttpWebResponse web_response = (HttpWebResponse)webRequest.GetResponse()) {
+                    HttpStatusCode status_code = web_response.StatusCode;
                     //cookie保持
                     if ( withCookie )
-                        SaveCookie( webRes.Cookies );
+                        SaveCookie( web_response.Cookies );
                     //リダイレクト応答の場合は、リダイレクト先を設定
-                    GetHeaderInfo( webRes, headerInfo );
+                    GetHeaderInfo( web_response, headerInfo );
                     //応答のストリームをBitmapにして戻す
                     //if (webRes.ContentLength > 0) contentBitmap = new Bitmap(webRes.GetResponseStream());
-                    contentBitmap = new Bitmap (webRes.GetResponseStream());
-                    return statusCode;
+                    contentBitmap = new Bitmap (web_response.GetResponseStream());
+                    
+                    return status_code;
                 }
-            } catch ( WebException ex ) {
-                if ( ex.Status == WebExceptionStatus.ProtocolError ) {
-                    HttpWebResponse res = (HttpWebResponse)ex.Response;
-                    GetHeaderInfo( res, headerInfo );
+            } catch ( WebException we ) {
+                if ( we.Status == WebExceptionStatus.ProtocolError ) {
+                    HttpWebResponse response = (HttpWebResponse)we.Response;
+                    GetHeaderInfo( response, headerInfo );
                     contentBitmap = null;
-                    return res.StatusCode;
+                    
+                    return response.StatusCode;
                 }
                 throw;
             }
@@ -460,10 +465,10 @@ namespace OpenTween
         ///</summary>
         private void SaveCookie(CookieCollection cookieCollection)
         {
-            foreach ( Cookie ck in cookieCollection ) {
-                if ( ck.Domain.StartsWith( "." ) ) {
-                    ck.Domain = ck.Domain.Substring( 1, ck.Domain.Length - 1 );
-                    cookieContainer.Add( ck );
+            foreach ( Cookie cokkie in cookieCollection ) {
+                if ( cokkie.Domain.StartsWith( "." ) ) {
+                    cokkie.Domain = cokkie.Domain.Substring( 1, cokkie.Domain.Length - 1 );
+                    __cookie_container.Add( cokkie );
                 }
             }
         }
@@ -519,11 +524,11 @@ namespace OpenTween
                 }
             }
 
-            HttpStatusCode statusCode = webResponse.StatusCode;
-            if ( statusCode == HttpStatusCode.MovedPermanently ||
-                statusCode == HttpStatusCode.Found ||
-                statusCode == HttpStatusCode.SeeOther ||
-                statusCode == HttpStatusCode.TemporaryRedirect ) {
+            HttpStatusCode status_code = webResponse.StatusCode;
+            if ( status_code == HttpStatusCode.MovedPermanently ||
+                status_code == HttpStatusCode.Found ||
+                status_code == HttpStatusCode.SeeOther ||
+                status_code == HttpStatusCode.TemporaryRedirect ) {
                 if ( headerInfo.ContainsKey( "Location" ) ) {
                     headerInfo ["Location"] = webResponse.Headers ["Location"];
                 } else {
@@ -541,11 +546,11 @@ namespace OpenTween
             if ( param == null || param.Count == 0 )
                 return string.Empty;
 
-            StringBuilder query = new StringBuilder ();
+            StringBuilder query_string_builder = new StringBuilder ();
             foreach ( string key in param.Keys ) {
-                query.AppendFormat( "{0}={1}&", UrlEncode( key ), UrlEncode( param [key] ) );
+                query_string_builder.AppendFormat( "{0}={1}&", UrlEncode( key ), UrlEncode( param [key] ) );
             }
-            return query.ToString( 0, query.Length - 1 );
+            return query_string_builder.ToString( 0, query_string_builder.Length - 1 );
         }
 
         ///<summary>
@@ -575,36 +580,36 @@ namespace OpenTween
         protected string UrlEncode(string stringToEncode)
         {
             const string UnreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-            StringBuilder sb = new StringBuilder ();
+            StringBuilder encoded_text_builder = new StringBuilder ();
             byte[] bytes = Encoding.UTF8.GetBytes( stringToEncode );
 
             foreach ( byte b in bytes ) {
                 if ( UnreservedChars.IndexOf( (char)b ) != -1 )
-                    sb.Append( (char)b );
+                    encoded_text_builder.Append( (char)b );
                 else
-                    sb.AppendFormat( "%{0:X2}", b );
+                    encoded_text_builder.AppendFormat( "%{0:X2}", b );
             }
-            return sb.ToString();
+            return encoded_text_builder.ToString();
         }
 
         #region "InstanceTimeout"
         ///<summary>
         ///通信タイムアウト時間（ms）
         ///</summary>
-        private int _timeout = 0;
+        private int timeout_ = 0;
 
         ///<summary>
         ///通信タイムアウト時間（ms）。10～120秒の範囲で指定。範囲外は20秒とする
         ///</summary>
         protected int InstanceTimeout {
-            get { return _timeout; }
+            get { return timeout_; }
             set {
                 const int TimeoutMinValue = 10000;
                 const int TimeoutMaxValue = 120000;
                 if ( value < TimeoutMinValue || value > TimeoutMaxValue )
                     throw new ArgumentOutOfRangeException ("Set " + TimeoutMinValue + "-" + TimeoutMaxValue + ": Value=" + value);
                 else
-                    _timeout = value;
+                    timeout_ = value;
             }
         }
         #endregion
@@ -613,22 +618,22 @@ namespace OpenTween
         ///<summary>
         ///通信タイムアウト時間（ms）
         ///</summary>
-        private static int timeout = 20000;
+        private static int __timeout = 20000;
 
         ///<summary>
         ///通信タイムアウト時間（ms）。10～120秒の範囲で指定。範囲外は20秒とする
         ///</summary>
         protected static int DefaultTimeout {
-            get { return timeout; }
+            get { return __timeout; }
             set {
                 const int TimeoutMinValue = 10000;
                 const int TimeoutMaxValue = 120000;
                 const int TimeoutDefaultValue = 20000;
                 if ( value < TimeoutMinValue || value > TimeoutMaxValue )
                     // 範囲外ならデフォルト値設定
-                    timeout = TimeoutDefaultValue;
+                    __timeout = TimeoutDefaultValue;
                 else
-                    timeout = value;
+                    __timeout = value;
             }
         }
         #endregion
@@ -653,23 +658,23 @@ namespace OpenTween
                 string proxyUser,
                 string proxyPassword)
         {
-            isInitialize = true;
+            __is_initialize = true;
             ServicePointManager.Expect100Continue = false;
             DefaultTimeout = timeout * 1000;     //s -> ms
             switch ( proxyType ) {
             case ProxyType.None:
-                proxy = null;
+                __proxy = null;
                 break;
             case ProxyType.Specified:
-                proxy = new WebProxy ("http://" + proxyAddress + ":" + proxyPort);
+                __proxy = new WebProxy ("http://" + proxyAddress + ":" + proxyPort);
                 if ( !String.IsNullOrEmpty( proxyUser ) || !String.IsNullOrEmpty( proxyPassword ) )
-                    proxy.Credentials = new NetworkCredential (proxyUser, proxyPassword);
+                    __proxy.Credentials = new NetworkCredential (proxyUser, proxyPassword);
                 break;
             case ProxyType.IE:
                     //IE設定（システム設定）はデフォルト値なので処理しない
                 break;
             }
-            proxyKind = proxyType;
+            __proxy_kind = proxyType;
 
             Win32Api.SetProxy( proxyType, proxyAddress, proxyPort, proxyUser, proxyPassword );
         }

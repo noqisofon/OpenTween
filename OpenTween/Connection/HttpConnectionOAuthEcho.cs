@@ -39,45 +39,45 @@ namespace OpenTween
 
     public class HttpConnectionOAuthEcho : HttpConnectionOAuth
     {
-        private Uri _realm;
-        private Uri _serviceProvider;
+        private Uri realm_;
+        private Uri service_provider_;
 
 
         public Uri Realm {
-            set { this._realm = value; }
+            set { this.realm_ = value; }
         }
 
 
         public Uri ServiceProvider {
-            set { this._serviceProvider = value; }
+            set { this.service_provider_ = value; }
         }
 
 
-        protected override void AppendOAuthInfo(HttpWebRequest webRequest, Dictionary< string, string > query, string token, string tokenSecret)
+        protected override void AppendOAuthInfo(HttpWebRequest webRequest, IDictionary< string, string > query, string token, string tokenSecret)
         {
             // OAuth共通情報取得
-            Dictionary< string, string > parameter = this.GetOAuthParameter( token );
+            IDictionary< string, string > parameter = this.GetOAuthParameter( token );
             // OAuth共通情報にquery情報を追加
             if ( query != null )
                 foreach ( KeyValuePair< string, string > item in query )
                     parameter.Add( item.Key, item.Value );
             // 署名の作成・追加(GETメソッド固定。ServiceProvider呼び出し用の署名作成)
-            parameter.Add( "oauth_signature", this.CreateSignature( tokenSecret, HttpConnection.GetMethod, this._serviceProvider, parameter ) );
+            parameter.Add( "oauth_signature", this.CreateSignature( tokenSecret, HttpConnection.GetMethod, this.service_provider_, parameter ) );
             // HTTPリクエストのヘッダに追加
-            StringBuilder sb = new StringBuilder ("OAuth ");
-            sb.AppendFormat( "realm=\"{0}://{1}{2}\",", this._realm.Scheme, this._realm.Host, this._realm.AbsolutePath );
+            StringBuilder http_header_builder = new StringBuilder ("OAuth ");
+            http_header_builder.AppendFormat( "realm=\"{0}://{1}{2}\",", this.realm_.Scheme, this.realm_.Host, this.realm_.AbsolutePath );
             foreach ( KeyValuePair< string, string > item in parameter )
                 if ( item.Key.StartsWith( "oauth_" ) )
-                    sb.AppendFormat( "{0}=\"{1}\",", item.Key, this.UrlEncode( item.Value ) );
-            webRequest.Headers.Add( "X-Verify-Credentials-Authorization", sb.ToString() );
-            webRequest.Headers.Add( "X-Auth-Service-Provider", string.Format( "{0}://{1}{2}", this._serviceProvider.Scheme, this._serviceProvider.Host, this._serviceProvider.AbsolutePath ) );
+                    http_header_builder.AppendFormat( "{0}=\"{1}\",", item.Key, this.UrlEncode( item.Value ) );
+            webRequest.Headers.Add( "X-Verify-Credentials-Authorization", http_header_builder.ToString() );
+            webRequest.Headers.Add( "X-Auth-Service-Provider", string.Format( "{0}://{1}{2}", this.service_provider_.Scheme, this.service_provider_.Host, this.service_provider_.AbsolutePath ) );
         }
 
 
         public HttpConnectionOAuthEcho(Uri realm, Uri serviceProvider)
         {
-            this._realm = realm;
-            this._serviceProvider = serviceProvider;
+            this.realm_ = realm;
+            this.service_provider_ = serviceProvider;
         }
     }
 }

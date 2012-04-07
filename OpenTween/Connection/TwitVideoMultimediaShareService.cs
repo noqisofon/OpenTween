@@ -43,7 +43,7 @@ namespace OpenTween
 {
 
 
-    public class TwitVideo : HttpConnection
+    public class TwitVideoMultimediaShareService : HttpConnection
     {
         private string[] multimediaExt = new string[] { ".avi", ".wmv", ".flv", ".m4v", ".mov", ".mp4", ".rm", ".mpeg", ".mpg", ".3gp", ".3g2" };
         private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
@@ -59,10 +59,10 @@ namespace OpenTween
 
             // Check filetype and size
             if ( Array.IndexOf( multimediaExt, mediaFile.Extension.ToLower() ) > -1 ) {
-                if ( mediaFile.Length > TwitVideo.MaxMultiMediaFileSize )
+                if ( mediaFile.Length > TwitVideoMultimediaShareService.MaxMultiMediaFileSize )
                     throw new ArgumentException ("File is too large.");
             } else if ( Array.IndexOf( pictureExt, mediaFile.Extension.ToLower() ) > -1 ) {
-                if ( mediaFile.Length > TwitVideo.MaxPictureFileSize )
+                if ( mediaFile.Length > TwitVideoMultimediaShareService.MaxPictureFileSize )
                     throw new ArgumentException ("File is too large.");
             } else {
                 throw new ArgumentException ("Service don't support this filetype.");
@@ -129,10 +129,10 @@ namespace OpenTween
         long GetMaxFileSize(string ext)
         {
             if ( Array.IndexOf( this.pictureExt, ext.ToLower() ) > -1 )
-                return TwitVideo.MaxPictureFileSize;
+                return TwitVideoMultimediaShareService.MaxPictureFileSize;
 
             if ( Array.IndexOf( this.multimediaExt, ext.ToLower() ) > -1 )
-                return TwitVideo.MaxMultiMediaFileSize;
+                return TwitVideoMultimediaShareService.MaxMultiMediaFileSize;
 
             return -1;
         }

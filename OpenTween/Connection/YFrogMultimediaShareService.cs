@@ -40,21 +40,22 @@ using UploadFileType = OpenTween.MyCommon.UploadFileType;
 
 namespace OpenTween
 {
- public class imgly : HttpConnectionOAuthEcho, IMultimediaShareService
+ public class YFrogMultimediaShareService : HttpConnectionOAuthEcho, IMultimediaShareService
  {
      private string[] pictureExt = new string[] { ".jpg", ".jpeg", ".gif", ".png" };
 
-     private const long MaxFileSize = 4 * 1024 * 1024;
+     private const long MaxFileSize = 5 * 1024 * 1024;
 
      private Twitter tw;
 
      public string Upload( ref string filePath, ref string message, long reply_to )
      {
          if ( string.IsNullOrEmpty( filePath ) )
-             return "Err:File isn't specified.";
+             return "Err:File isn't exists.";
          if ( string.IsNullOrEmpty( message ) )
              message = "";
 
+         // FileInfo作成
          FileInfo mediaFile;
          try
          {
@@ -69,7 +70,7 @@ namespace OpenTween
 
          string content = "";
          HttpStatusCode ret;
-         // img.lyへの投稿
+         // yfrogへの投稿
          try
          {
              ret = this.UploadFile( mediaFile, message, ref content );
@@ -78,7 +79,6 @@ namespace OpenTween
          {
              return "Err:" + ex.Message;
          }
-
          string url = "";
          if ( ret == HttpStatusCode.OK )
          {
@@ -87,8 +87,8 @@ namespace OpenTween
              {
                  xd.LoadXml( content );
                  // URLの取得
-                 url = xd.SelectSingleNode( "/image/url" ).InnerText;
-             }
+                    url = xd.SelectSingleNode( "/rsp/mediaurl" ).InnerText;
+                 }
              catch ( XmlException ex )
              {
                  return "Err:" + ex.Message;
@@ -99,23 +99,22 @@ namespace OpenTween
              }
          }
          else
-         {
              return "Err:" + ret.ToString();
-         }
-         // アップロードまでは成功
-         filePath = "";
+
          if ( string.IsNullOrEmpty( url ) )
              url = "";
+         // アップロードまでは成功
+         filePath = "";
          // Twitterへの投稿
          // 投稿メッセージの再構成
          if ( string.IsNullOrEmpty( message ) )
              message = "";
          if ( message.Length + AppendSettingDialog.Instance.twitter_config_.CharactersReservedPerMedia + 1 > 140 )
-             message = message.Substring( 0, 140 - AppendSettingDialog.Instance.twitter_config_.CharactersReservedPerMedia - 1 ) + " " + url;
+             message = message.Substring(0, 140 - AppendSettingDialog.Instance.twitter_config_.CharactersReservedPerMedia - 1) + " " + url;
          else
              message += " " + url;
 
-         return tw.PostStatus( message, reply_to );
+         return this.tw.PostStatus( message, 0 );
      }
 
      private HttpStatusCode UploadFile( FileInfo mediaFile, string message, ref string content )
@@ -123,19 +122,20 @@ namespace OpenTween
          // Message必須
          if ( string.IsNullOrEmpty( message ) )
              message = "";
-         // Check filetype and size(Max 4MB)
+         // Check filetype and size(Max 5MB)
          if ( !this.CheckValidExtension( mediaFile.Extension ) )
              throw new ArgumentException( "Service don't support this filetype." );
          if ( !this.CheckValidFilesize( mediaFile.Extension, mediaFile.Length ) )
              throw new ArgumentException( "File is too large." );
 
          Dictionary< string, string > param = new Dictionary< string, string >();
+            param.Add( "key", ApplicationSettings.YfrogApiKey );
          param.Add( "message", message );
          List< KeyValuePair< string, FileInfo > > binary = new List< KeyValuePair< string, FileInfo > >();
          binary.Add( new KeyValuePair< string, FileInfo >( "media", mediaFile ) );
          this.InstanceTimeout = 60000; // タイムアウト60秒
 
-         return this.GetContent( HttpConnection.PostMethod, new Uri( "http://img.ly/api/2/upload.xml" ), param, binary, ref content, null, null );
+         return this.GetContent( HttpConnection.PostMethod, new Uri( "http://yfrog.com/api/xauth_upload" ), param, binary, ref content, null, null );
      }
 
      public bool CheckValidExtension( string ext )
@@ -167,21 +167,21 @@ namespace OpenTween
      public bool CheckValidFilesize( string ext, long fileSize )
      {
          if ( this.CheckValidExtension( ext ) )
-             return fileSize <= imgly.MaxFileSize;
+                return fileSize <= YFrogMultimediaShareService.MaxFileSize;
 
          return false;
+     }
+
+     public YFrogMultimediaShareService( Twitter twitter )
+         : base( new Uri( "http://api.twitter.com/" ), new Uri( "https://api.twitter.com/1/account/verify_credentials.xml" ) )
+     {
+         this.tw = twitter;
+            this.Initialize( ApplicationSettings.TwitterConsumerKey, ApplicationSettings.TwitterConsumerSecret, this.tw.AccessToken, this.tw.AccessTokenSecret, "", "" );
      }
 
      public bool Configuration( string key, object value )
      {
          return true;
-     }
-
-     public imgly( Twitter twitter )
-         : base( new Uri( "http://api.twitter.com/" ), new Uri( "https://api.twitter.com/1/account/verify_credentials.json" ) )
-     {
-         this.tw = twitter;
-            this.Initialize( ApplicationSettings.TwitterConsumerKey, ApplicationSettings.TwitterConsumerSecret, tw.AccessToken, tw.AccessTokenSecret, "", "" );
      }
  }
 }

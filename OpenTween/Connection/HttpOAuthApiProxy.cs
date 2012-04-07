@@ -43,7 +43,7 @@ namespace OpenTween
         public static string ProxyHost {
             set {
                 if ( string.IsNullOrEmpty( value ) || value == _apiHost )
-                    _proxyHost = "";
+                    _proxyHost = string.Empty;
                 else
                     _proxyHost = value;
             }
@@ -51,9 +51,9 @@ namespace OpenTween
 
 
         protected override string CreateSignature(string tokenSecret,
-                                         string method,
-                                         Uri uri,
-                                         Dictionary<string, string> parameter)
+                                                  string method,
+                                                  Uri uri,
+                                                  IDictionary<string, string> parameter)
         {
             //パラメタをソート済みディクショナリに詰替（OAuthの仕様）
             SortedDictionary<string, string> sorted = new SortedDictionary<string, string> (parameter);
@@ -67,7 +67,7 @@ namespace OpenTween
             //署名のベース文字列生成（&区切り）。クエリ形式文字列は再エンコードする
             string signatureBase = String.Format( "{0}&{1}&{2}", method, UrlEncode( url ), UrlEncode( paramString ) );
             //署名鍵の文字列をコンシューマー秘密鍵とアクセストークン秘密鍵から生成（&区切り。アクセストークン秘密鍵なくても&残すこと）
-            string key = UrlEncode( consumerSecret ) + "&";
+            string key = UrlEncode( consumer_secret_ ) + "&";
             if ( !string.IsNullOrEmpty( tokenSecret ) )
                 key += UrlEncode( tokenSecret );
             //鍵生成＆署名生成
